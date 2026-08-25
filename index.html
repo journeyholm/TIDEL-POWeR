@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Releasing Writers: Bionic Academy</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -15,1199 +17,831 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'], // Used for the reading text
-                        mono: ['JetBrains Mono', 'monospace'],
+                        serif: ['Merriweather', 'serif'],
                     },
                     colors: {
-                        brand: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 900: '#14532d' },
-                        tide: { t: '#dcfce7', i: '#fef08a', d: '#fed7aa', e: '#fbcfe8' }, // Green, Yellow, Orange, Pink
-                        tideborder: { t: '#4ade80', i: '#facc15', d: '#fb923c', e: '#f472b6' }
+                        tide: {
+                            t: '#22c55e', // Green
+                            i: '#eab308', // Yellow
+                            d: '#f97316', // Orange
+                            e: '#ec4899', // Pink
+                        }
+                    },
+                    animation: {
+                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'pop': 'pop 0.25s ease-out forwards',
+                    },
+                    keyframes: {
+                        pop: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        }
                     }
                 }
             }
         }
     </script>
+
     <style>
-        /* CSS Variables for Theming */
-        :root {
-            --bg-main: #f8fafc;
-            --bg-panel: #ffffff;
-            --text-main: #0f172a;
-            --accent: #22c55e;
-            --border: #e2e8f0;
-        }
-        .theme-cyberpunk {
-            --bg-main: #09090b;
-            --bg-panel: #18181b;
-            --text-main: #e4e4e7;
-            --accent: #f43f5e;
-            --border: #3f3f46;
-        }
-        .theme-bionic {
-            --bg-main: #082f49;
-            --bg-panel: #0c4a6e;
-            --text-main: #f0f9ff;
-            --accent: #0ea5e9;
-            --border: #0369a1;
-        }
-        
-        body { background-color: var(--bg-main); color: var(--text-main); transition: all 0.3s ease; }
-        .glass-panel { background-color: var(--bg-panel); border: 1px solid var(--border); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
-        
-        /* Flow State Glow */
-        body.flow-state {
-            animation: flowGlow 4s infinite alternate;
-        }
-        @keyframes flowGlow {
-            0% { box-shadow: inset 0 0 20px rgba(34, 197, 94, 0); }
-            100% { box-shadow: inset 0 0 50px rgba(34, 197, 94, 0.3); }
+        /* Custom Scrollbar for independent scrolling areas */
+        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); }
+
+        /* Highlight Action Tooltip */
+        #highlight-tooltip {
+            position: absolute;
+            z-index: 1000;
+            display: none;
+            transform: translate(-50%, -110%);
         }
 
-        /* Interactive Highlighting */
-        .extractable-sentence { cursor: pointer; transition: background-color 0.2s, transform 0.1s; border-radius: 4px; padding: 2px; }
-        .extractable-sentence:hover { background-color: rgba(250, 204, 21, 0.3); }
-        .extractable-sentence.selected { background-color: rgba(250, 204, 21, 0.6); box-shadow: 0 0 0 2px #facc15; }
-        
-        /* Juice & Micro-interactions */
-        .btn-juice:active { transform: scale(0.95); }
-        .active-stage-ring { animation: pulseRing 2s infinite; }
-        @keyframes pulseRing {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        /* Themes */
+        body.theme-cyberpunk {
+            background-color: #0f172a;
+            color: #38bdf8;
         }
+        body.theme-cyberpunk .bg-panel { background-color: #1e293b; border-color: #38bdf8; box-shadow: 0 0 15px rgba(56,189,248,0.2); }
+        body.theme-cyberpunk .text-content { color: #f1f5f9; }
+        
+        body.theme-bionic {
+            background-color: #1a2e1a;
+            color: #4ade80;
+        }
+        body.theme-bionic .bg-panel { background-color: #142414; border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.2); }
+        body.theme-bionic .text-content { color: #e2e8f0; }
 
-        /* SVG Rope Paths */
-        .rope-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; transition: stroke-dashoffset 1.5s ease-out; }
-        .rope-path.drawn { stroke-dashoffset: 0; }
-
-        /* Falling words mini-game */
-        .falling-word { position: absolute; top: -50px; padding: 8px 16px; background: white; border-radius: 8px; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: top 0.1s linear; color: #0f172a;}
+        /* Smooth UI Transitions */
+        .fade-in { animation: pop 0.3s ease-out forwards; }
+        
+        /* Draggable elements */
+        .draggable { cursor: grab; }
+        .draggable:active { cursor: grabbing; }
+        .dropzone.dragover { background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6; border-style: solid; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col overflow-hidden font-sans">
 
-    <header class="bg-slate-900 text-white z-40 shadow-md flex-shrink-0">
-        <div class="w-full mx-auto px-6 py-2">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded bg-brand-500 flex items-center justify-center font-black text-xl">RW</div>
-                    <div>
-                        <h1 class="font-bold leading-tight">Releasing Writers</h1>
-                        <p class="text-[10px] text-slate-400">POWeR Cycle • Red Apple Middle School</p>
-                    </div>
-                </div>
+<body class="bg-slate-50 text-slate-900 h-screen w-full flex flex-col overflow-hidden transition-colors duration-500" id="app-body">
 
-                <div class="hidden md:flex items-center">
-                    <button onclick="openRopeModal()" class="text-slate-300 hover:text-white text-xs font-bold px-3 py-1.5 bg-slate-800 rounded-lg border border-slate-700 hover:bg-slate-700 transition flex items-center gap-2">
-                        <i class="fas fa-info-circle"></i> Writing Rope Info
-                    </button>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <!-- Idea 17 & 18: XP Economy and Streaks -->
-                    <div class="text-right flex items-center gap-2">
-                        <div id="streak-badge" class="hidden bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">🔥 Streak! 1.5x XP</div>
-                        <div class="bg-slate-800 rounded-lg px-3 py-1 flex items-center gap-2 border border-slate-700 cursor-pointer hover:bg-slate-700" onclick="openShop()">
-                            <i class="fas fa-coins text-amber-400"></i>
-                            <span id="ui-xp" class="font-mono font-bold text-sm text-amber-300">0 XP</span>
-                        </div>
-                    </div>
-                </div>
+    <!-- Top Navigation -->
+    <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shrink-0 shadow-md z-50">
+        <div class="flex items-center gap-4">
+            <div class="font-bold text-xl tracking-tight flex items-center gap-2">
+                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                Releasing Writers: Bionic Academy
             </div>
-            
-            <!-- Stage Tracker -->
-            <div id="stage-tracker" class="flex gap-2 mt-3 pb-1 overflow-x-auto text-xs">
-                <!-- Injected via JS -->
-            </div>
+            <button onclick="toggleModal('rope-modal')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full transition-colors border border-slate-700 flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Writing Rope Guide
+            </button>
         </div>
-    </header>
-
-    <main class="flex-grow flex flex-col md:flex-row overflow-hidden w-full">
         
-        <!-- LEFT PANE: Reading Text -->
-        <div class="w-full md:w-1/2 flex flex-col border-r border-slate-300 bg-slate-50 relative h-[40vh] md:h-auto shrink-0 transition-colors" id="left-pane-container">
-            <div class="p-3 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm z-10 glass-panel">
-                <h2 class="font-bold text-sm text-slate-800 flex items-center gap-2">
-                    <i class="fas fa-book-reader text-brand-600"></i> Source Text
-                </h2>
-                <!-- Idea 23: Text-to-Speech Accessibility -->
-                <button onclick="toggleTTS()" id="tts-btn" class="text-slate-500 hover:text-brand-600 p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition" title="Read Aloud">
-                    <i class="fas fa-volume-up"></i>
-                </button>
+        <div class="flex items-center gap-4">
+            <!-- XP & Level -->
+            <div class="flex items-center gap-2 bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700" id="xp-container">
+                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                <span id="xp-display" class="font-bold font-mono">0 XP</span>
             </div>
-            <div id="passage-content" class="p-6 sm:p-10 overflow-y-auto flex-grow font-serif text-slate-800 leading-loose text-base sm:text-lg space-y-6">
-                <!-- Injected via JS -->
-            </div>
-            
-            <div id="highlighter-tip" class="absolute bottom-4 left-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 p-3 rounded-lg text-sm font-bold shadow-lg hidden transform transition-all duration-300 translate-y-10 opacity-0 flex justify-between items-center z-50">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-highlighter"></i> <span>Text highlighted!</span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="cancelHighlight()" class="text-yellow-700 hover:text-yellow-900 text-xs font-bold underline">Cancel</button>
-                    <button onclick="sendHighlightToWorkspace()" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded shadow btn-juice text-xs sm:text-sm">Send to Workspace <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
+            <!-- Shop -->
+            <button onclick="toggleModal('shop-modal')" class="bg-blue-600 hover:bg-blue-500 px-4 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                Shop
+            </button>
         </div>
+    </nav>
 
-        <!-- RIGHT PANE: Interactive Workspace -->
-        <div class="w-full md:w-1/2 flex flex-col bg-slate-100 h-[60vh] md:h-auto overflow-y-auto relative glass-panel transition-colors" id="workspace-container">
-            <div id="workspace-content" class="p-6 sm:p-10 max-w-5xl mx-auto w-full pb-32">
-                <!-- Stage content injected via JS -->
+    <!-- Main Split Layout -->
+    <main class="flex-1 overflow-hidden grid lg:grid-cols-2 gap-4 p-4 min-h-0 bg-slate-200/50 dark:bg-slate-900/50">
+        
+        <section class="bg-white bg-panel rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden h-full">
+            <!-- Reader Header -->
+            <header class="bg-slate-50 dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0">
+                <h2 class="font-bold text-lg text-slate-800 dark:text-slate-100">Reading Passage</h2>
+                <div class="flex gap-2">
+                    <button onclick="readAloud()" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 transition-colors tooltip" title="Read Aloud">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                    </button>
+                    <button onclick="adjustFontSize(1)" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-bold transition-colors">A+</button>
+                    <button onclick="adjustFontSize(-1)" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-bold transition-colors">A-</button>
+                </div>
+            </header>
+            
+            <!-- Reader Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 relative" id="reader-container">
+                <article id="reader-text" class="text-content text-lg leading-loose font-serif text-slate-800 dark:text-slate-200 space-y-6 max-w-2xl mx-auto">
+                    <h1 class="text-3xl font-bold font-sans mb-6">Are Bionic Superhumans on the Horizon?</h1>
+                    <p>New technologies are being invented at a rate never experienced previously in human history. One of the most fascinating frontiers is the development of bionics—the integration of mechanical and electronic systems with the human body. For decades, prosthetic limbs were simple, passive tools. Today, we are on the verge of creating bionic superhumans.</p>
+                    <p>Bionic technologies can drastically improve people’s lives, particularly for amputees or those with mobility impairments. Modern bionic arms, for example, are not just plastic shells. They contain myoelectric sensors that rest against the user's skin. When the user thinks about moving their hand, their brain sends a signal down their nervous system to their residual muscles. The sensors pick up these tiny electrical twitches and translate them into movement in the robotic hand.</p>
+                    <p>But the advancements do not stop at restoring lost function; they are pushing into the realm of enhancement. Researchers at MIT are developing neural interfaces that connect directly to the human nervous system. This technology could eventually allow bionic limbs to feel temperature and texture, sending sensory feedback directly back to the brain. In some experimental trials, users with bionic legs have reported feeling as though the robotic limb is a natural part of their own body.</p>
+                    <p>Furthermore, exoskeletons—wearable bionic suits—are being tested to help paralyzed individuals walk again. These suits use complex algorithms and motors to support the body and move the legs. Beyond medical applications, exoskeletons are being used in factories to give workers superhuman strength, allowing them to lift heavy objects without straining their backs.</p>
+                    <p>While we may not have cyborg superheroes flying through the skies just yet, the reality of bionic enhancement is here. As these technologies become more integrated and accessible, they will undoubtedly redefine what the human body is capable of achieving.</p>
+                </article>
+
+                <!-- Custom Highlighting Tooltip (Absolute Positioning) -->
+                <div id="highlight-tooltip" class="bg-slate-900 text-white px-3 py-2 rounded-lg shadow-xl flex gap-2 items-center pointer-events-auto">
+                    <span class="text-sm font-semibold whitespace-nowrap">Send to:</span>
+                    <button onclick="sendHighlightToTarget('T')" class="w-6 h-6 rounded-full bg-tide-t hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">T</button>
+                    <button onclick="sendHighlightToTarget('I')" class="w-6 h-6 rounded-full bg-tide-i hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">I</button>
+                    <button onclick="sendHighlightToTarget('D')" class="w-6 h-6 rounded-full bg-tide-d hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">D</button>
+                    <button onclick="sendHighlightToTarget('E')" class="w-6 h-6 rounded-full bg-tide-e hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">E</button>
+                    <div class="w-px h-4 bg-slate-600 mx-1"></div>
+                    <!-- Cancel Button -->
+                    <button onclick="cancelHighlight()" class="text-xs hover:text-red-400 font-medium transition-colors">Cancel</button>
+                </div>
             </div>
-        </div>
+        </section>
+
+        <section class="bg-white bg-panel rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden h-full relative">
+            
+            <!-- Progress Tracker Header -->
+            <header class="bg-slate-50 dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-bold text-lg text-slate-800 dark:text-slate-100" id="stage-title">POWeR Cycle</h2>
+                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full" id="stage-badge">Stage 1</span>
+                </div>
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" id="progress-bar" style="width: 10%"></div>
+                </div>
+            </header>
+
+            <!-- Dynamic Workspace Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1" id="workspace-content">
+                <!-- Content injected via JS -->
+            </div>
+
+            <!-- Workspace Footer (Navigation) -->
+            <footer class="bg-slate-50 dark:bg-slate-800 p-4 border-t border-slate-200 dark:border-slate-700 shrink-0 flex justify-between items-center">
+                <button onclick="prevStage()" id="btn-prev" class="px-5 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors hidden">
+                    &larr; Back
+                </button>
+                <div class="flex-1"></div> <!-- Spacer -->
+                <button onclick="nextStage()" id="btn-next" class="px-6 py-2 rounded-xl font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/30 transition-all hover:-translate-y-0.5">
+                    Continue &rarr;
+                </button>
+            </footer>
+            
+            <!-- Coach Alex Sprite -->
+            <div id="coach-sprite" class="absolute bottom-20 right-6 w-24 h-24 pointer-events-none transition-transform duration-300 transform origin-bottom z-10">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#3B82F6"/>
+                    <circle cx="50" cy="50" r="40" fill="#DBEAFE"/>
+                    <circle cx="35" cy="40" r="5" fill="#1E40AF"/>
+                    <circle cx="65" cy="40" r="5" fill="#1E40AF"/>
+                    <path d="M 35 65 Q 50 80 65 65" stroke="#1E40AF" stroke-width="4" stroke-linecap="round" fill="transparent"/>
+                    <!-- Robot Antenna -->
+                    <rect x="48" y="5" width="4" height="15" fill="#9CA3AF"/>
+                    <circle cx="50" cy="5" r="4" fill="#EF4444"/>
+                </svg>
+                <div id="coach-bubble" class="absolute -top-16 -left-32 w-48 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm p-3 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 transition-opacity duration-300">
+                    You got this!
+                </div>
+            </div>
+        </section>
     </main>
 
-    <div id="coach-container" class="fixed bottom-4 right-4 md:bottom-8 md:right-8 flex items-end gap-3 z-50 pointer-events-none">
-        <div id="coach-bubble" class="bg-white text-slate-800 p-3 rounded-2xl rounded-br-none shadow-xl border border-slate-200 text-xs sm:text-sm font-medium max-w-[250px] transform transition-all duration-300 origin-bottom-right opacity-0 scale-50">
-            Welcome to the Academy! Let's write.
-        </div>
-        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-indigo-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center pointer-events-auto cursor-help overflow-hidden relative" onclick="triggerCoachHint()">
-            <!-- Simple CSS Robot Face -->
-            <div class="absolute inset-0 bg-gradient-to-b from-indigo-500 to-indigo-700"></div>
-            <div class="relative w-full h-full flex flex-col items-center justify-center mt-2">
-                <div class="flex gap-2 mb-1">
-                    <div class="w-3 h-4 bg-white rounded-full animate-pulse"></div>
-                    <div class="w-3 h-4 bg-white rounded-full animate-pulse"></div>
-                </div>
-                <div class="w-6 h-1 bg-white rounded-full mt-1 opacity-50"></div>
-            </div>
-            <div class="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full text-white text-[10px] flex items-center justify-center font-bold border-2 border-white hidden" id="coach-badge">!</div>
-        </div>
-    </div>
-
-    
-    <!-- Standard Alert Modal -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4">
-        <div id="modal-box" class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-200 text-center text-slate-800">
-            <div id="modal-icon" class="text-4xl mb-4">⭐</div>
-            <h3 id="modal-title" class="text-xl font-black mb-2">Title</h3>
-            <p id="modal-body" class="text-sm text-slate-600 mb-6">Message goes here.</p>
-            <button id="modal-btn" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl btn-juice">Continue</button>
-        </div>
-    </div>
-
-    <!-- The Shop (Idea 17) -->
-    <div id="shop-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-2xl w-full shadow-2xl text-white">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black text-amber-400"><i class="fas fa-store"></i> Academy Shop</h3>
-                <button onclick="closeShop()" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <p class="text-sm text-slate-400 mb-4">Spend your hard-earned XP to customize your workspace!</p>
-            
-            <div class="grid sm:grid-cols-2 gap-4">
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-fuchsia-400">Cyberpunk Theme</h4>
-                        <p class="text-xs text-slate-400 mt-1">Dark mode, neon pink accents.</p>
-                    </div>
-                    <button onclick="buyItem('theme-cyberpunk', 300)" class="mt-4 bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-bold w-full text-left flex justify-between">
-                        <span>Buy</span> <span class="text-amber-400">300 XP</span>
-                    </button>
-                </div>
-                <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
-                    <div>
-                        <h4 class="font-bold text-cyan-400">Bionic Labs Theme</h4>
-                        <p class="text-xs text-slate-400 mt-1">Deep ocean blues, tech styling.</p>
-                    </div>
-                    <button onclick="buyItem('theme-bionic', 500)" class="mt-4 bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg text-sm font-bold w-full text-left flex justify-between">
-                        <span>Buy</span> <span class="text-amber-400">500 XP</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Writing Rope Modal -->
-    <div id="rope-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-lg w-full shadow-2xl text-white">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-2xl font-black text-brand-400"><i class="fas fa-info-circle"></i> The Writing Rope</h3>
-                <button onclick="closeRopeModal()" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+    <div id="rope-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-slate-900 border border-slate-700 text-slate-200 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    The Writing Rope Guide
+                </h3>
+                <button onclick="toggleModal('rope-modal')" class="text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
-            <p class="text-sm text-slate-400 mb-6">Writing is a complex skill woven from 5 distinct strands. Complete stages to weave your rope!</p>
-            
-            <div class="flex flex-col items-center mb-6 bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <span class="text-[10px] font-mono text-slate-400 mb-2 uppercase tracking-widest">Your Mastery Progress</span>
-                <svg width="300" height="20" viewBox="0 0 300 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path class="rope-path" d="M0 10 Q 25 0, 50 10 T 100 10 T 150 10 T 200 10 T 250 10 T 300 10" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-                    <path class="rope-path" d="M0 10 Q 25 20, 50 10 T 100 10 T 150 10 T 200 10 T 250 10 T 300 10" stroke="#475569" stroke-width="4" stroke-linecap="round"/>
-                </svg>
+            <div class="p-6 overflow-y-auto custom-scrollbar">
+                <p class="text-slate-300 mb-6">Mastering writing is like weaving a strong rope. It takes many different strands of skill working together to create a powerful final piece.</p>
+                <div class="grid gap-4">
+                    <div class="p-4 rounded-xl border border-red-900/50 bg-red-950/20">
+                        <strong class="text-red-400 text-lg block mb-1">1. Critical Thinking</strong>
+                        <p class="text-sm">Gathering ideas, understanding the prompt, and planning your response.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-blue-900/50 bg-blue-950/20">
+                        <strong class="text-blue-400 text-lg block mb-1">2. Syntax</strong>
+                        <p class="text-sm">Building strong, clear, and varied sentences.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-green-900/50 bg-green-950/20">
+                        <strong class="text-green-400 text-lg block mb-1">3. Text Structure</strong>
+                        <p class="text-sm">Organizing your writing using the TIDE-L format and transitions.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-purple-900/50 bg-purple-950/20">
+                        <strong class="text-purple-400 text-lg block mb-1">4. Writing Craft</strong>
+                        <p class="text-sm">Choosing the perfect vocabulary and adjusting your tone.</p>
+                    </div>
+                    <div class="p-4 rounded-xl border border-amber-900/50 bg-amber-950/20">
+                        <strong class="text-amber-400 text-lg block mb-1">5. Transcription</strong>
+                        <p class="text-sm">The physical act of typing, spelling, and punctuating correctly (CUPS).</p>
+                    </div>
+                </div>
             </div>
-            
-            <ul class="text-sm space-y-3 text-slate-300">
-                <li class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-brand-400 border border-slate-700"><i class="fas fa-brain"></i></div> 1. Critical Thinking (POWeR)</li>
-                <li class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-brand-400 border border-slate-700"><i class="fas fa-link"></i></div> 2. Syntax (Grammar & Transitions)</li>
-                <li class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-brand-400 border border-slate-700"><i class="fas fa-sitemap"></i></div> 3. Text Structure (TIDE-L)</li>
-                <li class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-brand-400 border border-slate-700"><i class="fas fa-pen-nib"></i></div> 4. Writing Craft (Vocabulary)</li>
-                <li class="flex items-center gap-3"><div class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-brand-400 border border-slate-700"><i class="fas fa-spell-check"></i></div> 5. Transcription (Spelling)</li>
-            </ul>
-            <button onclick="closeRopeModal()" class="mt-6 w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 rounded-xl btn-juice">Return to Lesson</button>
         </div>
     </div>
 
-    <!-- Falling Words Game Container (Idea 20) -->
-    <div id="minigame-container" class="fixed inset-0 bg-slate-900 z-[90] hidden flex flex-col overflow-hidden">
-        <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
-            <div>
-                <h3 class="font-bold">Mini-Game: Transition Sorter</h3>
-                <p class="text-xs text-slate-400">Catch the falling transitions!</p>
+    <!-- Shop Modal -->
+    <div id="shop-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-slate-100 dark:bg-slate-800 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                    Bionic Upgrade Shop
+                </h3>
+                <div class="flex items-center gap-4">
+                    <span class="font-bold text-yellow-500" id="shop-xp-display">0 XP</span>
+                    <button onclick="toggleModal('shop-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
             </div>
-            <div class="text-xl font-mono text-amber-400" id="mg-score">Score: 0</div>
-        </div>
-        <div id="mg-play-area" class="flex-grow relative overflow-hidden bg-slate-900">
-            <!-- Words fall here -->
-        </div>
-        <div class="p-6 bg-slate-800 flex gap-4 justify-center">
-            <button onmousedown="catchWord('internal')" class="flex-1 py-6 bg-blue-600 hover:bg-blue-500 rounded-xl text-white font-bold text-xl btn-juice shadow-[0_6px_0_#1e3a8a] active:shadow-none active:translate-y-[6px]">INTERNAL</button>
-            <button onmousedown="catchWord('external')" class="flex-1 py-6 bg-purple-600 hover:bg-purple-500 rounded-xl text-white font-bold text-xl btn-juice shadow-[0_6px_0_#581c87] active:shadow-none active:translate-y-[6px]">EXTERNAL</button>
+            <div class="p-6 grid grid-cols-2 gap-4">
+                <!-- Theme Items -->
+                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
+                    <div class="w-full h-24 rounded-lg mb-3 bg-[#0f172a] border-2 border-[#38bdf8] flex items-center justify-center text-[#38bdf8] font-mono text-sm">CYBERPUNK</div>
+                    <h4 class="font-bold mb-2">Cyberpunk Theme</h4>
+                    <button onclick="buyTheme('cyberpunk', 100)" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors text-sm">
+                        Buy (100 XP)
+                    </button>
+                </div>
+                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
+                    <div class="w-full h-24 rounded-lg mb-3 bg-[#1a2e1a] border-2 border-[#4ade80] flex items-center justify-center text-[#4ade80] font-mono text-sm">BIONIC LABS</div>
+                    <h4 class="font-bold mb-2">Bionic Labs Theme</h4>
+                    <button onclick="buyTheme('bionic', 200)" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors text-sm">
+                        Buy (200 XP)
+                    </button>
+                </div>
+                <div class="col-span-2 mt-4 text-center">
+                    <button onclick="setTheme('default')" class="text-sm text-slate-500 hover:text-slate-800 dark:hover:text-white underline">Revert to Default Theme</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Data Models
-        const TEXT_PASSAGE = [
-            "For decades, superhero stories have featured characters with incredible artificial abilities—cyborg limbs that can crush steel, eyes that zoom in like telescopes, and neural implants that interface directly with computers. Today, what was once strictly science fiction is rapidly becoming medical reality. Engineers, surgeons, and neuroscientists are developing advanced <span class='vocab text-brand-600 font-bold border-b-2 border-brand-400 border-dashed cursor-help' data-word='bionic'>bionic</span> technologies that do far more than replace lost limbs; they restore human capability and independence in ways never before thought possible.",
-            
-            "One major breakthrough is in modern <span class='vocab text-brand-600 font-bold border-b-2 border-brand-400 border-dashed cursor-help' data-word='prosthetic'>prosthetic</span> limbs. Traditional prosthetics were rigid and passive, offering limited mobility. Modern bionic arms and legs utilize advanced microprocessors and sensors that read muscle electrical signals from the user's remaining limb. For example, amputees equipped with robotic legs can now walk up stairs smoothly, adjust their stride on uneven terrain, and even run marathons. These devices allow individuals with severe limb injuries to return to active daily living and meaningful employment.",
-            
-            "Even more revolutionary are <span class='vocab text-brand-600 font-bold border-b-2 border-brand-400 border-dashed cursor-help' data-word='neural interface'>neural interfaces</span>. By implanting tiny micro-electrode arrays directly into the brain or peripheral nerves, researchers can connect a human mind directly to a mechanical limb. When a patient thinks about opening their hand, the neural signal is decoded by an algorithm that instantly moves the robotic fingers. Remarkably, some systems now send sensory signals back to the brain, allowing users to 'feel' touch, temperature, and pressure through their bionic fingertips.",
-            
-            "Bionic advancements extend beyond arms and legs. Bionic visual implants, or artificial eyes, are giving sight back to individuals suffering from degenerative retinal diseases. Lightweight motorized <span class='vocab text-brand-600 font-bold border-b-2 border-brand-400 border-dashed cursor-help' data-word='exoskeletons'>exoskeletons</span> wrap around the legs of paralyzed patients, allowing individuals who haven't walked in years to stand upright and step forward under their own power. As these technologies continue to develop, they not only heal injury—they expand what it truly means to be human."
-        ];
-
-        const VOCAB_DB = {
-            'bionic': { def: 'Artificial electronic or mechanical devices that enhance biological body parts.', options: ['Natural organic growth', 'Artificial electronic or mechanical devices', 'A type of metal alloy', 'Ancient medical tools'], answer: 1 },
-            'prosthetic': { def: 'An artificial body part designed to replace a missing one.', options: ['A robotic pet', 'A tool for surgery', 'An artificial body part', 'A type of medicine'], answer: 2 },
-            'neural interface': { def: 'A direct communication pathway between a wired brain and an external device.', options: ['A computer keyboard', 'A direct communication pathway between brain and device', 'A type of artificial muscle', 'A wireless internet router'], answer: 1 },
-            'exoskeletons': { def: 'An external wearable framework that provides support and power.', options: ['An external wearable framework', 'A skeleton of a bug', 'A type of wheelchair', 'A heavy metal suit'], answer: 0 }
+        // --- State Management ---
+        const GameState = {
+            stage: 1,
+            xp: parseInt(localStorage.getItem('rw_xp')) || 0,
+            theme: localStorage.getItem('rw_theme') || 'default',
+            data: JSON.parse(localStorage.getItem('rw_data')) || {
+                gist: { who: '', didWhat: '', whenWhere: '', why: '' },
+                prompt: { do: [], what: [] },
+                tidel: { t: '', i1: '', d1: '', i2: '', d2: '', e: '', l: '' }
+            }
         };
 
         const STAGES = [
-            { id: 0, title: "Foreword", icon: "fa-book" },
-            { id: 1, title: "Plan: GIST", icon: "fa-brain" },
-            { id: 2, title: "Plan: Prompt", icon: "fa-list" },
-            { id: 3, title: "Organize: TIDE-L", icon: "fa-sitemap" },
-            { id: 4, title: "Write: Draft & Quotes", icon: "fa-pen" },
-            { id: 5, title: "Edit & Revise", icon: "fa-check-double" },
-            { id: 6, title: "Final Draft", icon: "fa-print" }
+            { id: 1, name: "Plan: GIST", badge: "P1", render: renderGist },
+            { id: 2, name: "Plan: Pull Apart Prompt", badge: "P2", render: renderPromptPull },
+            { id: 3, name: "Organize: TIDE-L", badge: "O", render: renderTidel },
+            { id: 4, name: "Write: MLA Quote Sandwich", badge: "W", render: renderQuoteSandwich },
+            { id: 5, name: "Edit: CUPS & Transitions", badge: "E", render: renderEditing },
+            { id: 6, name: "Revise & Final Draft", badge: "R", render: renderFinalDraft }
         ];
 
-        // Idea 21: Auto-Save State Management
-        let appState = {
-            currentStage: 0,
-            xp: 0,
-            streak: 0,
-            theme: 'default',
-            inventory: [],
-            gistFails: 0, // Idea 24: Adaptive Scaffolding
-            data: {
-                gist: { who: '', did: '', where: '', why: '' },
-                prompt: { do: [], what: [] },
-                tide: {
-                    t: "Bionic technologies are rapidly transforming human lives by restoring physical mobility, sensory perception, and independence.",
-                    i1: "", d1: "",
-                    i2: "", d2: "",
-                    e: "In conclusion, bionic innovations go far beyond healing injury—they expand human potential and unlock an empowered future.",
-                    vocab: []
-                },
-                draft: { internal: "", external: "", quote: "" }
-            },
-            unlockedVocab: []
-        };
-
-        let ttsActive = false;
-        let selectedTextMemory = "";
-        let targetWorkspaceInputId = null;
-
-        // Initialization
+        // --- Core Initialization ---
         window.onload = () => {
-            loadState();
-            renderLeftPane();
-            renderTracker();
-            loadStage(appState.currentStage);
-            applyTheme(appState.theme);
-            updateUI();
+            updateXP(0); // Initialize display
+            setTheme(GameState.theme);
+            loadStage(GameState.stage);
+            setupHighlighting();
             
-            // Sentence Highlighting Setup
-            document.addEventListener('selectionchange', handleTextSelection);
+            // Global click listener to close highlight tooltip
+            document.addEventListener('mousedown', (e) => {
+                const tooltip = document.getElementById('highlight-tooltip');
+                const readerText = document.getElementById('reader-text');
+                // If tooltip is active, and click is outside tooltip and outside reader text
+                if (tooltip.style.display === 'flex') {
+                    if (!tooltip.contains(e.target) && !readerText.contains(e.target)) {
+                        cancelHighlight();
+                    }
+                }
+            });
         };
 
-        function saveState() {
-            localStorage.setItem('rw_bionic_state', JSON.stringify(appState));
+        // --- Navigation & Core UI ---
+        function loadStage(stageIndex) {
+            GameState.stage = stageIndex;
+            const stageDef = STAGES[stageIndex - 1];
+            
+            // Update Headers
+            document.getElementById('stage-title').innerText = stageDef.name;
+            document.getElementById('stage-badge').innerText = stageDef.badge;
+            
+            // Update Progress Bar
+            const progress = (stageIndex / STAGES.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Update Buttons
+            document.getElementById('btn-prev').classList.toggle('hidden', stageIndex === 1);
+            document.getElementById('btn-next').innerText = stageIndex === STAGES.length ? "Finish & Export" : "Continue →";
+            
+            // Render Content with animation
+            const workspace = document.getElementById('workspace-content');
+            workspace.classList.remove('fade-in');
+            void workspace.offsetWidth; // trigger reflow
+            
+            workspace.innerHTML = stageDef.render();
+            workspace.classList.add('fade-in');
+            
+            // Post-render attachments (event listeners for dynamic content)
+            if (stageIndex === 2) setupDragAndDrop();
+            
+            saveData();
+            showCoachMessage(`Welcome to Stage ${stageIndex}! You can do this.`);
         }
 
-        function loadState() {
-            const saved = localStorage.getItem('rw_bionic_state');
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    // Merge to ensure missing keys don't break updates
-                    appState = { ...appState, ...parsed };
-                } catch(e) { console.error("Save corrupted, using default"); }
-            }
-        }
-
-        function addXP(amount) {
-            let finalAmount = amount;
-            appState.streak++;
-            if (appState.streak >= 3) {
-                finalAmount = Math.floor(amount * 1.5); // Idea 18: Multiplier
-                document.body.classList.add('flow-state');
-                document.getElementById('streak-badge').classList.remove('hidden');
-                sayCoach(`Flow State! ${appState.streak} in a row. +${finalAmount} XP!`);
+        function nextStage() {
+            // Save data from current stage inputs before moving
+            saveCurrentStageInputs();
+            if (GameState.stage < STAGES.length) {
+                addXP(50);
+                loadStage(GameState.stage + 1);
             } else {
-                document.body.classList.remove('flow-state');
-                document.getElementById('streak-badge').classList.add('hidden');
-                sayCoach(`Nice job! +${finalAmount} XP.`);
+                exportDocument();
             }
-            appState.xp += finalAmount;
-            updateUI();
-            saveState();
         }
 
-        function breakStreak() {
-            appState.streak = 0;
-            document.body.classList.remove('flow-state');
-            document.getElementById('streak-badge').classList.add('hidden');
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('ui-xp').innerText = `${appState.xp} XP`;
-            updateRope();
-        }
-
-        function renderLeftPane() {
-            const container = document.getElementById('passage-content');
-            let html = `<h1 class="text-2xl font-black mb-1">Are Bionic Superhumans on the Horizon?</h1>
-                        <p class="text-xs text-slate-500 font-sans mb-4">By Science & Innovation Desk</p>`;
-            
-            TEXT_PASSAGE.forEach((p, index) => {
-                // Break into sentences for extraction (Idea 2)
-                const sentences = p.split('. ').map(s => s.trim()).filter(s => s.length > 0);
-                const pHTML = sentences.map(s => {
-                    let text = s + (s.endsWith('.') ? '' : '.');
-                    // Re-inject vocab spans properly (naive approach for prototype)
-                    text = text.replace(/bionic/g, `<span class='vocab text-brand-600 font-bold border-b-2 border-brand-400 border-dashed cursor-help' data-word='bionic'>bionic</span>`);
-                    return `<span class="extractable-sentence" onclick="selectSentence(this)">${text}</span> `;
-                }).join('');
-                
-                html += `<div class="mb-4 text-justify"><span class="text-xs font-sans font-bold text-slate-400 mr-2">P${index+1}</span>${pHTML}</div>`;
-            });
-            container.innerHTML = html;
-
-            // Setup Vocab Clicks (Idea 6)
-            document.querySelectorAll('.vocab').forEach(el => {
-                el.onclick = (e) => {
-                    e.stopPropagation(); // prevent sentence selection
-                    openVocabChallenge(el.dataset.word);
-                };
-            });
-        }
-
-        // Idea 2: True Interactive Highlighting
-        function selectSentence(el) {
-            document.querySelectorAll('.extractable-sentence').forEach(s => s.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedTextMemory = el.innerText;
-            
-            const tip = document.getElementById('highlighter-tip');
-            tip.classList.remove('hidden');
-            setTimeout(() => { tip.classList.remove('translate-y-10', 'opacity-0'); }, 50);
-        }
-
-        function handleTextSelection() {
-            const selection = window.getSelection();
-            if (selection.toString().length > 10 && document.getElementById('left-pane-container').contains(selection.anchorNode)) {
-                selectedTextMemory = selection.toString();
-                const tip = document.getElementById('highlighter-tip');
-                tip.classList.remove('hidden');
-                setTimeout(() => { tip.classList.remove('translate-y-10', 'opacity-0'); }, 50);
+        function prevStage() {
+            saveCurrentStageInputs();
+            if (GameState.stage > 1) {
+                loadStage(GameState.stage - 1);
             }
+        }
+
+        function saveCurrentStageInputs() {
+            // Dynamically grab inputs based on active IDs
+            const safeVal = (id) => document.getElementById(id) ? document.getElementById(id).value : null;
+            
+            if (GameState.stage === 1) {
+                GameState.data.gist.who = safeVal('gist-who') || GameState.data.gist.who;
+                GameState.data.gist.didWhat = safeVal('gist-what') || GameState.data.gist.didWhat;
+                GameState.data.gist.whenWhere = safeVal('gist-where') || GameState.data.gist.whenWhere;
+                GameState.data.gist.why = safeVal('gist-why') || GameState.data.gist.why;
+            } else if (GameState.stage === 3) {
+                ['t', 'i1', 'd1', 'i2', 'd2', 'e', 'l'].forEach(key => {
+                    GameState.data.tidel[key] = safeVal(`tide-${key}`) || GameState.data.tidel[key];
+                });
+            }
+            saveData();
+        }
+
+        function saveData() {
+            localStorage.setItem('rw_data', JSON.stringify(GameState.data));
+            localStorage.setItem('rw_xp', GameState.xp);
+            localStorage.setItem('rw_theme', GameState.theme);
+        }
+
+        // --- Mechanics: XP & Themes ---
+        function updateXP(amount) {
+            GameState.xp += amount;
+            const disp = document.getElementById('xp-display');
+            disp.innerText = `${GameState.xp} XP`;
+            document.getElementById('shop-xp-display').innerText = `${GameState.xp} XP`;
+            
+            if (amount > 0) {
+                disp.parentElement.classList.add('animate-pulse-fast');
+                setTimeout(() => disp.parentElement.classList.remove('animate-pulse-fast'), 1000);
+            }
+            saveData();
+        }
+        function addXP(amount) { updateXP(amount); }
+
+        function buyTheme(themeName, cost) {
+            if (GameState.xp >= cost) {
+                updateXP(-cost);
+                setTheme(themeName);
+                showCoachMessage(`Awesome! ${themeName.toUpperCase()} theme unlocked!`);
+            } else {
+                alert("Not enough XP! Keep working to earn more.");
+            }
+        }
+
+        function setTheme(themeName) {
+            GameState.theme = themeName;
+            document.body.className = `h-screen w-full flex flex-col overflow-hidden transition-colors duration-500`;
+            if (themeName !== 'default') {
+                document.body.classList.add(`theme-${themeName}`);
+                document.body.classList.add('dark'); // Force dark mode for special themes
+            } else {
+                document.body.classList.add('bg-slate-50', 'text-slate-900');
+            }
+            saveData();
+        }
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('hidden');
+        }
+
+        function showCoachMessage(msg) {
+            const bubble = document.getElementById('coach-bubble');
+            bubble.innerText = msg;
+            bubble.classList.remove('opacity-0');
+            setTimeout(() => bubble.classList.add('opacity-0'), 4000);
+        }
+
+        // --- Mechanics: Highlighting Tool ---
+        let activeSelectedText = "";
+        
+        function setupHighlighting() {
+            const reader = document.getElementById('reader-text');
+            reader.addEventListener('mouseup', handleHighlightSelection);
+            // Touch support for mobile highlighting
+            reader.addEventListener('touchend', handleHighlightSelection);
+        }
+
+        function handleHighlightSelection(e) {
+            // Small delay to let the browser register the selection
+            setTimeout(() => {
+                const selection = window.getSelection();
+                const text = selection.toString().trim();
+                const tooltip = document.getElementById('highlight-tooltip');
+
+                if (text.length > 5) {
+                    activeSelectedText = text;
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    
+                    // Position tooltip directly above the selection, relative to viewport
+                    // But we need to account for scroll position of the container if it's absolute
+                    // The easiest robust way is fixed positioning based on client bounding rect.
+                    tooltip.style.position = 'fixed';
+                    tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+                    tooltip.style.top = `${rect.top - 10}px`; 
+                    tooltip.style.display = 'flex';
+                } else {
+                    tooltip.style.display = 'none';
+                }
+            }, 10);
         }
 
         function cancelHighlight() {
-            selectedTextMemory = "";
-            const tip = document.getElementById('highlighter-tip');
-            tip.classList.add('translate-y-10', 'opacity-0');
-            setTimeout(() => tip.classList.add('hidden'), 300);
-            document.querySelectorAll('.extractable-sentence').forEach(s => s.classList.remove('selected'));
+            document.getElementById('highlight-tooltip').style.display = 'none';
             window.getSelection().removeAllRanges();
+            activeSelectedText = "";
         }
 
-        function sendHighlightToWorkspace() {
-            if (!selectedTextMemory) return;
+        function sendHighlightToTarget(targetLetter) {
+            if (!activeSelectedText) return;
             
-            // Try to find the first empty 'I' (Information) box in TIDE if stage 3
-            if (appState.currentStage === 3) {
-                if (!appState.data.tide.i1) {
-                    appState.data.tide.i1 = selectedTextMemory;
-                    document.getElementById('tide-i1').value = selectedTextMemory;
-                    sayCoach("Great evidence selected for Idea 1!");
-                } else if (!appState.data.tide.i2) {
-                    appState.data.tide.i2 = selectedTextMemory;
-                    document.getElementById('tide-i2').value = selectedTextMemory;
-                    sayCoach("Idea 2 locked in!");
+            // If they are on Stage 3 (TIDE), send it directly to the box
+            if (GameState.stage === 3) {
+                // Find first empty Information or Detail box if specific letter isn't targeted
+                let targetId = '';
+                if (targetLetter === 'T') targetId = 'tide-t';
+                else if (targetLetter === 'I') targetId = document.getElementById('tide-i1').value === '' ? 'tide-i1' : 'tide-i2';
+                else if (targetLetter === 'D') targetId = document.getElementById('tide-d1').value === '' ? 'tide-d1' : 'tide-d2';
+                else if (targetLetter === 'E') targetId = 'tide-e';
+
+                const el = document.getElementById(targetId);
+                if (el) {
+                    el.value += (el.value ? ' ' : '') + `"${activeSelectedText}"`;
+                    addXP(10);
+                    showCoachMessage("Great evidence collected!");
                 } else {
-                    sayCoach("Your Idea boxes are full! Edit them manually.");
+                    showCoachMessage("Go to Stage 3 (Organize) to place this!");
                 }
             } else {
-                sayCoach(`You highlighted: "${selectedTextMemory.substring(0,20)}..." We will use this in the Organizer!`);
+                showCoachMessage("Save this evidence for Stage 3: Organize!");
             }
             
-            // Hide tip
-            const tip = document.getElementById('highlighter-tip');
-            tip.classList.add('translate-y-10', 'opacity-0');
-            setTimeout(() => tip.classList.add('hidden'), 300);
-            document.querySelectorAll('.extractable-sentence').forEach(s => s.classList.remove('selected'));
-            window.getSelection().removeAllRanges();
+            cancelHighlight();
         }
 
-
-        function renderTracker() {
-            const container = document.getElementById('stage-tracker');
-            container.innerHTML = STAGES.map((s, i) => {
-                let status = "bg-slate-800 text-slate-500 border-slate-700"; // locked
-                if (i === appState.currentStage) status = "bg-brand-600 text-white font-bold border-brand-500 active-stage-ring"; // active
-                else if (i < appState.currentStage) status = "bg-brand-900 text-brand-300 border-brand-700 cursor-pointer hover:bg-brand-800"; // done
-                
-                return `<div onclick="if(${i} <= appState.currentStage) loadStage(${i})" class="${status} px-3 py-1.5 rounded-lg border flex items-center gap-2 whitespace-nowrap transition">
-                            <i class="fas ${s.icon}"></i> <span>${s.title}</span>
-                        </div>`;
-            }).join('');
+        // --- Mechanics: Text Utilities ---
+        function adjustFontSize(delta) {
+            const article = document.getElementById('reader-text');
+            const currentSize = parseFloat(window.getComputedStyle(article, null).getPropertyValue('font-size'));
+            article.style.fontSize = `${currentSize + delta * 2}px`;
         }
 
-        function loadStage(stageIndex) {
-            appState.currentStage = stageIndex;
-            saveState();
-            renderTracker();
-            const content = document.getElementById('workspace-content');
-            
-            switch(stageIndex) {
-                case 0: content.innerHTML = renderStage0(); sayCoach("Welcome! Let's learn about the Writing Rope."); break;
-                case 1: content.innerHTML = renderStage1(); sayCoach("Day 1: Pre-read for the GIST. What is this text about?"); break;
-                case 2: content.innerHTML = renderStage2(); sayCoach("Pull apart the prompt! What do we DO and WHAT is the topic?"); break;
-                case 3: content.innerHTML = renderStage3(); checkExemplar(); break;
-                case 4: content.innerHTML = renderStage4(); sayCoach("Time to draft! Use transitions and the MLA Quote Sandwich."); break;
-                case 5: content.innerHTML = renderStage5(); sayCoach("Almost done! CUPS editing and ARMS revising."); break;
-                case 6: content.innerHTML = renderStage6(); sayCoach("Masterpiece complete! Ready to print."); break;
-            }
-        }
-
-        function completeStage(expectedIndex) {
-            if (appState.currentStage === expectedIndex && appState.currentStage < STAGES.length - 1) {
-                appState.currentStage++;
-                saveState();
-                
-                // Idea 20: Mini-game trigger between stage 3 and 4
-                if (appState.currentStage === 4) {
-                    showModal("TIDE-L Complete!", "Before we write the draft, let's warm up your brain with a Transition Word mini-game!", () => {
-                        startFallingMinigame();
-                    });
-                } else {
-                    addXP(100);
-                    loadStage(appState.currentStage);
-                }
-            }
-        }
-
-        function renderStage0() {
-            return `
-                <div class="text-center mb-8 animate-fade-in">
-                    <h2 class="text-3xl font-black text-slate-800 mb-2">The Writing Rope</h2>
-                    <p class="text-slate-600">Writing is a complex skill woven from 5 distinct strands.</p>
-                </div>
-                <div class="grid gap-4 sm:grid-cols-2 mb-8">
-                    ${['Critical Thinking (POWeR)', 'Syntax (Grammar/Transitions)', 'Text Structure (TIDE-L)', 'Writing Craft (Vocab)', 'Transcription (Spelling)'].map((t,i) => `
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                            <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-brand-600">${i+1}</div>
-                            <span class="font-bold text-slate-700">${t}</span>
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="bg-brand-50 border border-brand-200 p-6 rounded-2xl text-center">
-                    <h3 class="font-bold text-brand-800 mb-4">Start with Positive Self-Talk!</h3>
-                    <button onclick="completeStage(0)" class="bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg btn-juice text-lg">
-                        "I can master the POWeR cycle!" <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
-                </div>
-            `;
-        }
-
-        function renderStage1() {
-            // Idea 24: Adaptive Scaffolding. Reduce options if they fail a lot.
-            const isStruggling = appState.gistFails >= 2;
-            
-            return `
-                <div class="mb-6">
-                    <span class="text-brand-600 font-bold text-sm tracking-widest uppercase">Plan • P1</span>
-                    <h2 class="text-2xl font-black text-slate-800 mb-2">Pre-Read for the GIST</h2>
-                    <p class="text-slate-600">Read the article on the left, then build a 1-sentence summary.</p>
-                </div>
-                
-                <div class="space-y-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">WHO is the text about?</label>
-                        <select id="g-who" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:border-brand-500">
-                            <option value="">-- Select --</option>
-                            <option value="Engineers and doctors">Engineers and doctors</option>
-                            ${!isStruggling ? '<option value="Comic book authors">Comic book authors</option>' : ''}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">DID WHAT?</label>
-                        <select id="g-did" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:border-brand-500">
-                            <option value="">-- Select --</option>
-                            ${!isStruggling ? '<option value="filmed sci-fi movies">filmed sci-fi movies</option>' : ''}
-                            <option value="are developing bionic tech">are developing bionic tech</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">WHERE / WHEN?</label>
-                        <select id="g-where" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:border-brand-500">
-                            <option value="">-- Select --</option>
-                            <option value="in modern medicine today">in modern medicine today</option>
-                            ${!isStruggling ? '<option value="in the distant future">in the distant future</option>' : ''}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block font-bold text-slate-700 mb-1">WHY / WHAT HAPPENED?</label>
-                        <select id="g-why" class="w-full p-3 bg-slate-50 border border-slate-300 rounded-lg outline-none focus:border-brand-500">
-                            <option value="">-- Select --</option>
-                            <option value="to restore capability and independence">to restore capability and independence</option>
-                            ${!isStruggling ? '<option value="to win a war">to win a war</option>' : ''}
-                        </select>
-                    </div>
-                </div>
-                
-                <button onclick="checkGist()" class="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-md btn-juice">
-                    Verify GIST Formula
-                </button>
-            `;
-        }
-
-        function checkGist() {
-            const w = document.getElementById('g-who').value;
-            const d = document.getElementById('g-did').value;
-            const wh = document.getElementById('g-where').value;
-            const y = document.getElementById('g-why').value;
-            
-            if(!w || !d || !wh || !y) return showModal("Hold up!", "Please select all 4 parts of the GIST.");
-            
-            if(w.includes('Engineers') && d.includes('developing') && wh.includes('today') && y.includes('restore')) {
-                appState.data.gist = { who: w, did: d, where: wh, why: y };
-                showModal("GIST Complete!", `Awesome! Your summary:\n\n"${w} ${d} ${wh} ${y}."`, () => completeStage(1));
-            } else {
-                appState.gistFails++;
-                breakStreak();
-                if(appState.gistFails >= 2) {
-                    showModal("Let me help!", "I removed the tricky options. Read paragraph 1 closely again!", () => loadStage(1));
-                } else {
-                    showModal("Not quite!", "Check your answers against the text.");
-                }
-            }
-        }
-
-
-        function renderStage2() {
-            return `
-                <div class="mb-6">
-                    <span class="text-brand-600 font-bold text-sm tracking-widest uppercase">Plan • P2</span>
-                    <h2 class="text-2xl font-black text-slate-800 mb-2">Pull Apart the Prompt</h2>
-                    <div class="bg-slate-800 text-white p-4 rounded-xl mt-4 font-serif text-sm">
-                        "New technologies are being invented... <span class="text-amber-400 font-bold underline">Explain</span> <span class="text-brand-300 underline">ways bionic technologies can improve people's lives.</span> <span class="text-amber-400 font-bold underline">Use</span> <span class="text-brand-300 underline">text evidence to support ideas.</span>"
-                    </div>
-                </div>
-
-                <p class="text-sm font-bold text-slate-600 mb-2">Click a tile, then click its destination bucket:</p>
-                
-                <div class="flex gap-2 mb-6 flex-wrap" id="prompt-bank">
-                    <button onclick="selectTile(this, 'DO')" class="prompt-tile bg-white border border-slate-300 shadow-sm px-3 py-1.5 rounded-lg text-sm font-bold">Explain</button>
-                    <button onclick="selectTile(this, 'WHAT')" class="prompt-tile bg-white border border-slate-300 shadow-sm px-3 py-1.5 rounded-lg text-sm font-bold">ways bionic tech improves lives</button>
-                    <button onclick="selectTile(this, 'DO')" class="prompt-tile bg-white border border-slate-300 shadow-sm px-3 py-1.5 rounded-lg text-sm font-bold">Use</button>
-                    <button onclick="selectTile(this, 'WHAT')" class="prompt-tile bg-white border border-slate-300 shadow-sm px-3 py-1.5 rounded-lg text-sm font-bold">text evidence</button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div id="bucket-do" onclick="dropTile('DO')" class="bg-blue-50 border-2 border-dashed border-blue-300 rounded-xl p-4 min-h-[120px] cursor-pointer hover:bg-blue-100 transition">
-                        <h4 class="font-black text-blue-800 mb-2">DO (Verbs)</h4>
-                        <div class="bucket-content flex flex-col gap-2"></div>
-                    </div>
-                    <div id="bucket-what" onclick="dropTile('WHAT')" class="bg-purple-50 border-2 border-dashed border-purple-300 rounded-xl p-4 min-h-[120px] cursor-pointer hover:bg-purple-100 transition">
-                        <h4 class="font-black text-purple-800 mb-2">WHAT (Topic)</h4>
-                        <div class="bucket-content flex flex-col gap-2"></div>
-                    </div>
-                </div>
-                
-                <button onclick="checkPrompt()" class="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-md btn-juice">
-                    Confirm Prompt Plan
-                </button>
-            `;
-        }
-
-        let activeTile = null;
-        function selectTile(btn, correctType) {
-            if(activeTile) activeTile.btn.classList.remove('ring-4', 'ring-brand-400');
-            activeTile = { btn, type: correctType };
-            btn.classList.add('ring-4', 'ring-brand-400');
-        }
-        function dropTile(bucketType) {
-            if(!activeTile) return;
-            if(activeTile.type !== bucketType) {
-                breakStreak();
-                sayCoach("Oops! Look closely: is it an Action word (DO) or the Topic (WHAT)?");
-                activeTile.btn.classList.remove('ring-4', 'ring-brand-400');
-                activeTile = null;
-                return;
-            }
-            
-            // Move it
-            activeTile.btn.classList.remove('ring-4', 'ring-brand-400');
-            let clone = activeTile.btn.cloneNode(true);
-            clone.removeAttribute('onclick');
-            clone.className = bucketType === 'DO' ? 'bg-blue-600 text-white px-2 py-1 rounded text-xs' : 'bg-purple-600 text-white px-2 py-1 rounded text-xs';
-            
-            const bucket = document.querySelector(bucketType === 'DO' ? '#bucket-do .bucket-content' : '#bucket-what .bucket-content');
-            bucket.appendChild(clone);
-            activeTile.btn.remove();
-            activeTile = null;
-            addXP(10); // mini reward
-        }
-        function checkPrompt() {
-            const bank = document.getElementById('prompt-bank');
-            if(bank.children.length > 0) return showModal("Not Done!", "Sort all tiles into the buckets first.");
-            showModal("Perfect Plan!", "You know exactly what the prompt is asking.", () => completeStage(2));
-        }
-
-        function checkExemplar() {
-            // Idea 8: Evaluate Bad Example before doing own work
-            if (!localStorage.getItem('rw_exemplar_done')) {
-                showModal("Wait! Be the Teacher.", 
-                "Look at this fictional student's Detail (D) sentence:\n\n'Prosthetics help people walk.'\n\nIs this a strong, analytical detail?", 
-                () => {
-                    localStorage.setItem('rw_exemplar_done', 'true');
-                    sayCoach("A good Detail connects the evidence back to the prompt (improving lives). Let's write strong details!");
-                });
-            } else {
-                sayCoach("Time to organize! Highlight text on the left, then click 'Send to Workspace' to fill Ideas.");
-            }
-        }
-
-        function renderStage3() {
-            // T(Green), I(Yellow), D(Orange), E(Pink) classes defined in Tailwind config/classes
-            return `
-                <div class="mb-4">
-                    <span class="text-brand-600 font-bold text-sm tracking-widest uppercase">Organize • TIDE-L</span>
-                    <h2 class="text-2xl font-black text-slate-800">Graphic Organizer</h2>
-                </div>
-
-                <div class="space-y-4 text-sm">
-                    <!-- TOPIC -->
-                    <div class="bg-tide-t border-l-4 border-tideborder-t p-4 rounded shadow-sm">
-                        <label class="font-black text-green-900 block mb-1">T - Topic Sentence</label>
-                        <textarea class="w-full p-2 rounded bg-white/70 border border-green-200" readonly>${appState.data.tide.t}</textarea>
-                    </div>
-
-                    <!-- IDEA 1 & DETAIL 1 -->
-                    <div class="bg-tide-i border-l-4 border-tideborder-i p-4 rounded shadow-sm">
-                        <label class="font-black text-yellow-900 flex justify-between">
-                            <span>I - Idea (Evidence 1)</span>
-                            <span class="text-xs font-normal opacity-70">Highlight passage -> Send here</span>
-                        </label>
-                        <textarea id="tide-i1" class="w-full p-2 mt-1 rounded bg-white/70 border border-yellow-200 min-h-[60px]" placeholder="Extract evidence from text...">${appState.data.tide.i1}</textarea>
-                    </div>
-                    <div class="bg-tide-d border-l-4 border-tideborder-d p-4 rounded shadow-sm ml-4">
-                        <label class="font-black text-orange-900 mb-1 block">D - Detail (Analysis)</label>
-                        <!-- Idea 3: Scaffolded Prompts -->
-                        <div class="flex gap-2 mb-2 overflow-x-auto pb-1">
-                            <button onclick="insertStarter('tide-d1', 'This proves that ')" class="text-[10px] bg-orange-200 hover:bg-orange-300 text-orange-900 px-2 py-1 rounded whitespace-nowrap">This proves that...</button>
-                            <button onclick="insertStarter('tide-d1', 'As a result, ')" class="text-[10px] bg-orange-200 hover:bg-orange-300 text-orange-900 px-2 py-1 rounded whitespace-nowrap">As a result...</button>
-                        </div>
-                        <textarea id="tide-d1" class="w-full p-2 rounded bg-white/70 border border-orange-200 min-h-[60px]" placeholder="Explain why this evidence matters...">${appState.data.tide.d1}</textarea>
-                    </div>
-
-                    <!-- IDEA 2 & DETAIL 2 -->
-                    <div class="bg-tide-i border-l-4 border-tideborder-i p-4 rounded shadow-sm">
-                        <label class="font-black text-yellow-900">I - Idea (Evidence 2)</label>
-                        <textarea id="tide-i2" class="w-full p-2 mt-1 rounded bg-white/70 border border-yellow-200 min-h-[60px]" placeholder="Extract evidence from text...">${appState.data.tide.i2}</textarea>
-                    </div>
-                    <div class="bg-tide-d border-l-4 border-tideborder-d p-4 rounded shadow-sm ml-4">
-                        <label class="font-black text-orange-900 mb-1 block">D - Detail (Analysis)</label>
-                        <div class="flex gap-2 mb-2">
-                            <button onclick="insertStarter('tide-d2', 'This is significant because ')" class="text-[10px] bg-orange-200 hover:bg-orange-300 text-orange-900 px-2 py-1 rounded">This is significant because...</button>
-                        </div>
-                        <textarea id="tide-d2" class="w-full p-2 rounded bg-white/70 border border-orange-200 min-h-[60px]">${appState.data.tide.d2}</textarea>
-                    </div>
-
-                    <!-- ENDING -->
-                    <div class="bg-tide-e border-l-4 border-tideborder-e p-4 rounded shadow-sm">
-                        <label class="font-black text-pink-900 block mb-1">E - Ending</label>
-                        <textarea class="w-full p-2 rounded bg-white/70 border border-pink-200" readonly>${appState.data.tide.e}</textarea>
-                    </div>
-                    
-                    <!-- L - LANGUAGE BOX -->
-                    <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded shadow-sm">
-                        <label class="font-black text-blue-900 block mb-2">L - Language Box</label>
-                        <p class="text-xs text-blue-700 mb-2">Click dashed vocabulary words in the text to unlock them here!</p>
-                        <div class="flex gap-2 flex-wrap" id="language-box">
-                            ${appState.unlockedVocab.length === 0 ? '<span class="text-xs italic opacity-50">No words unlocked yet.</span>' : ''}
-                            ${appState.unlockedVocab.map(v => `<span class="bg-blue-600 text-white px-2 py-1 rounded text-xs font-bold">${v}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="checkTide()" class="mt-6 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-md btn-juice">
-                    Lock Organizer
-                </button>
-            `;
-        }
-
-        function insertStarter(id, text) {
-            const el = document.getElementById(id);
-            if (!el.value.includes(text)) {
-                el.value = text + el.value;
-            }
-        }
-
-        function checkTide() {
-            const i1 = document.getElementById('tide-i1').value;
-            const d1 = document.getElementById('tide-d1').value;
-            const i2 = document.getElementById('tide-i2').value;
-            const d2 = document.getElementById('tide-d2').value;
-
-            if(!i1 || !d1 || !i2 || !d2) return showModal("Missing Info", "Please fill out both Ideas and Details.");
-            
-            // Idea 10: The "So What?" Coach Prompt
-            if (d1.split(' ').length < 5 || d2.split(' ').length < 5) {
-                sayCoach("So what? Why does this matter for the bionic user? Your details are too short. Dig deeper!");
-                return;
-            }
-
-            appState.data.tide.i1 = i1; appState.data.tide.d1 = d1;
-            appState.data.tide.i2 = i2; appState.data.tide.d2 = d2;
-            
-            showModal("Great Organization!", "Your TIDE-L framework is rock solid.", () => completeStage(3));
-        }
-
-        function openVocabChallenge(word) {
-            if (appState.unlockedVocab.includes(word)) return sayCoach("You already unlocked this word!");
-            
-            const data = VOCAB_DB[word];
-            let html = `<div class="space-y-3 mt-4">`;
-            data.options.forEach((opt, idx) => {
-                html += `<button onclick="submitVocab('${word}', ${idx}, ${data.answer})" class="w-full text-left p-3 rounded bg-slate-100 hover:bg-slate-200 border border-slate-300 transition text-sm">${opt}</button>`;
-            });
-            html += `</div>`;
-            
-            showModal(`Unlock: ${word.toUpperCase()}`, `Use context clues from the text to find the definition:${html}`);
-        }
-
-        function submitVocab(word, selected, correct) {
-            if (selected === correct) {
-                appState.unlockedVocab.push(word);
-                addXP(50);
-                closeModal();
-                if(appState.currentStage === 3) loadStage(3); // refresh L box
-                sayCoach(`Unlocked "${word}"! Add it to your writing.`);
-            } else {
-                breakStreak();
-                closeModal();
-                showModal("Not Quite", "Look at how the word is used in the sentence again.");
-            }
-        }
-
-        // Transition Mini-Game
-        let mgInterval, mgScore = 0;
-        const mgWords = [
-            {w: 'Specifically', type: 'internal'}, {w: 'Furthermore', type: 'internal'}, {w: 'For instance', type: 'internal'},
-            {w: 'In addition to this technology', type: 'external'}, {w: 'Beyond physical mobility', type: 'external'}
-        ];
-        let currentMgWord = null;
-
-        function startFallingMinigame() {
-            document.getElementById('minigame-container').classList.remove('hidden');
-            mgScore = 0;
-            document.getElementById('mg-score').innerText = `Score: ${mgScore}`;
-            spawnWord();
-        }
-
-        function spawnWord() {
-            if(mgScore >= 3) {
-                endMinigame(true);
-                return;
-            }
-            const wordObj = mgWords[Math.floor(Math.random() * mgWords.length)];
-            currentMgWord = wordObj;
-            
-            const el = document.createElement('div');
-            el.className = 'falling-word';
-            el.innerText = wordObj.w;
-            el.style.left = Math.random() * 60 + 20 + '%';
-            document.getElementById('mg-play-area').appendChild(el);
-            
-            let pos = -50;
-            mgInterval = setInterval(() => {
-                pos += 2;
-                el.style.top = pos + 'px';
-                if(pos > window.innerHeight) {
-                    clearInterval(mgInterval);
-                    el.remove();
-                    endMinigame(false);
-                }
-            }, 30);
-        }
-
-        function catchWord(btnType) {
-            if(!currentMgWord) return;
-            if(currentMgWord.type === btnType) {
-                mgScore++;
-                document.getElementById('mg-score').innerText = `Score: ${mgScore}`;
-                clearInterval(mgInterval);
-                document.querySelector('.falling-word').remove();
-                addXP(20);
-                setTimeout(spawnWord, 500);
-            } else {
-                endMinigame(false);
-            }
-        }
-
-        function endMinigame(win) {
-            clearInterval(mgInterval);
-            document.getElementById('mg-play-area').innerHTML = '';
-            document.getElementById('minigame-container').classList.add('hidden');
-            if(win) {
-                showModal("Mini-Game Beaten!", "You are a transition master! Let's write the draft.", () => { addXP(100); loadStage(4); });
-            } else {
-                showModal("Oops!", "Internal = inside paragraph. External = connecting different topics. Let's move on to drafting.", () => { loadStage(4); });
-            }
-        }
-
-
-        function renderStage4() {
-            return `
-                <div class="mb-6">
-                    <span class="text-brand-600 font-bold text-sm tracking-widest uppercase">Write • W</span>
-                    <h2 class="text-2xl font-black text-slate-800">Draft & Cite</h2>
-                </div>
-
-                <!-- Idea 5: Trim the Fat -->
-                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 mb-6">
-                    <h3 class="font-bold text-indigo-900 mb-2"><i class="fas fa-cut"></i> "Trim the Fat" Evidence Mini-Game</h3>
-                    <p class="text-xs text-indigo-700 mb-4">Quotes shouldn't be too long. Click the words you want to KEEP. We will add ellipses (...) to the rest.</p>
-                    
-                    <div id="trim-box" class="bg-white p-3 rounded border border-indigo-100 text-sm leading-loose">
-                        ${"Modern bionic arms and legs utilize advanced microprocessors and sensors that read muscle electrical signals from the user's remaining limb.".split(' ').map((w,i) => `<span class="trim-word cursor-pointer px-1 rounded hover:bg-indigo-100 transition" onclick="this.classList.toggle('bg-indigo-300'); this.classList.toggle('font-bold')">${w}</span>`).join(' ')}
-                    </div>
-                    <button onclick="processTrim()" class="mt-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded shadow">Trim Quote</button>
-                </div>
-
-                <!-- Idea 14: Visual Sandwich Graphic -->
-                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm mb-6">
-                    <h3 class="font-bold text-slate-800 mb-4">Assemble MLA Quote Sandwich</h3>
-                    
-                    <div class="flex flex-col gap-2 font-mono text-xs">
-                        <div class="flex items-center gap-3">
-                            <div class="w-16 h-4 bg-amber-200 rounded-t-full border-2 border-amber-400"></div>
-                            <select id="sw-top" class="flex-grow p-2 border rounded bg-slate-50">
-                                <option value="">Top Bun: Select Signal Phrase...</option>
-                                <option value="According to the authors, ">According to the authors, </option>
-                                <option value="The text states that ">The text states that </option>
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-16 h-3 bg-red-400 rounded-sm border-2 border-red-600"></div>
-                            <input id="sw-meat" type="text" class="flex-grow p-2 border rounded bg-slate-50" readonly placeholder="Trim quote above to add meat...">
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-16 h-4 bg-amber-200 rounded-b-full border-2 border-amber-400"></div>
-                            <select id="sw-bot" class="flex-grow p-2 border rounded bg-slate-50">
-                                <option value="">Bottom Bun: Select MLA Citation...</option>
-                                <option value=" (Paragraph 2)."> (Paragraph 2).</option>
-                                <option value=" (Science Desk)."> (Science Desk).</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="checkDraft()" class="mt-2 w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 rounded-xl shadow-md btn-juice">
-                    Generate Rough Draft
-                </button>
-            `;
-        }
-
-        function processTrim() {
-            const words = document.querySelectorAll('.trim-word');
-            let result = "";
-            let keeping = false;
-            let startEllipsis = false;
-            let endEllipsis = false;
-
-            words.forEach((w, i) => {
-                if (w.classList.contains('bg-indigo-300')) {
-                    result += w.innerText + " ";
-                    keeping = true;
-                } else {
-                    if (keeping) endEllipsis = true;
-                    if (!keeping && i === 0) startEllipsis = true;
-                }
-            });
-
-            if (!keeping) return sayCoach("Click on some words to keep!");
-            
-            let finalQuote = `"${startEllipsis ? '...' : ''}${result.trim()}${endEllipsis ? '...' : ''}"`;
-            document.getElementById('sw-meat').value = finalQuote;
-            appState.data.draft.quote = finalQuote;
-            addXP(25);
-            sayCoach("Nice trimming! Now finish the sandwich.");
-        }
-
-        function checkDraft() {
-            const top = document.getElementById('sw-top').value;
-            const meat = document.getElementById('sw-meat').value;
-            const bot = document.getElementById('sw-bot').value;
-
-            if(!top || !meat || !bot) return showModal("Incomplete", "Finish the Quote Sandwich first!");
-            
-            appState.data.draft.sandwich = top + meat + bot;
-            showModal("Draft Assembled!", "Your organizer and quotes have been merged into a paragraph.", () => completeStage(4));
-        }
-
-        function generateFullParagraph() {
-            const t = appState.data.tide;
-            const d = appState.data.draft;
-            // Map the colors (Idea 4) into the final text via span classes
-            return `
-                <span class="bg-tide-t px-1 rounded transition-colors" id="fp-t">${t.t}</span> 
-                <span class="bg-tide-i px-1 rounded transition-colors" id="fp-i1">${t.i1}</span> 
-                <span class="bg-tide-d px-1 rounded transition-colors" id="fp-d1">${t.d1}</span> 
-                <span class="bg-indigo-100 px-1 rounded transition-colors" id="fp-q">${d.sandwich || "[Direct Quote]"}</span> 
-                <span class="bg-tide-i px-1 rounded transition-colors" id="fp-i2">${t.i2}</span> 
-                <span class="bg-tide-d px-1 rounded transition-colors" id="fp-d2">${t.d2}</span> 
-                <span class="bg-tide-e px-1 rounded transition-colors" id="fp-e">${t.e}</span>
-            `;
-        }
-
-        function renderStage5() {
-            return `
-                <div class="mb-6">
-                    <span class="text-brand-600 font-bold text-sm tracking-widest uppercase">Edit/Revise • E & R</span>
-                    <h2 class="text-2xl font-black text-slate-800">CUPS & ARMS</h2>
-                </div>
-
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-lg mb-6 leading-loose text-slate-800">
-                    ${generateFullParagraph()}
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-4 mb-6 text-sm">
-                    <div class="bg-blue-50 border border-blue-200 p-4 rounded-xl">
-                        <h4 class="font-bold text-blue-900 mb-2">CUPS Checklist</h4>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Capitalization</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Usage (Grammar)</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Punctuation</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Spelling</label>
-                    </div>
-                    <div class="bg-purple-50 border border-purple-200 p-4 rounded-xl">
-                        <h4 class="font-bold text-purple-900 mb-2">ARMS Revision</h4>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Added vocab?</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Removed junk?</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Moved transitions?</label>
-                        <label class="flex items-center gap-2 mb-1 cursor-pointer"><input type="checkbox" onchange="checkEdit()"> Substituted weak words?</label>
-                    </div>
-                </div>
-
-                <button id="btn-finish" onclick="completeStage(5)" class="w-full bg-slate-400 text-white font-bold py-4 rounded-xl shadow-md cursor-not-allowed transition" disabled>
-                    Finish Writing Process
-                </button>
-            `;
-        }
-
-        function checkEdit() {
-            const boxes = document.querySelectorAll('input[type="checkbox"]');
-            let allChecked = true;
-            boxes.forEach(b => { if(!b.checked) allChecked = false; });
-            
-            const btn = document.getElementById('btn-finish');
-            if (allChecked) {
-                btn.disabled = false;
-                btn.classList.remove('bg-slate-400', 'cursor-not-allowed');
-                btn.classList.add('bg-brand-600', 'hover:bg-brand-500', 'btn-juice');
-                sayCoach("Perfect! Your paragraph is polished and ready.");
-            }
-        }
-
-        function renderStage6() {
-            // Idea 15: Finish the rope animation
-            document.querySelectorAll('.rope-path').forEach(p => p.classList.add('drawn'));
-            
-            return `
-                <div class="text-center mb-8">
-                    <div class="w-20 h-20 bg-amber-400 rounded-full flex items-center justify-center text-4xl text-white mx-auto mb-4 shadow-lg ring-8 ring-amber-100">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                    <h2 class="text-3xl font-black text-slate-800">Master Writer!</h2>
-                    <p class="text-slate-600 mt-2">You successfully applied the POWeR cycle.</p>
-                </div>
-
-                <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-xl mb-6 font-serif text-slate-900 leading-loose" id="final-document">
-                    <div class="font-sans text-xs text-slate-500 mb-6 text-right">Student Name<br>Red Apple Middle School<br>ELA / Bionic Tech</div>
-                    ${generateFullParagraph().replace(/bg-tide-[a-z0-9]+|bg-indigo-100/g, '') /* Strip colors for final print */}
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button onclick="exportDoc()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow-md btn-juice">
-                        <i class="fas fa-file-word mr-2"></i> Export to Docs
-                    </button>
-                    <button onclick="printCheatSheet()" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-6 rounded-xl shadow-md btn-juice">
-                        <i class="fas fa-print mr-2"></i> Print Cheat Sheet
-                    </button>
-                </div>
-                <button onclick="resetApp()" class="mt-4 w-full text-slate-500 text-sm hover:underline">Start Over</button>
-            `;
-        }
-
-        function exportDoc() {
-            // Simulated export by triggering a print view formatted like a doc
-            window.print();
-            sayCoach("Save as PDF or Print to hand in!");
-        }
-
-        function printCheatSheet() {
-            // Idea 25: Generate a custom cheat sheet popup
-            const win = window.open('', '_blank');
-            win.document.write(`
-                <html><head><title>POWeR Cheat Sheet</title><style>body{font-family:sans-serif; padding:40px; line-height:1.6;}</style></head>
-                <body>
-                    <h1>My Writing Strategy Cheat Sheet</h1>
-                    <h2>POWeR Cycle</h2>
-                    <ul><li><b>P</b>lan: GIST and pull apart prompt</li><li><b>O</b>rganize: TIDE-L</li><li><b>W</b>rite: Draft with quotes</li><li><b>E</b>dit: CUPS</li><li><b>R</b>evise: ARMS</li></ul>
-                    <h2>TIDE-L Organizer</h2>
-                    <p><b>T:</b> Topic Sentence<br><b>I:</b> Idea (Evidence)<br><b>D:</b> Detail (Analysis/Connection)<br><b>E:</b> Ending<br><b>L:</b> Language Box (Vocab)</p>
-                    <hr>
-                    <p><i>"I can master the POWeR cycle!"</i></p>
-                    <script>window.print();<\/script>
-                </body></html>
-            `);
-            win.document.close();
-        }
-
-        function resetApp() {
-            localStorage.removeItem('rw_bionic_state');
-            localStorage.removeItem('rw_exemplar_done');
-            location.reload();
-        }
-
-        
-        // Idea 23: Text to Speech
-        function toggleTTS() {
-            if (ttsActive) {
-                speechSynthesis.cancel();
-                ttsActive = false;
-                document.getElementById('tts-btn').classList.remove('text-brand-600', 'bg-brand-100');
-            } else {
-                const text = TEXT_PASSAGE.join(" ");
-                const cleanText = text.replace(/<[^>]*>?/gm, ''); // strip HTML
-                const utterance = new SpeechSynthesisUtterance(cleanText);
+        function readAloud() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const text = document.getElementById('reader-text').innerText;
+                const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
-                speechSynthesis.speak(utterance);
-                ttsActive = true;
-                document.getElementById('tts-btn').classList.add('text-brand-600', 'bg-brand-100');
-                utterance.onend = () => toggleTTS();
+                window.speechSynthesis.speak(utterance);
+                showCoachMessage("Reading aloud...");
+            } else {
+                alert("Text-to-speech not supported in this browser.");
             }
         }
 
-        // Coach UI
-        function sayCoach(msg) {
-            const bubble = document.getElementById('coach-bubble');
-            bubble.innerText = msg;
-            bubble.classList.remove('opacity-0', 'scale-50');
+
+        // --- STAGE RENDERERS (HTML Generators) ---
+
+        // Stage 1
+        function renderGist() {
+            const d = GameState.data.gist;
+            return `
+                <div class="space-y-6">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Step 1: Pre-Read for the GIST</h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-400">Read the article on the left. Then, break down the core message into 4 simple parts.</p>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Who? (Subject)</label>
+                            <input type="text" id="gist-who" value="${d.who}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Scientists and engineers...">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Did What? (Action)</label>
+                            <input type="text" id="gist-what" value="${d.didWhat}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., are creating bionic technologies...">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">When / Where?</label>
+                                <input type="text" id="gist-where" value="${d.whenWhere}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Today in labs...">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Why / What happened?</label>
+                                <input type="text" id="gist-why" value="${d.why}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., to improve human lives.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Stage 2
+        function renderPromptPull() {
+            return `
+                <div class="space-y-6 h-full flex flex-col">
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Step 2: Pull Apart the Prompt</h3>
+                        <p class="text-sm text-blue-700 dark:text-blue-400">Drag the highlighted words from the prompt into the correct buckets to understand exactly what you need to do.</p>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-300 dark:border-slate-600 shadow-sm">
+                        <p class="font-serif italic text-slate-700 dark:text-slate-300 leading-relaxed">
+                            "New technologies are being invented at a rate never experienced previously. 
+                            <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Explain</span> ways 
+                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">bionic technologies</span> can improve people’s lives. 
+                            <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Use</span> 
+                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">text evidence</span> to support your ideas."
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 flex-1">
+                        <!-- DO Bucket (Verbs) -->
+                        <div class="bg-blue-50/50 dark:bg-slate-700/50 rounded-xl p-4 border-2 border-dashed border-blue-300 dark:border-blue-600 flex flex-col">
+                            <h4 class="font-bold text-center text-blue-700 dark:text-blue-400 mb-4 border-b border-blue-200 pb-2">DO (Verbs)</h4>
+                            <div class="dropzone flex-1 flex flex-col gap-2 min-h-[100px]" data-accept="verb">
+                                <!-- Drops here -->
+                            </div>
+                        </div>
+                        
+                        <!-- WHAT Bucket (Nouns) -->
+                        <div class="bg-purple-50/50 dark:bg-slate-700/50 rounded-xl p-4 border-2 border-dashed border-purple-300 dark:border-purple-600 flex flex-col">
+                            <h4 class="font-bold text-center text-purple-700 dark:text-purple-400 mb-4 border-b border-purple-200 pb-2">WHAT (Nouns)</h4>
+                            <div class="dropzone flex-1 flex flex-col gap-2 min-h-[100px]" data-accept="noun">
+                                <!-- Drops here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Drag and Drop Logic for Stage 2
+        function setupDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropzones = document.querySelectorAll('.dropzone');
             
-            // Bobbing animation
-            const face = document.querySelector('#coach-container .w-16');
-            face.classList.add('-translate-y-2');
-            setTimeout(() => face.classList.remove('-translate-y-2'), 200);
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', () => {
+                    draggable.classList.add('opacity-50');
+                    draggable.setAttribute('data-dragging', 'true');
+                });
+                draggable.addEventListener('dragend', () => {
+                    draggable.classList.remove('opacity-50');
+                    draggable.removeAttribute('data-dragging');
+                });
+            });
 
-            clearTimeout(window.coachTimeout);
-            window.coachTimeout = setTimeout(() => {
-                bubble.classList.add('opacity-0', 'scale-50');
-            }, 5000);
-        }
-
-        function triggerCoachHint() {
-            const hints = [
-                "Remember, POWeR stands for Plan, Organize, Write, Edit, Revise!",
-                "Check your spelling and capitalization during the Editing phase.",
-                "Transitions make your writing flow smoothly like water.",
-                "Always sandwich your quotes: Setup, Quote, Citation!"
-            ];
-            sayCoach(hints[Math.floor(Math.random() * hints.length)]);
-        }
-
-        // Visualizing Rope (Idea 15 helper)
-        function updateRope() {
-            const paths = document.querySelectorAll('.rope-path');
-            const percent = appState.currentStage / (STAGES.length - 1);
-            paths.forEach(p => {
-                const total = 1000;
-                p.style.strokeDashoffset = total - (total * percent);
-                if(percent > 0.8) p.style.stroke = '#22c55e'; // turn green near end
+            dropzones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    zone.classList.add('dragover');
+                });
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('dragover');
+                });
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('dragover');
+                    const draggable = document.querySelector('[data-dragging="true"]');
+                    if (draggable && draggable.dataset.type === zone.dataset.accept) {
+                        zone.appendChild(draggable);
+                        addXP(20);
+                        showCoachMessage("Correct categorization!");
+                    } else if (draggable) {
+                        showCoachMessage("Oops! Does that word describe an Action (Do) or a Thing (What)?");
+                    }
+                });
             });
         }
 
-        // Modals
-        function showModal(title, body, onConfirm = null) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-body').innerText = body;
-            const overlay = document.getElementById('modal-overlay');
-            const box = document.getElementById('modal-box');
-            
-            overlay.classList.remove('hidden');
-            setTimeout(() => box.classList.remove('scale-95'), 10);
-            
-            const btn = document.getElementById('modal-btn');
-            btn.onclick = () => {
-                closeModal();
-                if (onConfirm) onConfirm();
-            };
-        }
-        function closeModal() {
-            document.getElementById('modal-box').classList.add('scale-95');
-            setTimeout(() => document.getElementById('modal-overlay').classList.add('hidden'), 200);
+        // Stage 3
+        function renderTidel() {
+            const d = GameState.data.tidel;
+            return `
+                <div class="space-y-4">
+                    <div class="bg-slate-800 text-white p-4 rounded-xl shadow-lg mb-6 flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-lg text-tide-t">TIDE-L Organizer</h3>
+                            <p class="text-sm text-slate-300">Highlight text in the article and click T, I, or D to pull evidence here!</p>
+                        </div>
+                    </div>
+
+                    <!-- T -->
+                    <div class="border-l-4 border-tide-t pl-4 bg-green-50 dark:bg-green-900/10 p-3 rounded-r-lg">
+                        <label class="block text-sm font-bold text-tide-t mb-1">T: Topic Sentence</label>
+                        <textarea id="tide-t" rows="2" class="w-full p-2 rounded border border-green-200 dark:border-green-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-t">${d.t}</textarea>
+                    </div>
+                    
+                    <!-- I1 & D1 -->
+                    <div class="border-l-4 border-tide-i pl-4 bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-r-lg mt-4">
+                        <label class="block text-sm font-bold text-tide-i mb-1">I: Supporting Idea 1</label>
+                        <textarea id="tide-i1" rows="2" class="w-full p-2 rounded border border-yellow-200 dark:border-yellow-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-i">${d.i1}</textarea>
+                    </div>
+                    <div class="border-l-4 border-tide-d pl-4 bg-orange-50 dark:bg-orange-900/10 p-3 rounded-r-lg">
+                        <label class="block text-sm font-bold text-tide-d mb-1">D: Detail / Analysis ("This matters because...")</label>
+                        <textarea id="tide-d1" rows="2" class="w-full p-2 rounded border border-orange-200 dark:border-orange-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-d">${d.d1}</textarea>
+                    </div>
+
+                    <!-- I2 & D2 -->
+                    <div class="border-l-4 border-tide-i pl-4 bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-r-lg mt-4">
+                        <label class="block text-sm font-bold text-tide-i mb-1">I: Supporting Idea 2</label>
+                        <textarea id="tide-i2" rows="2" class="w-full p-2 rounded border border-yellow-200 dark:border-yellow-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-i">${d.i2}</textarea>
+                    </div>
+                    <div class="border-l-4 border-tide-d pl-4 bg-orange-50 dark:bg-orange-900/10 p-3 rounded-r-lg">
+                        <label class="block text-sm font-bold text-tide-d mb-1">D: Detail / Analysis ("This shows that...")</label>
+                        <textarea id="tide-d2" rows="2" class="w-full p-2 rounded border border-orange-200 dark:border-orange-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-d">${d.d2}</textarea>
+                    </div>
+
+                    <!-- E -->
+                    <div class="border-l-4 border-tide-e pl-4 bg-pink-50 dark:bg-pink-900/10 p-3 rounded-r-lg mt-4">
+                        <label class="block text-sm font-bold text-tide-e mb-1">E: Ending Sentence</label>
+                        <textarea id="tide-e" rows="2" class="w-full p-2 rounded border border-pink-200 dark:border-pink-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-e">${d.e}</textarea>
+                    </div>
+
+                    <!-- L Box -->
+                    <div class="border-2 border-dashed border-slate-400 p-4 rounded-xl mt-6 bg-slate-100 dark:bg-slate-800">
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">L: Language Box (Vocab to include)</label>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">myoelectric</span>
+                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">exoskeleton</span>
+                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">algorithms</span>
+                        </div>
+                        <input type="text" id="tide-l" value="${d.l}" class="w-full p-2 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white outline-none" placeholder="Type the vocab words you plan to use...">
+                    </div>
+                </div>
+            `;
         }
 
-        // Idea 17: Economy & Shop
-        function openShop() { document.getElementById('shop-modal').classList.remove('hidden'); }
-        function closeShop() { document.getElementById('shop-modal').classList.add('hidden'); }
-        
-        function openRopeModal() { document.getElementById('rope-modal').classList.remove('hidden'); updateRope(); }
-        function closeRopeModal() { document.getElementById('rope-modal').classList.add('hidden'); }
-        
-        function buyItem(themeId, cost) {
-            if (appState.inventory.includes(themeId)) {
-                applyTheme(themeId);
-                closeShop();
-                sayCoach("Theme applied!");
-                return;
-            }
-            if (appState.xp >= cost) {
-                appState.xp -= cost;
-                appState.inventory.push(themeId);
-                saveState();
-                updateUI();
-                applyTheme(themeId);
-                closeShop();
-                showModal("Purchase Complete!", "You equipped a new theme.");
-            } else {
-                showModal("Not enough XP", "Keep completing steps correctly to earn more XP!");
-            }
+        // Stage 4
+        function renderQuoteSandwich() {
+            return `
+                <div class="space-y-6 text-slate-800 dark:text-slate-200">
+                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
+                        <h3 class="font-bold text-amber-800 dark:text-amber-400 mb-2">Mini-Game: Trim the Fat (MLA Sandwich)</h3>
+                        <p class="text-sm">Quotes are the meat, but they need bread! Use ellipses (...) to cut out the boring parts of this quote, and add a proper signal phrase and citation.</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-center relative overflow-hidden">
+                        
+                        <!-- Top Bun (Signal Phrase) -->
+                        <div class="mb-4">
+                            <select id="signal-phrase" class="p-2 rounded bg-orange-100 dark:bg-orange-900/50 border border-orange-300 font-bold text-orange-800 dark:text-orange-300 w-2/3">
+                                <option value="">[Select Top Bun / Signal Phrase]</option>
+                                <option value="According to the author, ">According to the author,</option>
+                                <option value="The text states, ">The text states,</option>
+                                <option value="Researchers note that ">Researchers note that</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Meat (The Quote) -->
+                        <div class="bg-red-100 dark:bg-red-900/30 p-4 rounded border-2 border-dashed border-red-300 my-2">
+                            <p class="text-sm text-red-600 mb-2 font-bold uppercase">Original Quote: "These suits use complex algorithms and motors to support the body and move the legs."</p>
+                            <textarea id="trimmed-quote" class="w-full p-2 rounded font-serif italic bg-white dark:bg-slate-900 border border-red-200" rows="2">"These suits use complex algorithms and motors to support the body and move the legs."</textarea>
+                            <p class="text-xs text-slate-500 mt-1">Goal: Trim it to focus just on the algorithms supporting the body. Use ...</p>
+                        </div>
+                        
+                        <!-- Bottom Bun (Citation) -->
+                        <div class="mt-4">
+                            <select id="citation" class="p-2 rounded bg-orange-100 dark:bg-orange-900/50 border border-orange-300 font-bold text-orange-800 dark:text-orange-300 w-1/3">
+                                <option value="">[Select Bottom Bun / Citation]</option>
+                                <option value="(Sedita 4).">(Sedita 4).</option>
+                                <option value="(Author, 4).">(Author, 4).</option>
+                                <option value="(Bionics 4).">("Bionics" 4).</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function applyTheme(themeId) {
-            appState.theme = themeId;
-            document.body.className = 'min-h-screen flex flex-col overflow-hidden font-sans ' + themeId;
-            saveState();
+        // Stage 5
+        function renderEditing() {
+            return `
+                <div class="space-y-6">
+                    <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
+                        <h3 class="font-bold text-purple-800 dark:text-purple-400 mb-2">CUPS: Transition Sorter</h3>
+                        <p class="text-sm text-purple-700 dark:text-purple-400 mb-4">Transitions make sentences flow smoothly. Drag these words into Internal (inside a paragraph) or External (between paragraphs).</p>
+                    </div>
+
+                    <div class="flex gap-2 flex-wrap justify-center mb-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="ext">Furthermore,</span>
+                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="int">specifically</span>
+                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="ext">In conclusion,</span>
+                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="int">such as</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 h-48">
+                        <div class="dropzone rounded-xl border-2 border-dashed border-slate-400 dark:border-slate-600 p-4 flex flex-col gap-2" data-accept="int">
+                            <h4 class="font-bold text-center text-slate-500">Internal Transitions</h4>
+                        </div>
+                        <div class="dropzone rounded-xl border-2 border-dashed border-slate-400 dark:border-slate-600 p-4 flex flex-col gap-2" data-accept="ext">
+                            <h4 class="font-bold text-center text-slate-500">External Transitions</h4>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Stage 6
+        function renderFinalDraft() {
+            const d = GameState.data.tidel;
+            
+            // Construct draft with color-coded spans based on TIDE
+            const draftHTML = `
+                <span class="bg-tide-t/20 dark:bg-tide-t/40 px-1 rounded" title="Topic">${d.t || "[Missing Topic Sentence]"}</span> 
+                <span class="bg-tide-i/20 dark:bg-tide-i/40 px-1 rounded" title="Idea 1">${d.i1 || "[Missing Idea 1]"}</span> 
+                <span class="bg-tide-d/20 dark:bg-tide-d/40 px-1 rounded" title="Detail 1">${d.d1 || "[Missing Detail 1]"}</span> 
+                <span class="bg-tide-i/20 dark:bg-tide-i/40 px-1 rounded" title="Idea 2">${d.i2 || "[Missing Idea 2]"}</span> 
+                <span class="bg-tide-d/20 dark:bg-tide-d/40 px-1 rounded" title="Detail 2">${d.d2 || "[Missing Detail 2]"}</span> 
+                <span class="bg-tide-e/20 dark:bg-tide-e/40 px-1 rounded" title="Ending">${d.e || "[Missing Ending Sentence]"}</span>
+            `;
+
+            return `
+                <div class="space-y-6 h-full flex flex-col">
+                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800 shrink-0">
+                        <h3 class="font-bold text-green-800 dark:text-green-400 mb-2">ARMS: Final Polish</h3>
+                        <p class="text-sm">Add, Remove, Move, Substitute. Review your color-coded paragraph below. Notice any missing colors? Fix it in the final editor!</p>
+                    </div>
+
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner mb-4 leading-relaxed font-serif text-slate-800 dark:text-slate-200">
+                        ${draftHTML}
+                    </div>
+
+                    <div class="flex-1 flex flex-col">
+                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Final Masterpiece Editor (Removes colors for final export)</label>
+                        <textarea id="final-text-output" class="w-full flex-1 p-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 font-serif leading-loose resize-none" placeholder="Make your final edits here...">${d.t} ${d.i1} ${d.d1} ${d.i2} ${d.d2} ${d.e}</textarea>
+                    </div>
+                </div>
+            `;
+        }
+
+        function exportDocument() {
+            const finalDoc = document.getElementById('final-text-output').value;
+            
+            // Create a printable window simulation
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Student Essay Export</title>
+                    <style>
+                        body { font-family: 'Times New Roman', serif; max-width: 800px; margin: 40px auto; line-height: 2; font-size: 12pt; padding: 20px; }
+                        .heading { text-align: left; margin-bottom: 24px; line-height: 1.5; }
+                        h1 { text-align: center; font-size: 12pt; font-weight: normal; margin-bottom: 24px; }
+                        p { text-indent: 0.5in; margin: 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="heading">
+                        Student Name<br>
+                        Teacher Name<br>
+                        English Language Arts<br>
+                        ${new Date().toLocaleDateString()}
+                    </div>
+                    <h1>Are Bionic Superhumans on the Horizon? - Analysis</h1>
+                    <p>${finalDoc.replace(/\n/g, '<br>')}</p>
+                    <script>
+                        window.onload = () => window.print();
+                    <\/script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
         }
 
     </script>
