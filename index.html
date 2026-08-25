@@ -59,6 +59,67 @@
             transform: translate(-50%, -110%);
         }
 
+        /* Vocabulary Tooltips */
+        .vocab-word {
+            border-bottom: 2px dotted #3b82f6;
+            cursor: help;
+            position: relative;
+            color: #2563eb;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .dark .vocab-word {
+            color: #60a5fa;
+            border-bottom-color: #60a5fa;
+        }
+        .vocab-word:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+        }
+        .vocab-tooltip {
+            visibility: hidden;
+            width: 220px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 10px 14px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -110px;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            transform: translateY(5px);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            font-weight: normal;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+        }
+        .vocab-tooltip strong {
+            color: #38bdf8;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .vocab-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #1e293b transparent transparent transparent;
+        }
+        .vocab-word:hover .vocab-tooltip {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Themes */
         body.theme-cyberpunk {
             background-color: #0f172a;
@@ -81,6 +142,17 @@
         .draggable { cursor: grab; }
         .draggable:active { cursor: grabbing; }
         .dropzone.dragover { background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6; border-style: solid; }
+        
+        /* Paragraph Numbers */
+        .para-num {
+            float: left;
+            margin-left: -2rem;
+            color: #94a3b8;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            user-select: none;
+        }
     </style>
 </head>
 
@@ -130,14 +202,52 @@
             </header>
             
             <!-- Reader Content (Scrollable) -->
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 relative" id="reader-container">
+            <div class="p-8 pl-12 overflow-y-auto custom-scrollbar flex-1 relative" id="reader-container">
                 <article id="reader-text" class="text-content text-lg leading-loose font-serif text-slate-800 dark:text-slate-200 space-y-6 max-w-2xl mx-auto">
-                    <h1 class="text-3xl font-bold font-sans mb-6">Are Bionic Superhumans on the Horizon?</h1>
-                    <p>New technologies are being invented at a rate never experienced previously in human history. One of the most fascinating frontiers is the development of bionics—the integration of mechanical and electronic systems with the human body. For decades, prosthetic limbs were simple, passive tools. Today, we are on the verge of creating bionic superhumans.</p>
-                    <p>Bionic technologies can drastically improve people’s lives, particularly for amputees or those with mobility impairments. Modern bionic arms, for example, are not just plastic shells. They contain myoelectric sensors that rest against the user's skin. When the user thinks about moving their hand, their brain sends a signal down their nervous system to their residual muscles. The sensors pick up these tiny electrical twitches and translate them into movement in the robotic hand.</p>
-                    <p>But the advancements do not stop at restoring lost function; they are pushing into the realm of enhancement. Researchers at MIT are developing neural interfaces that connect directly to the human nervous system. This technology could eventually allow bionic limbs to feel temperature and texture, sending sensory feedback directly back to the brain. In some experimental trials, users with bionic legs have reported feeling as though the robotic limb is a natural part of their own body.</p>
-                    <p>Furthermore, exoskeletons—wearable bionic suits—are being tested to help paralyzed individuals walk again. These suits use complex algorithms and motors to support the body and move the legs. Beyond medical applications, exoskeletons are being used in factories to give workers superhuman strength, allowing them to lift heavy objects without straining their backs.</p>
-                    <p>While we may not have cyborg superheroes flying through the skies just yet, the reality of bionic enhancement is here. As these technologies become more integrated and accessible, they will undoubtedly redefine what the human body is capable of achieving.</p>
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold font-sans text-slate-900 dark:text-white">Are Bionic Superhumans on the Horizon?</h1>
+                        <p class="text-slate-500 font-sans mt-2">Informational Text by Ramez Naam</p>
+                    </div>
+
+                    <p><span class="para-num">1</span>We're in the midst of a bionic revolution, yet most of us don't know it.</p>
+                    
+                    <p><span class="para-num">2</span>Around 220,000 people worldwide already walk around with cochlear <span class="vocab-word">implants<span class="vocab-tooltip"><strong>implant</strong> (im-plant) v.<br>To place a device inside the body through surgery.</span></span>—devices worn around the ear that turn sound waves into electrical impulses <span class="vocab-word">shunted<span class="vocab-tooltip"><strong>shunted</strong><br>allowed to flow from one pathway to another through surgery.</span></span> directly into the <span class="vocab-word">auditory<span class="vocab-tooltip"><strong>auditory</strong><br>related to hearing.</span></span> nerve.</p>
+
+                    <p><span class="para-num">3</span>Tens of thousands of people have been <span class="vocab-word">implanted<span class="vocab-tooltip"><strong>implant</strong> (im-plant) v.<br>To place a device inside the body through surgery.</span></span> with deep brain stimulators, devices that send an <span class="vocab-word">electrode<span class="vocab-tooltip"><strong>electrode</strong><br>a material through which electricity flows.</span></span> tunneling several inches in the brain. Deep brain stimulators are used to control <span class="vocab-word">Parkinson's disease<span class="vocab-tooltip"><strong>Parkinson's disease</strong><br>a disease that weakens muscles and causes a person's arms and legs to shake.</span></span>, though lately they've also been tested—with encouraging results—in use against severe depression and obsessive compulsive disorder.</p>
+
+                    <p><span class="para-num">4</span>The most obvious bionics are those that replace limbs. Olympian "Blade Runner" Oscar Pistorius made a splash with his Cheetah carbon fiber <span class="vocab-word">prostheses<span class="vocab-tooltip"><strong>prostheses</strong><br>artificial devices that replace injured or missing body parts.</span></span>. Yet those are a relatively simple technology—a curved piece of slightly springy, super-strong material. In the digital age, we're seeing more sophisticated limbs.</p>
+
+                    <p><span class="para-num">5</span>Consider the thought-controlled bionic leg that Zac Vawter used to climb all 103 floors of Chicago's Willis Tower. Or the nerve-controlled bionic hand that Iraq war veteran Glen Lehman had attached after the loss of his original hand. Or the even more sophisticated i-limb Ultra, an artificial hand with five independently articulating artificial fingers. Those limbs don't just react mechanically to pressure. They actually respond to the thoughts and intentions of their owners, flexing, extending, gripping, and releasing on mental command.</p>
+
+                    <p><span class="para-num">6</span>The age when prostheses were largely <span class="vocab-word">inert<span class="vocab-tooltip"><strong>inert</strong><br>unable to move or act.</span></span> pieces of wood, metal, and plastic is passing. Advances in microprocessors, in techniques to <span class="vocab-word">interface<span class="vocab-tooltip"><strong>interface</strong><br>to connect or interact smoothly.</span></span> digital technology with the human nervous system, and in battery technology to allow prostheses to pack more power with less weight are turning replacement limbs into active parts of the human body.</p>
+
+                    <p><span class="para-num">7</span>In some cases, they're not even part of the body at all. Consider the case of Cathy Hutchinson. In 1997, Cathy had a stroke, leaving her without control of her arms. Hutchinson volunteered for an experimental procedure that could one day help millions of people with partial or complete paralysis. She let researchers implant a small device in the part of her brain responsible for motor control. With that device, she is able to control an external robotic arm by thinking about it.</p>
+
+                    <p><span class="para-num">8</span>That, in turn, brings up an interesting question: If the arm isn't physically attached to her body, how far away could she be and still control it? The answer is at least thousands of miles. In animal studies, scientists have shown that a monkey with a brain implant can control a robot arm 7,000 miles away. The monkey's mental signals were sent over the internet, from Duke University in North Carolina, to the robot arm in Japan. In this day and age, distance is almost irrelevant.</p>
+
+                    <h3 class="text-2xl font-bold font-sans mt-10 mb-4 text-slate-800 dark:text-slate-100">The Superhuman Frontier</h3>
+
+                    <p><span class="para-num">9</span>The 7,000-mile-away prosthetic arm makes an important point: These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before, and <span class="vocab-word">augmenting<span class="vocab-tooltip"><strong>augmenting</strong><br>increasing or adding to.</span></span> other capabilities we have. While the current generation of prostheses is still primitive, we can already see this taking shape when a monkey moves a robotic arm on the other side of the planet just by thinking about it.</p>
+
+                    <p><span class="para-num">10</span>Other research is pointing to enhancements to memory and decision making.</p>
+
+                    <p><span class="para-num">11</span>The hippocampus is a small, seahorse-shaped part of the brain that's essential in forming new memories. If it's damaged by an injury to the head, for example—people start having difficulty forming new long-term memories. In the most extreme cases, this can lead to the complete inability to form new long-term memories, as in the film Memento. Working to find a way to repair this sort of brain damage, researchers in 2011 created a "hippocampus chip" that can replace damaged brain tissue. When they implanted it in rats with a damaged hippocampus, they found that not only could their chip repair damaged memory—it could improve the rats' ability to learn new things.</p>
+
+                    <p><span class="para-num">12</span>Nor is memory the end of it. Another study, in 2012, demonstrated that we can boost intelligence—at least one sort—in monkeys. Scientists at Wake Forest University implanted specialized brain chips in a set of monkeys and trained those monkeys to perform a picture-matching game. When the implant was activated, it raised their scores by an average of 10 points on a 100-point scale. The implant makes monkeys smarter.</p>
+
+                    <h3 class="text-2xl font-bold font-sans mt-10 mb-4 text-slate-800 dark:text-slate-100">From Disabled to Super-capable</h3>
+
+                    <p><span class="para-num">13</span>Both of those technologies for boosting memory and intelligence are in very early stages, in small animal studies only, and years (or possibly decades) away from wide use in humans. Still, they make us wonder—what happens when it's possible to improve on the human body and mind?</p>
+
+                    <p><span class="para-num">14</span>The debate has started already, of course. Oscar Pistorius had to fight hard for inclusion in the Olympics. Many objected that his carbon fiber prostheses gave him a competitive advantage. He was able—with the help of doctors and biomedical engineers—to make a compelling case that his Cheetah blades didn't give him any advantage on the field. But how long will that be true? How long until we have prostheses (not to mention drugs and genetic therapies) that make athletes better in their sports?</p>
+
+                    <p><span class="para-num">15</span>But the issue is much, much wider than professional sports. We may care passionately about the <span class="vocab-word">integrity<span class="vocab-tooltip"><strong>integrity</strong> (in-teg ri-te) n.<br>Following a strict code of ethical conduct.</span></span> of the Olympics or professional cycling or so on, but they only directly affect a very small number of us. In other areas of life—in the workforce in particular—<span class="vocab-word">enhancement<span class="vocab-tooltip"><strong>enhancement</strong> (en-hans ment) n.<br>Something that improves or adds to the quality or function of something.</span></span> technology might affect all of us.</p>
+
+                    <p><span class="para-num">16</span>When it's possible to make humans smarter, sharper, and faster, how will that affect us? Will the effect be mostly positive, boosting our productivity and the rate of human innovation? Or will it be just another pressure to compete at work? Who will be able to afford these technologies? Will anyone be able to have their body, and more importantly, their brain upgraded? Or will only the rich have access to these enhancements?</p>
+
+                    <p><span class="para-num">17</span>We have a little while to consider these questions, but we ought to start. The technology will sneak its way into our lives, starting with people with disabilities, the injured, and the ill. It'll improve their lives in ways that are unquestionably good. And then, one day, we'll wake up and realize that we're doing more than restoring lost function. We're enhancing it.</p>
+
+                    <p><span class="para-num">18</span>Superhuman technology is on the horizon. Time to start thinking about what that means for us.</p>
                 </article>
 
                 <!-- Custom Highlighting Tooltip (Absolute Positioning) -->
@@ -468,8 +578,6 @@
                     const rect = range.getBoundingClientRect();
                     
                     // Position tooltip directly above the selection, relative to viewport
-                    // But we need to account for scroll position of the container if it's absolute
-                    // The easiest robust way is fixed positioning based on client bounding rect.
                     tooltip.style.position = 'fixed';
                     tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
                     tooltip.style.top = `${rect.top - 10}px`; 
@@ -523,7 +631,12 @@
         function readAloud() {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const text = document.getElementById('reader-text').innerText;
+                // Avoid reading tooltips text
+                const textClone = document.getElementById('reader-text').cloneNode(true);
+                const tooltips = textClone.querySelectorAll('.vocab-tooltip');
+                tooltips.forEach(t => t.remove());
+                
+                const text = textClone.innerText;
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.rate = 0.9;
                 window.speechSynthesis.speak(utterance);
@@ -543,7 +656,7 @@
                 <div class="space-y-6">
                     <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
                         <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Step 1: Pre-Read for the GIST</h3>
-                        <p class="text-sm text-blue-700 dark:text-blue-400">Read the article on the left. Then, break down the core message into 4 simple parts.</p>
+                        <p class="text-sm text-blue-700 dark:text-blue-400">Read the article on the left. Hover over the <span class="border-b-2 border-dotted border-blue-500">blue dotted words</span> if you need vocabulary help. Then, break down the core message into 4 simple parts.</p>
                     </div>
                     
                     <div class="space-y-4">
@@ -581,11 +694,11 @@
                     
                     <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-300 dark:border-slate-600 shadow-sm">
                         <p class="font-serif italic text-slate-700 dark:text-slate-300 leading-relaxed">
-                            "New technologies are being invented at a rate never experienced previously. 
+                            "We're in the midst of a bionic revolution." 
                             <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Explain</span> ways 
                             <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">bionic technologies</span> can improve people’s lives. 
                             <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Use</span> 
-                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">text evidence</span> to support your ideas."
+                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">text evidence</span> to support your ideas.
                         </p>
                     </div>
 
@@ -730,18 +843,18 @@
                         
                         <!-- Meat (The Quote) -->
                         <div class="bg-red-100 dark:bg-red-900/30 p-4 rounded border-2 border-dashed border-red-300 my-2">
-                            <p class="text-sm text-red-600 mb-2 font-bold uppercase">Original Quote: "These suits use complex algorithms and motors to support the body and move the legs."</p>
-                            <textarea id="trimmed-quote" class="w-full p-2 rounded font-serif italic bg-white dark:bg-slate-900 border border-red-200" rows="2">"These suits use complex algorithms and motors to support the body and move the legs."</textarea>
-                            <p class="text-xs text-slate-500 mt-1">Goal: Trim it to focus just on the algorithms supporting the body. Use ...</p>
+                            <p class="text-sm text-red-600 mb-2 font-bold uppercase">Original Quote: "These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before..."</p>
+                            <textarea id="trimmed-quote" class="w-full p-2 rounded font-serif italic bg-white dark:bg-slate-900 border border-red-200" rows="2">"These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before..."</textarea>
+                            <p class="text-xs text-slate-500 mt-1">Goal: Trim it to focus just on enhancing our abilities. Use ...</p>
                         </div>
                         
                         <!-- Bottom Bun (Citation) -->
                         <div class="mt-4">
                             <select id="citation" class="p-2 rounded bg-orange-100 dark:bg-orange-900/50 border border-orange-300 font-bold text-orange-800 dark:text-orange-300 w-1/3">
                                 <option value="">[Select Bottom Bun / Citation]</option>
-                                <option value="(Sedita 4).">(Sedita 4).</option>
-                                <option value="(Author, 4).">(Author, 4).</option>
-                                <option value="(Bionics 4).">("Bionics" 4).</option>
+                                <option value="(Naam 21).">(Naam 21).</option>
+                                <option value="(Author, 21).">(Author, 21).</option>
+                                <option value="(Bionics 21).">("Bionics" 21).</option>
                             </select>
                         </div>
                     </div>
