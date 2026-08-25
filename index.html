@@ -312,23 +312,42 @@
                     </div>
                 </div>
 
-                <!-- Mission 2 Card (Locked Example) -->
+                <!-- Mission 2 Card (Heads Up Humans) -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-xl hover:border-bionic-400 dark:hover:border-bionic-500 transition-all cursor-pointer group flex flex-col relative overflow-hidden" onclick="loadMission('heads-up')">
+                    <div class="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                        <img src="https://placehold.co/600x400/0f172a/3b82f6?text=HUMANS" alt="Humans" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+                        <h2 class="text-3xl font-black text-white relative z-10 text-center px-4 drop-shadow-md">MISSION 2:<br>Heads Up, Humans</h2>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col bg-white dark:bg-slate-900">
+                         <div class="flex items-center gap-2 mb-3">
+                            <span class="px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded">Argumentative</span>
+                            <span class="text-xs font-bold text-slate-500 dark:text-slate-400"><i class="fa-solid fa-star text-energy-400"></i> +500 XP</span>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-1 line-clamp-3">Analyze how humans must adapt their skills in the face of rising computer automation.</p>
+                        <button class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white font-bold rounded-xl group-hover:bg-blue-500 group-hover:text-white transition-colors flex justify-center items-center gap-2">
+                            Start Mission <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mission 3 Card (Locked Example) -->
                 <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 flex flex-col relative overflow-hidden opacity-75 grayscale hover:grayscale-0 transition-all cursor-not-allowed">
                     <div class="absolute inset-0 bg-slate-100/50 dark:bg-slate-900/50 backdrop-blur-[2px] z-20 flex items-center justify-center flex-col gap-2">
                         <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 shadow-inner">
                             <i class="fa-solid fa-lock text-xl"></i>
                         </div>
-                        <span class="font-bold text-slate-700 dark:text-slate-300">Complete Mission 1 to Unlock</span>
+                        <span class="font-bold text-slate-700 dark:text-slate-300">Complete Mission 2 to Unlock</span>
                     </div>
                     <div class="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
-                        <h2 class="text-2xl font-black text-white relative z-10 text-center px-4">MISSION 2:<br>Automation Paradox</h2>
+                        <h2 class="text-2xl font-black text-white relative z-10 text-center px-4">MISSION 3:<br>Automation Paradox</h2>
                     </div>
                     <div class="p-6 flex-1 flex flex-col bg-white dark:bg-slate-900">
                          <div class="flex items-center gap-2 mb-3">
                             <span class="px-2.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded">Argumentative</span>
                         </div>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-1">Analyze James Bessen's argument that computer automation will actually increase employment opportunities.</p>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-6 flex-1">Explore James Bessen's argument that technology will actually increase employment.</p>
                         <button class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-400 font-bold rounded-xl cursor-not-allowed">Locked</button>
                     </div>
                 </div>
@@ -421,24 +440,47 @@
 
             <!-- Text Content -->
             <div id="reading-text-container" class="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                
+                <!-- BIONICS TEXT -->
                 <div id="text-bionics" class="mission-text-content block text-passage text-lg leading-relaxed text-slate-800 dark:text-slate-300 space-y-6">
                     <h2 class="text-3xl font-bold font-sans text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">Bionics: The Future of Physical Therapy</h2>
                     
                     <div class="flex gap-4 group">
                         <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-bionic-400 transition-colors">1</div>
-                        <p>Bionics involves using mechanical or electronic devices to replace human body parts. Modern bionic limbs are advanced; they can be shunted directly to the nervous system, allowing patients to control them with their minds. This has revolutionized prostheses and dramatically improved physical therapy outcomes.</p>
+                        <p><span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('Bionics', 'The study of mechanical systems that function like living organisms or parts of living organisms.', this)">Bionics</span> involves using mechanical or electronic devices to replace human body parts. Modern bionic limbs are advanced; they can be <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('shunted', 'Pushed or diverted (an electrical current or signal) onto another path.', this)">shunted</span> directly to the nervous system, allowing patients to control them with their minds. This has revolutionized <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('prostheses', 'Artificial body parts, such as a limb, a heart, or a breast implant.', this)">prostheses</span> and dramatically improved physical therapy outcomes.</p>
                     </div>
                     
                     <div class="flex gap-4 group">
                         <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-bionic-400 transition-colors">2</div>
-                        <p>In the past, physical therapy for amputees often involved learning to use rudimentary, heavy prosthetics that offered limited mobility. Today, patients work with bionic limbs that respond to electrical signals from their own muscles. This connection makes movement feel more natural and intuitive.</p>
+                        <p>In the past, physical therapy for amputees often involved learning to use rudimentary, heavy prosthetics that offered limited mobility. Today, patients work with bionic limbs that respond to electrical signals from their own muscles. This connection makes movement feel more natural and <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('intuitive', 'Using or based on what one feels to be true even without conscious reasoning; instinctive.', this)">intuitive</span>.</p>
                     </div>
 
                     <div class="flex gap-4 group">
                         <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-bionic-400 transition-colors">3</div>
-                        <p>However, the transition isn't entirely seamless. Learning to use a bionic limb still requires rigorous physical therapy to retrain the brain to communicate with the new device. Despite the challenges, the benefits are profound, offering individuals a renewed sense of independence and capability.</p>
+                        <p>However, the transition isn't entirely seamless. Learning to use a bionic limb still requires rigorous physical therapy to retrain the brain to communicate with the new device. Despite the challenges, the benefits are <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('profound', 'Very great or intense; having deep meaning.', this)">profound</span>, offering individuals a renewed sense of independence and capability.</p>
                     </div>
                 </div>
+
+                <!-- HEADS UP HUMANS TEXT -->
+                <div id="text-heads-up" class="mission-text-content hidden text-passage text-lg leading-relaxed text-slate-800 dark:text-slate-300 space-y-6">
+                    <h2 class="text-3xl font-bold font-sans text-slate-900 dark:text-white mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">Heads Up, Humans</h2>
+                    
+                    <div class="flex gap-4 group">
+                        <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-blue-400 transition-colors">1</div>
+                        <p>As computer <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('automation', 'The use of largely automatic equipment in a system of manufacturing or other production process.', this)">automation</span> advances, many fear a <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('dystopian', 'Relating to or denoting an imagined state or society where there is great suffering or injustice.', this)">dystopian</span> future where robots take all our jobs. From self-driving trucks to AI writing assistants, machines are performing tasks that once required human intelligence. However, history shows that while technology eliminates some jobs, it inevitably creates new ones.</p>
+                    </div>
+                    
+                    <div class="flex gap-4 group">
+                        <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-blue-400 transition-colors">2</div>
+                        <p>The real challenge isn't a lack of jobs, but a shift in the <i>types</i> of jobs available. Routine, predictable tasks are easily automated. Therefore, humans must focus on developing skills that machines currently lack, such as complex problem-solving, <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('empathy', 'The ability to understand and share the feelings of another.', this)">empathy</span>, and creative collaboration.</p>
+                    </div>
+
+                    <div class="flex gap-4 group">
+                        <div class="w-8 shrink-0 text-slate-300 dark:text-slate-600 font-sans font-bold text-right select-none pt-1 group-hover:text-blue-400 transition-colors">3</div>
+                        <p>To thrive in this new era, workers need to become lifelong learners. <span class="cursor-pointer border-b-2 border-dashed border-bionic-500 font-bold text-bionic-600 dark:text-bionic-400 hover:bg-bionic-100 dark:hover:bg-bionic-900/30 transition-colors px-0.5 rounded" onclick="unlockVocab('adaptability', 'The quality of being able to adjust to new conditions.', this)">Adaptability</span> is the ultimate human advantage. By embracing new technology rather than fighting it, we can elevate our roles and work alongside our mechanical counterparts.</p>
+                    </div>
+                </div>
+
                 <!-- Highlight Tooltip (Hidden by default) -->
                 <div id="highlight-tooltip" class="hidden absolute bg-slate-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl cursor-pointer hover:bg-bionic-500 transition-colors z-50 transform -translate-x-1/2 -translate-y-full mt-[-8px]">
                     <i class="fa-solid fa-quote-left mr-1"></i> Extract Quote
@@ -501,25 +543,32 @@
                         </div>
                     </div>
                     
+                    <!-- NEW: GIST Graphic Organizer -->
+                    <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2 mb-3"><i class="fa-solid fa-table-columns text-bionic-500 mr-2"></i> GIST Organizer</h4>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">1. Who or What is this text about? (Subject)</label>
+                            <input type="text" id="gist-who" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-slate-200 text-sm focus:outline-none focus:border-bionic-500" placeholder="e.g., Bionic limbs...">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">2. What is the most important idea about the Who/What?</label>
+                            <input type="text" id="gist-idea" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-slate-200 text-sm focus:outline-none focus:border-bionic-500" placeholder="e.g., ...help amputees regain natural movement.">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">3. Write your GIST Sentence (Combine 1 & 2 in 20 words or less)</label>
+                            <textarea id="gist-sentence" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-slate-200 text-sm focus:outline-none focus:border-bionic-500 resize-y" rows="2" placeholder="Write your complete summary sentence here..."></textarea>
+                        </div>
+                    </div>
+
+                    <h4 class="font-bold text-slate-700 dark:text-slate-300 mt-6 mb-2">Check Your Understanding:</h4>
                     <div class="space-y-3" id="gist-options-container">
-                        <!-- Option 1 -->
-                        <label class="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-bionic-400 dark:hover:border-bionic-500 cursor-pointer transition-all shadow-sm">
-                            <input type="radio" name="gist" class="mt-1 w-5 h-5 text-bionic-500 border-slate-300 focus:ring-bionic-500">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Bionic limbs are too expensive for most patients to use in physical therapy.</span>
-                        </label>
-                        <!-- Option 2 (Correct) -->
-                        <label class="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-bionic-400 dark:hover:border-bionic-500 cursor-pointer transition-all shadow-sm">
-                            <input type="radio" name="gist" class="mt-1 w-5 h-5 text-bionic-500 border-slate-300 focus:ring-bionic-500" value="correct">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Bionics use mechanical and electronic devices to restore function and drastically improve physical therapy.</span>
-                        </label>
-                        <!-- Option 3 -->
-                        <label class="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-bionic-400 dark:hover:border-bionic-500 cursor-pointer transition-all shadow-sm">
-                            <input type="radio" name="gist" class="mt-1 w-5 h-5 text-bionic-500 border-slate-300 focus:ring-bionic-500">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Physical therapy is no longer needed because bionic limbs work automatically with the brain.</span>
-                        </label>
+                        <!-- Options injected by JS -->
                     </div>
                     
-                    <button onclick="checkGist()" class="w-full py-4 bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 font-black rounded-xl shadow-lg transition-transform active:scale-[0.98] flex justify-center items-center gap-2">
+                    <button onclick="checkGist()" class="w-full py-4 bg-slate-900 hover:bg-black dark:bg-white dark:hover:bg-slate-200 text-white dark:text-slate-900 font-black rounded-xl shadow-lg transition-transform active:scale-[0.98] flex justify-center items-center gap-2 mt-4">
                         Check Answer & Earn XP <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
@@ -567,7 +616,7 @@
                         <h3 class="font-black text-slate-900 dark:text-white text-lg flex items-center gap-2">
                             <i class="fa-solid fa-list-check text-blue-500"></i> Graphic Organizer
                         </h3>
-                        <p class="text-sm font-bold text-blue-700 dark:text-blue-400 mt-2">Prompt: How do bionics improve the lives of amputees?</p>
+                        <p id="tide-prompt-text" class="text-sm font-bold text-blue-700 dark:text-blue-400 mt-2">Prompt: How do bionics improve the lives of amputees?</p>
                     </div>
 
                     <div class="space-y-4">
@@ -611,30 +660,30 @@
                             <textarea id="tide-e" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-slate-200 text-sm focus:outline-none focus:border-purple-500 resize-y" rows="2" placeholder="Restate your main point in a new way..."></textarea>
                         </div>
                     </div>
+    <!-- TAB: VOCAB -->
+    <div id="tab-vocab" class="tab-content hidden flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 relative z-10 p-6 sm:p-10 flex-col items-center justify-start">
+        <div class="max-w-5xl mx-auto w-full">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8 border-b border-slate-200 dark:border-slate-800 pb-6">
+                <div>
+                    <h1 class="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-3">
+                        <i class="fa-solid fa-book-open text-bionic-500"></i> Vocabulary Builder
+                    </h1>
+                    <p class="text-slate-600 dark:text-slate-400 mt-1">Unlock new academic words from your reading missions by clicking on them.</p>
+                </div>
+            </div>
 
-                    <div class="bg-slate-900 dark:bg-slate-800 p-6 rounded-2xl shadow-xl mt-8">
-                        <h4 class="text-white font-bold mb-4 flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles text-bionic-400"></i> Final Draft Assembly</h4>
-                        <div id="final-draft-preview" class="p-4 bg-white dark:bg-slate-950 rounded-xl text-slate-800 dark:text-slate-200 min-h-[100px] font-serif mb-4 shadow-inner">
-                            <span class="text-slate-400 italic font-sans text-sm">Click the button below to assemble your paragraph...</span>
-                        </div>
-                        <div class="flex gap-4">
-                            <button onclick="assembleDraft()" class="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-colors">Assemble Text</button>
-                            <button onclick="submitMission()" class="flex-1 py-3 bg-bionic-500 hover:bg-bionic-600 text-white font-black rounded-xl shadow-lg shadow-bionic-500/30 transition-transform active:scale-[0.98]">Submit Mission</button>
-                        </div>
-                    </div>
-                 </div>
+            <div id="vocab-empty-state" class="flex flex-col items-center justify-center text-center py-12">
+                <div class="w-24 h-24 bg-slate-200 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
+                    <i class="fa-solid fa-magnifying-glass text-4xl text-slate-400 dark:text-slate-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-300 mb-2">No words unlocked yet</h3>
+                <p class="text-slate-500 dark:text-slate-400 max-w-sm mx-auto">Read texts in your missions and click on highlighted dashed words to reveal their definitions and add them here!</p>
+            </div>
 
+            <div id="vocab-container" class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Vocab cards injected here -->
             </div>
         </div>
-    </div>
-
-    <!-- TAB: VOCAB (Placeholder) -->
-    <div id="tab-vocab" class="tab-content hidden flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-950 relative z-10 p-6 sm:p-10 flex-col items-center justify-center text-center">
-        <div class="w-24 h-24 bg-slate-200 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner mx-auto">
-            <i class="fa-solid fa-book-open text-4xl text-slate-400 dark:text-slate-500"></i>
-        </div>
-        <h2 class="text-3xl font-black text-slate-700 dark:text-slate-300 mb-2">Vocabulary Builder</h2>
-        <p class="text-slate-500 dark:text-slate-400 max-w-md mx-auto">Unlock new academic words from your reading missions to build your writing lexicon. Coming in Stage 2!</p>
     </div>
 
     <!-- TAB: TOOLS (Placeholder) -->
@@ -673,11 +722,36 @@
         let currentAvatarSeed = localStorage.getItem('rw_avatar') || 'Felix';
         let currentAvatarColor = localStorage.getItem('rw_avatar_color') || '2dd4bf';
         let lessonsDrawerOpen = false;
+        
+        let unlockedVocab = JSON.parse(localStorage.getItem('rw_vocab')) || [];
+        let currentMissionId = 'bionics';
+        
+        const missionsData = {
+            'bionics': {
+                title: 'Bionics: The Future of Physical Therapy',
+                prompt: 'How do bionics improve the lives of amputees?',
+                gistOptions: [
+                    { val: 'wrong1', text: 'Bionic limbs are too expensive for most patients to use in physical therapy.' },
+                    { val: 'correct', text: 'Bionics use mechanical and electronic devices to restore function and drastically improve physical therapy.' },
+                    { val: 'wrong2', text: 'Physical therapy is no longer needed because bionic limbs work automatically with the brain.' }
+                ]
+            },
+            'heads-up': {
+                title: 'Heads Up, Humans',
+                prompt: 'According to the text, how should humans adapt to the rise of automation?',
+                gistOptions: [
+                    { val: 'wrong1', text: 'Robots are taking all human jobs and creating a dystopian future.' },
+                    { val: 'correct', text: 'Humans must develop skills like empathy and problem-solving to work alongside new technology.' },
+                    { val: 'wrong2', text: 'Automation only affects manufacturing jobs, so most people do not need to adapt.' }
+                ]
+            }
+        };
 
         // Initialization
         window.onload = () => {
             updateXPDisplay();
             updateAvatarDisplays();
+            renderVocabTab();
             
             // Check system preference for dark mode if not set manually
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -817,10 +891,40 @@
 
         // Mission Mechanics
         function loadMission(missionId) {
+            currentMissionId = missionId;
+            const data = missionsData[missionId];
+            
+            // Toggle texts
+            document.querySelectorAll('.mission-text-content').forEach(el => el.classList.add('hidden'));
+            const textEl = document.getElementById(`text-${missionId}`);
+            if(textEl) textEl.classList.remove('hidden');
+            else document.getElementById('text-bionics').classList.remove('hidden'); // fallback
+            
+            // Update Title and Prompt
+            document.getElementById('reading-pane-title').innerText = data.title;
+            const promptEl = document.getElementById('tide-prompt-text');
+            if(promptEl) promptEl.innerText = data.prompt;
+
+            // Update GIST Options
+            const optsContainer = document.getElementById('gist-options-container');
+            if(optsContainer) {
+                optsContainer.innerHTML = data.gistOptions.map((opt, i) => `
+                    <label class="flex items-start gap-4 p-4 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-bionic-400 dark:hover:border-bionic-500 cursor-pointer transition-all shadow-sm">
+                        <input type="radio" name="gist" class="mt-1 w-5 h-5 text-bionic-500 border-slate-300 focus:ring-bionic-500" value="${opt.val}">
+                        <span class="text-slate-700 dark:text-slate-300 font-medium">${opt.text}</span>
+                    </label>
+                `).join('');
+            }
+
+            // Reset GIST Inputs
+            if(document.getElementById('gist-who')) document.getElementById('gist-who').value = '';
+            if(document.getElementById('gist-idea')) document.getElementById('gist-idea').value = '';
+            if(document.getElementById('gist-sentence')) document.getElementById('gist-sentence').value = '';
+
             document.getElementById('btn-tab-mission').classList.remove('hidden');
             switchTab('mission');
             goToStage(1);
-            showCoachMessage("Welcome to Mission 1! Start by reading the text to find the GIST.");
+            showCoachMessage(`Welcome to Mission: ${data.title}! Click highlighted words in the text to unlock vocabulary!`);
         }
 
         function goToStage(stageNum) {
@@ -851,9 +955,18 @@
 
         // Stage 1 Logic
         function checkGist() {
+            const who = document.getElementById('gist-who').value.trim();
+            const idea = document.getElementById('gist-idea').value.trim();
+            const sentence = document.getElementById('gist-sentence').value.trim();
+
+            if (!who || !idea || !sentence) {
+                showCoachMessage("Please fill out the Who/What and Idea boxes before checking your answer!");
+                return;
+            }
+
             const selected = document.querySelector('input[name="gist"]:checked');
             if (!selected) {
-                showCoachMessage("Pick an option first!");
+                showCoachMessage("Pick an option from the multiple choice below first!");
                 return;
             }
 
@@ -1057,6 +1170,7 @@
             localStorage.removeItem('rw_streak');
             localStorage.removeItem('rw_avatar');
             localStorage.removeItem('rw_avatar_color');
+            localStorage.removeItem('rw_vocab');
 
             // Reset JS state variables
             xp = 0;
@@ -1066,19 +1180,18 @@
             currentStage = 1;
             highlightModeActive = false;
             extractedQuote = "";
+            unlockedVocab = [];
 
             // Update header UI
             updateXPDisplay();
             document.getElementById('streak-counter').innerText = streak;
             updateAvatarDisplays();
+            renderVocabTab();
 
             // Reset Mission form inputs
-            document.getElementById('tide-t').value = '';
-            document.getElementById('tide-i').value = '';
-            document.getElementById('tide-d').value = '';
-            document.getElementById('tide-e').value = '';
-            document.getElementById('final-draft-preview').innerHTML = '<span class="text-slate-400 italic font-sans text-sm">Click the button below to assemble your paragraph...</span>';
-            document.getElementById('extracted-quote-container').classList.add('hidden');
+            document.getElementById('gist-who').value = '';
+            document.getElementById('gist-idea').value = '';
+            document.getElementById('gist-sentence').value = '';
             
             // Uncheck Stage 1 GIST options
             const gistInputs = document.querySelectorAll('input[name="gist"]');
@@ -1141,6 +1254,42 @@
             ];
             const hint = hints[Math.floor(Math.random() * hints.length)];
             showCoachMessage(hint);
+        }
+
+        // Vocabulary Logic
+        function unlockVocab(word, definition, element) {
+            if (!unlockedVocab.some(v => v.word.toLowerCase() === word.toLowerCase())) {
+                unlockedVocab.push({word, definition});
+                localStorage.setItem('rw_vocab', JSON.stringify(unlockedVocab));
+                addXP(25);
+                showCoachMessage(`New word unlocked: ${word}! +25 XP`);
+                renderVocabTab();
+                fireConfetti();
+            } else {
+                showCoachMessage(`${word}: ${definition}`);
+            }
+            element.classList.remove('border-dashed', 'text-bionic-600', 'dark:text-bionic-400', 'cursor-pointer', 'hover:bg-bionic-100', 'dark:hover:bg-bionic-900/30');
+            element.classList.add('border-solid', 'bg-bionic-100', 'dark:bg-bionic-900/50', 'text-slate-900', 'dark:text-white', 'cursor-help');
+        }
+
+        function renderVocabTab() {
+            const container = document.getElementById('vocab-container');
+            const emptyState = document.getElementById('vocab-empty-state');
+            if(!container || !emptyState) return;
+
+            if (unlockedVocab.length === 0) {
+                emptyState.classList.remove('hidden');
+                container.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                container.classList.remove('hidden');
+                container.innerHTML = unlockedVocab.map(v => `
+                    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 hover:border-bionic-400 transition-colors">
+                        <h4 class="font-black text-bionic-600 dark:text-bionic-400 text-lg capitalize">${v.word}</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">${v.definition}</p>
+                    </div>
+                `).join('');
+            }
         }
 
         function fireConfetti() {
