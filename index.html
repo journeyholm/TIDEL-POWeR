@@ -1,962 +1,373 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Releasing Writers: Bionic Academy</title>
-    
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        serif: ['Merriweather', 'serif'],
-                    },
-                    colors: {
-                        tide: {
-                            t: '#22c55e', // Green
-                            i: '#eab308', // Yellow
-                            d: '#f97316', // Orange
-                            e: '#ec4899', // Pink
-                        }
-                    },
-                    animation: {
-                        'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'pop': 'pop 0.25s ease-out forwards',
-                    },
-                    keyframes: {
-                        pop: {
-                            '0%': { transform: 'scale(0.95)', opacity: '0' },
-                            '100%': { transform: 'scale(1)', opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-    <style>
-        /* Custom Scrollbar for independent scrolling areas */
-        .custom-scrollbar::-webkit-scrollbar { width: 8px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 4px; }
-        .dark .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); }
-
-        /* Highlight Action Tooltip */
-        #highlight-tooltip {
-            position: absolute;
-            z-index: 1000;
-            display: none;
-            transform: translate(-50%, -110%);
-        }
-
-        /* Vocabulary Tooltips */
-        .vocab-word {
-            border-bottom: 2px dotted #3b82f6;
-            cursor: help;
-            position: relative;
-            color: #2563eb;
-            font-weight: 500;
-            transition: background-color 0.2s;
-        }
-        .dark .vocab-word {
-            color: #60a5fa;
-            border-bottom-color: #60a5fa;
-        }
-        .vocab-word:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-        .vocab-tooltip {
-            visibility: hidden;
-            width: 220px;
-            background-color: #1e293b;
-            color: #fff;
-            text-align: left;
-            border-radius: 8px;
-            padding: 10px 14px;
-            position: absolute;
-            z-index: 100;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -110px;
-            opacity: 0;
-            transition: opacity 0.2s, transform 0.2s;
-            transform: translateY(5px);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.875rem;
-            line-height: 1.4;
-            font-weight: normal;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
-        }
-        .vocab-tooltip strong {
-            color: #38bdf8;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 4px;
-        }
-        .vocab-tooltip::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -6px;
-            border-width: 6px;
-            border-style: solid;
-            border-color: #1e293b transparent transparent transparent;
-        }
-        .vocab-word:hover .vocab-tooltip {
-            visibility: visible;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Themes */
-        body.theme-cyberpunk {
-            background-color: #0f172a;
-            color: #38bdf8;
-        }
-        body.theme-cyberpunk .bg-panel { background-color: #1e293b; border-color: #38bdf8; box-shadow: 0 0 15px rgba(56,189,248,0.2); }
-        body.theme-cyberpunk .text-content { color: #f1f5f9; }
-        
-        body.theme-bionic {
-            background-color: #1a2e1a;
-            color: #4ade80;
-        }
-        body.theme-bionic .bg-panel { background-color: #142414; border-color: #4ade80; box-shadow: 0 0 15px rgba(74,222,128,0.2); }
-        body.theme-bionic .text-content { color: #e2e8f0; }
-
-        /* Smooth UI Transitions */
-        .fade-in { animation: pop 0.3s ease-out forwards; }
-        
-        /* Draggable elements */
-        .draggable { cursor: grab; }
-        .draggable:active { cursor: grabbing; }
-        .dropzone.dragover { background-color: rgba(59, 130, 246, 0.1); border-color: #3b82f6; border-style: solid; }
-        
-        /* Paragraph Numbers */
-        .para-num {
-            float: left;
-            margin-left: -2rem;
-            color: #94a3b8;
-            font-family: 'Inter', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 700;
-            user-select: none;
-        }
-    </style>
-</head>
-
-<body class="bg-slate-50 text-slate-900 h-screen w-full flex flex-col overflow-hidden transition-colors duration-500" id="app-body">
-
-    <!-- Top Navigation -->
-    <nav class="bg-slate-900 text-white px-6 py-3 flex justify-between items-center shrink-0 shadow-md z-50">
-        <div class="flex items-center gap-4">
-            <div class="font-bold text-xl tracking-tight flex items-center gap-2">
-                <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                Releasing Writers: Bionic Academy
+<!-- ... existing code ... -->
+    <nav class="bg-slate-900 text-white shadow-lg shrink-0 border-b border-slate-700 z-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center h-14 space-x-2 sm:space-x-8 mt-2">
+                <button onclick="switchTab('home')" id="btn-tab-home" class="px-4 py-2 rounded-t-lg text-sm font-bold bg-slate-800 text-blue-400 border-b-2 border-blue-400 transition-all">Home</button>
+                <button onclick="switchTab('mission')" id="btn-tab-mission" class="px-4 py-2 rounded-t-lg text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800 border-b-2 border-transparent transition-all">Current Mission</button>
+                <button onclick="switchTab('mla')" id="btn-tab-mla" class="px-4 py-2 rounded-t-lg text-sm font-bold text-slate-400 hover:text-white hover:bg-slate-800 border-b-2 border-transparent transition-all">MLA Citation Masterclass</button>
             </div>
-            <button onclick="toggleModal('rope-modal')" class="text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-full transition-colors border border-slate-700 flex items-center gap-2">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Writing Rope Guide
-            </button>
-        </div>
-        
-        <div class="flex items-center gap-4">
-            <!-- XP & Level -->
-            <div class="flex items-center gap-2 bg-slate-800 px-4 py-1.5 rounded-full border border-slate-700" id="xp-container">
-                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                <span id="xp-display" class="font-bold font-mono">0 XP</span>
-            </div>
-            <!-- Shop -->
-            <button onclick="toggleModal('shop-modal')" class="bg-blue-600 hover:bg-blue-500 px-4 py-1.5 rounded-full font-semibold transition-colors flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                Shop
-            </button>
         </div>
     </nav>
 
-    <!-- Main Split Layout -->
-    <main class="flex-1 overflow-hidden grid lg:grid-cols-2 gap-4 p-4 min-h-0 bg-slate-200/50 dark:bg-slate-900/50">
-        
-        <section class="bg-white bg-panel rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden h-full">
-            <!-- Reader Header -->
-            <header class="bg-slate-50 dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center shrink-0">
-                <h2 class="font-bold text-lg text-slate-800 dark:text-slate-100">Reading Passage</h2>
-                <div class="flex gap-2">
-                    <button onclick="readAloud()" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 transition-colors tooltip" title="Read Aloud">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
-                    </button>
-                    <button onclick="adjustFontSize(1)" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-bold transition-colors">A+</button>
-                    <button onclick="adjustFontSize(-1)" class="p-2 bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 rounded-lg text-slate-700 dark:text-slate-200 font-bold transition-colors">A-</button>
-                </div>
-            </header>
+    <!-- TAB: HOME -->
+    <div id="tab-home" class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900 relative z-10 flex">
+        <div class="max-w-6xl mx-auto w-full p-6 sm:p-10 space-y-8 mt-8">
+            <div class="text-center space-y-4">
+                <h1 class="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Releasing Writers</h1>
+                <p class="text-xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">Select a text below to begin your reading and writing mission.</p>
+            </div>
             
-            <!-- Reader Content (Scrollable) -->
-            <div class="p-8 pl-12 overflow-y-auto custom-scrollbar flex-1 relative" id="reader-container">
-                <article id="reader-text" class="text-content text-lg leading-loose font-serif text-slate-800 dark:text-slate-200 space-y-6 max-w-2xl mx-auto">
-                    <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold font-sans text-slate-900 dark:text-white">Are Bionic Superhumans on the Horizon?</h1>
-                        <p class="text-slate-500 font-sans mt-2">Informational Text by Ramez Naam</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+                <!-- Mission 1 Card -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:ring-4 hover:ring-blue-500/50 transition-all cursor-pointer group flex flex-col" onclick="loadMission('bionics')">
+                    <div class="h-40 bg-gradient-to-br from-blue-500 to-indigo-600 p-6 flex flex-col justify-end relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all"></div>
+                        <h2 class="text-2xl font-bold text-white relative z-10">Mission 1: Bionics</h2>
+                        <span class="inline-block mt-2 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full w-max backdrop-blur-sm relative z-10">Informational</span>
                     </div>
-
-                    <p><span class="para-num">1</span>We're in the midst of a bionic revolution, yet most of us don't know it.</p>
-                    
-                    <p><span class="para-num">2</span>Around 220,000 people worldwide already walk around with cochlear <span class="vocab-word">implants<span class="vocab-tooltip"><strong>implant</strong> (im-plant) v.<br>To place a device inside the body through surgery.</span></span>—devices worn around the ear that turn sound waves into electrical impulses <span class="vocab-word">shunted<span class="vocab-tooltip"><strong>shunted</strong><br>allowed to flow from one pathway to another through surgery.</span></span> directly into the <span class="vocab-word">auditory<span class="vocab-tooltip"><strong>auditory</strong><br>related to hearing.</span></span> nerve.</p>
-
-                    <p><span class="para-num">3</span>Tens of thousands of people have been <span class="vocab-word">implanted<span class="vocab-tooltip"><strong>implant</strong> (im-plant) v.<br>To place a device inside the body through surgery.</span></span> with deep brain stimulators, devices that send an <span class="vocab-word">electrode<span class="vocab-tooltip"><strong>electrode</strong><br>a material through which electricity flows.</span></span> tunneling several inches in the brain. Deep brain stimulators are used to control <span class="vocab-word">Parkinson's disease<span class="vocab-tooltip"><strong>Parkinson's disease</strong><br>a disease that weakens muscles and causes a person's arms and legs to shake.</span></span>, though lately they've also been tested—with encouraging results—in use against severe depression and obsessive compulsive disorder.</p>
-
-                    <p><span class="para-num">4</span>The most obvious bionics are those that replace limbs. Olympian "Blade Runner" Oscar Pistorius made a splash with his Cheetah carbon fiber <span class="vocab-word">prostheses<span class="vocab-tooltip"><strong>prostheses</strong><br>artificial devices that replace injured or missing body parts.</span></span>. Yet those are a relatively simple technology—a curved piece of slightly springy, super-strong material. In the digital age, we're seeing more sophisticated limbs.</p>
-
-                    <p><span class="para-num">5</span>Consider the thought-controlled bionic leg that Zac Vawter used to climb all 103 floors of Chicago's Willis Tower. Or the nerve-controlled bionic hand that Iraq war veteran Glen Lehman had attached after the loss of his original hand. Or the even more sophisticated i-limb Ultra, an artificial hand with five independently articulating artificial fingers. Those limbs don't just react mechanically to pressure. They actually respond to the thoughts and intentions of their owners, flexing, extending, gripping, and releasing on mental command.</p>
-
-                    <p><span class="para-num">6</span>The age when prostheses were largely <span class="vocab-word">inert<span class="vocab-tooltip"><strong>inert</strong><br>unable to move or act.</span></span> pieces of wood, metal, and plastic is passing. Advances in microprocessors, in techniques to <span class="vocab-word">interface<span class="vocab-tooltip"><strong>interface</strong><br>to connect or interact smoothly.</span></span> digital technology with the human nervous system, and in battery technology to allow prostheses to pack more power with less weight are turning replacement limbs into active parts of the human body.</p>
-
-                    <p><span class="para-num">7</span>In some cases, they're not even part of the body at all. Consider the case of Cathy Hutchinson. In 1997, Cathy had a stroke, leaving her without control of her arms. Hutchinson volunteered for an experimental procedure that could one day help millions of people with partial or complete paralysis. She let researchers implant a small device in the part of her brain responsible for motor control. With that device, she is able to control an external robotic arm by thinking about it.</p>
-
-                    <p><span class="para-num">8</span>That, in turn, brings up an interesting question: If the arm isn't physically attached to her body, how far away could she be and still control it? The answer is at least thousands of miles. In animal studies, scientists have shown that a monkey with a brain implant can control a robot arm 7,000 miles away. The monkey's mental signals were sent over the internet, from Duke University in North Carolina, to the robot arm in Japan. In this day and age, distance is almost irrelevant.</p>
-
-                    <h3 class="text-2xl font-bold font-sans mt-10 mb-4 text-slate-800 dark:text-slate-100">The Superhuman Frontier</h3>
-
-                    <p><span class="para-num">9</span>The 7,000-mile-away prosthetic arm makes an important point: These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before, and <span class="vocab-word">augmenting<span class="vocab-tooltip"><strong>augmenting</strong><br>increasing or adding to.</span></span> other capabilities we have. While the current generation of prostheses is still primitive, we can already see this taking shape when a monkey moves a robotic arm on the other side of the planet just by thinking about it.</p>
-
-                    <p><span class="para-num">10</span>Other research is pointing to enhancements to memory and decision making.</p>
-
-                    <p><span class="para-num">11</span>The hippocampus is a small, seahorse-shaped part of the brain that's essential in forming new memories. If it's damaged by an injury to the head, for example—people start having difficulty forming new long-term memories. In the most extreme cases, this can lead to the complete inability to form new long-term memories, as in the film Memento. Working to find a way to repair this sort of brain damage, researchers in 2011 created a "hippocampus chip" that can replace damaged brain tissue. When they implanted it in rats with a damaged hippocampus, they found that not only could their chip repair damaged memory—it could improve the rats' ability to learn new things.</p>
-
-                    <p><span class="para-num">12</span>Nor is memory the end of it. Another study, in 2012, demonstrated that we can boost intelligence—at least one sort—in monkeys. Scientists at Wake Forest University implanted specialized brain chips in a set of monkeys and trained those monkeys to perform a picture-matching game. When the implant was activated, it raised their scores by an average of 10 points on a 100-point scale. The implant makes monkeys smarter.</p>
-
-                    <h3 class="text-2xl font-bold font-sans mt-10 mb-4 text-slate-800 dark:text-slate-100">From Disabled to Super-capable</h3>
-
-                    <p><span class="para-num">13</span>Both of those technologies for boosting memory and intelligence are in very early stages, in small animal studies only, and years (or possibly decades) away from wide use in humans. Still, they make us wonder—what happens when it's possible to improve on the human body and mind?</p>
-
-                    <p><span class="para-num">14</span>The debate has started already, of course. Oscar Pistorius had to fight hard for inclusion in the Olympics. Many objected that his carbon fiber prostheses gave him a competitive advantage. He was able—with the help of doctors and biomedical engineers—to make a compelling case that his Cheetah blades didn't give him any advantage on the field. But how long will that be true? How long until we have prostheses (not to mention drugs and genetic therapies) that make athletes better in their sports?</p>
-
-                    <p><span class="para-num">15</span>But the issue is much, much wider than professional sports. We may care passionately about the <span class="vocab-word">integrity<span class="vocab-tooltip"><strong>integrity</strong> (in-teg ri-te) n.<br>Following a strict code of ethical conduct.</span></span> of the Olympics or professional cycling or so on, but they only directly affect a very small number of us. In other areas of life—in the workforce in particular—<span class="vocab-word">enhancement<span class="vocab-tooltip"><strong>enhancement</strong> (en-hans ment) n.<br>Something that improves or adds to the quality or function of something.</span></span> technology might affect all of us.</p>
-
-                    <p><span class="para-num">16</span>When it's possible to make humans smarter, sharper, and faster, how will that affect us? Will the effect be mostly positive, boosting our productivity and the rate of human innovation? Or will it be just another pressure to compete at work? Who will be able to afford these technologies? Will anyone be able to have their body, and more importantly, their brain upgraded? Or will only the rich have access to these enhancements?</p>
-
-                    <p><span class="para-num">17</span>We have a little while to consider these questions, but we ought to start. The technology will sneak its way into our lives, starting with people with disabilities, the injured, and the ill. It'll improve their lives in ways that are unquestionably good. And then, one day, we'll wake up and realize that we're doing more than restoring lost function. We're enhancing it.</p>
-
-                    <p><span class="para-num">18</span>Superhuman technology is on the horizon. Time to start thinking about what that means for us.</p>
-                </article>
-
-                <!-- Custom Highlighting Tooltip (Absolute Positioning) -->
-                <div id="highlight-tooltip" class="bg-slate-900 text-white px-3 py-2 rounded-lg shadow-xl flex gap-2 items-center pointer-events-auto">
-                    <span class="text-sm font-semibold whitespace-nowrap">Send to:</span>
-                    <button onclick="sendHighlightToTarget('T')" class="w-6 h-6 rounded-full bg-tide-t hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">T</button>
-                    <button onclick="sendHighlightToTarget('I')" class="w-6 h-6 rounded-full bg-tide-i hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">I</button>
-                    <button onclick="sendHighlightToTarget('D')" class="w-6 h-6 rounded-full bg-tide-d hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">D</button>
-                    <button onclick="sendHighlightToTarget('E')" class="w-6 h-6 rounded-full bg-tide-e hover:scale-110 transition-transform flex items-center justify-center text-xs font-bold text-white shadow-md">E</button>
-                    <div class="w-px h-4 bg-slate-600 mx-1"></div>
-                    <!-- Cancel Button -->
-                    <button onclick="cancelHighlight()" class="text-xs hover:text-red-400 font-medium transition-colors">Cancel</button>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 flex-1">Explore how bionic limbs are revolutionizing physical therapy and write a comprehensive TIDE-L paragraph.</p>
+                        <button class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">Start Mission &rarr;</button>
+                    </div>
                 </div>
-            </div>
-        </section>
 
-        <section class="bg-white bg-panel rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col overflow-hidden h-full relative">
-            
-            <!-- Progress Tracker Header -->
-            <header class="bg-slate-50 dark:bg-slate-800 p-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="font-bold text-lg text-slate-800 dark:text-slate-100" id="stage-title">POWeR Cycle</h2>
-                    <span class="text-sm font-semibold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 px-3 py-1 rounded-full" id="stage-badge">Stage 1</span>
+                <!-- Mission 2 Card -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:ring-4 hover:ring-emerald-500/50 transition-all cursor-pointer group flex flex-col" onclick="loadMission('automation')">
+                    <div class="h-40 bg-gradient-to-br from-emerald-500 to-teal-600 p-6 flex flex-col justify-end relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all"></div>
+                        <h2 class="text-2xl font-bold text-white relative z-10">Mission 2: The Automation Paradox</h2>
+                        <span class="inline-block mt-2 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full w-max backdrop-blur-sm relative z-10">Argumentative</span>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 flex-1">Analyze James Bessen's argument from the provided 'Untitled document.pdf' that computer automation will actually increase employment opportunities.</p>
+                        <button class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-lg group-hover:bg-emerald-600 group-hover:text-white transition-colors">Start Mission &rarr;</button>
+                    </div>
                 </div>
-                <!-- Progress Bar -->
-                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out" id="progress-bar" style="width: 10%"></div>
-                </div>
-            </header>
 
-            <!-- Dynamic Workspace Content (Scrollable) -->
-            <div class="p-6 overflow-y-auto custom-scrollbar flex-1" id="workspace-content">
-                <!-- Content injected via JS -->
-            </div>
-
-            <!-- Workspace Footer (Navigation) -->
-            <footer class="bg-slate-50 dark:bg-slate-800 p-4 border-t border-slate-200 dark:border-slate-700 shrink-0 flex justify-between items-center">
-                <button onclick="prevStage()" id="btn-prev" class="px-5 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors hidden">
-                    &larr; Back
-                </button>
-                <div class="flex-1"></div> <!-- Spacer -->
-                <button onclick="nextStage()" id="btn-next" class="px-6 py-2 rounded-xl font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-500/30 transition-all hover:-translate-y-0.5">
-                    Continue &rarr;
-                </button>
-            </footer>
-            
-            <!-- Coach Alex Sprite -->
-            <div id="coach-sprite" class="absolute bottom-20 right-6 w-24 h-24 pointer-events-none transition-transform duration-300 transform origin-bottom z-10">
-                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="45" fill="#3B82F6"/>
-                    <circle cx="50" cy="50" r="40" fill="#DBEAFE"/>
-                    <circle cx="35" cy="40" r="5" fill="#1E40AF"/>
-                    <circle cx="65" cy="40" r="5" fill="#1E40AF"/>
-                    <path d="M 35 65 Q 50 80 65 65" stroke="#1E40AF" stroke-width="4" stroke-linecap="round" fill="transparent"/>
-                    <!-- Robot Antenna -->
-                    <rect x="48" y="5" width="4" height="15" fill="#9CA3AF"/>
-                    <circle cx="50" cy="5" r="4" fill="#EF4444"/>
-                </svg>
-                <div id="coach-bubble" class="absolute -top-16 -left-32 w-48 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm p-3 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 opacity-0 transition-opacity duration-300">
-                    You got this!
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Writing Rope Modal -->
-    <div id="rope-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-slate-900 border border-slate-700 text-slate-200 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950">
-                <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                    <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    The Writing Rope Guide
-                </h3>
-                <button onclick="toggleModal('rope-modal')" class="text-slate-400 hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
-            </div>
-            <div class="p-6 overflow-y-auto custom-scrollbar">
-                <p class="text-slate-300 mb-6">Mastering writing is like weaving a strong rope. It takes many different strands of skill working together to create a powerful final piece.</p>
-                <div class="grid gap-4">
-                    <div class="p-4 rounded-xl border border-red-900/50 bg-red-950/20">
-                        <strong class="text-red-400 text-lg block mb-1">1. Critical Thinking</strong>
-                        <p class="text-sm">Gathering ideas, understanding the prompt, and planning your response.</p>
+                <!-- Mission 3 Card -->
+                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-slate-200 dark:border-slate-700 hover:ring-4 hover:ring-rose-500/50 transition-all cursor-pointer group flex flex-col" onclick="loadMission('headsup')">
+                    <div class="h-40 bg-gradient-to-br from-rose-500 to-pink-600 p-6 flex flex-col justify-end relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-all"></div>
+                        <h2 class="text-2xl font-bold text-white relative z-10">Mission 3: Heads Up, Humans</h2>
+                        <span class="inline-block mt-2 px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full w-max backdrop-blur-sm relative z-10">Argumentative</span>
                     </div>
-                    <div class="p-4 rounded-xl border border-blue-900/50 bg-blue-950/20">
-                        <strong class="text-blue-400 text-lg block mb-1">2. Syntax</strong>
-                        <p class="text-sm">Building strong, clear, and varied sentences.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-green-900/50 bg-green-950/20">
-                        <strong class="text-green-400 text-lg block mb-1">3. Text Structure</strong>
-                        <p class="text-sm">Organizing your writing using the TIDE-L format and transitions.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-purple-900/50 bg-purple-950/20">
-                        <strong class="text-purple-400 text-lg block mb-1">4. Writing Craft</strong>
-                        <p class="text-sm">Choosing the perfect vocabulary and adjusting your tone.</p>
-                    </div>
-                    <div class="p-4 rounded-xl border border-amber-900/50 bg-amber-950/20">
-                        <strong class="text-amber-400 text-lg block mb-1">5. Transcription</strong>
-                        <p class="text-sm">The physical act of typing, spelling, and punctuating correctly (CUPS).</p>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <p class="text-slate-600 dark:text-slate-300 text-sm mb-4 flex-1">Evaluate Claudia Alarcón's warning from 'Heads Up, Humans.pdf' about the devastating impact of artificial intelligence on future employment.</p>
+                        <button class="w-full py-2 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-lg group-hover:bg-rose-600 group-hover:text-white transition-colors">Start Mission &rarr;</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Shop Modal -->
-    <div id="shop-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
-        <div class="bg-slate-100 dark:bg-slate-800 w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden text-slate-800 dark:text-slate-200">
-            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                <h3 class="text-xl font-bold flex items-center gap-2">
-                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                    Bionic Upgrade Shop
-                </h3>
-                <div class="flex items-center gap-4">
-                    <span class="font-bold text-yellow-500" id="shop-xp-display">0 XP</span>
-                    <button onclick="toggleModal('shop-modal')" class="text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
-            </div>
-            <div class="p-6 grid grid-cols-2 gap-4">
-                <!-- Theme Items -->
-                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
-                    <div class="w-full h-24 rounded-lg mb-3 bg-[#0f172a] border-2 border-[#38bdf8] flex items-center justify-center text-[#38bdf8] font-mono text-sm">CYBERPUNK</div>
-                    <h4 class="font-bold mb-2">Cyberpunk Theme</h4>
-                    <button onclick="buyTheme('cyberpunk', 100)" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors text-sm">
-                        Buy (100 XP)
-                    </button>
-                </div>
-                <div class="bg-white dark:bg-slate-700 p-4 rounded-xl border border-slate-200 dark:border-slate-600 text-center">
-                    <div class="w-full h-24 rounded-lg mb-3 bg-[#1a2e1a] border-2 border-[#4ade80] flex items-center justify-center text-[#4ade80] font-mono text-sm">BIONIC LABS</div>
-                    <h4 class="font-bold mb-2">Bionic Labs Theme</h4>
-                    <button onclick="buyTheme('bionic', 200)" class="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors text-sm">
-                        Buy (200 XP)
-                    </button>
-                </div>
-                <div class="col-span-2 mt-4 text-center">
-                    <button onclick="setTheme('default')" class="text-sm text-slate-500 hover:text-slate-800 dark:hover:text-white underline">Revert to Default Theme</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- State Management ---
-        const GameState = {
-            stage: 1,
-            xp: parseInt(localStorage.getItem('rw_xp')) || 0,
-            theme: localStorage.getItem('rw_theme') || 'default',
-            data: JSON.parse(localStorage.getItem('rw_data')) || {
-                gist: { who: '', didWhat: '', whenWhere: '', why: '' },
-                prompt: { do: [], what: [] },
-                tidel: { t: '', i1: '', d1: '', i2: '', d2: '', e: '', l: '' }
-            }
-        };
-
-        const STAGES = [
-            { id: 1, name: "Plan: GIST", badge: "P1", render: renderGist },
-            { id: 2, name: "Plan: Pull Apart Prompt", badge: "P2", render: renderPromptPull },
-            { id: 3, name: "Organize: TIDE-L", badge: "O", render: renderTidel },
-            { id: 4, name: "Write: MLA Quote Sandwich", badge: "W", render: renderQuoteSandwich },
-            { id: 5, name: "Edit: CUPS & Transitions", badge: "E", render: renderEditing },
-            { id: 6, name: "Revise & Final Draft", badge: "R", render: renderFinalDraft }
-        ];
-
-        // --- Core Initialization ---
-        window.onload = () => {
-            updateXP(0); // Initialize display
-            setTheme(GameState.theme);
-            loadStage(GameState.stage);
-            setupHighlighting();
+    <div id="tab-mission" class="hidden flex-1 flex-col overflow-hidden relative z-10">
+        <!-- Main Application Layout -->
+        <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative z-10">
             
-            // Global click listener to close highlight tooltip
-            document.addEventListener('mousedown', (e) => {
-                const tooltip = document.getElementById('highlight-tooltip');
-                const readerText = document.getElementById('reader-text');
-                // If tooltip is active, and click is outside tooltip and outside reader text
-                if (tooltip.style.display === 'flex') {
-                    if (!tooltip.contains(e.target) && !readerText.contains(e.target)) {
-                        cancelHighlight();
-                    }
-                }
-            });
-        };
-
-        // --- Navigation & Core UI ---
-        function loadStage(stageIndex) {
-            GameState.stage = stageIndex;
-            const stageDef = STAGES[stageIndex - 1];
-            
-            // Update Headers
-            document.getElementById('stage-title').innerText = stageDef.name;
-            document.getElementById('stage-badge').innerText = stageDef.badge;
-            
-            // Update Progress Bar
-            const progress = (stageIndex / STAGES.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-            
-            // Update Buttons
-            document.getElementById('btn-prev').classList.toggle('hidden', stageIndex === 1);
-            document.getElementById('btn-next').innerText = stageIndex === STAGES.length ? "Finish & Export" : "Continue →";
-            
-            // Render Content with animation
-            const workspace = document.getElementById('workspace-content');
-            workspace.classList.remove('fade-in');
-            void workspace.offsetWidth; // trigger reflow
-            
-            workspace.innerHTML = stageDef.render();
-            workspace.classList.add('fade-in');
-            
-            // Post-render attachments (event listeners for dynamic content)
-            if (stageIndex === 2) setupDragAndDrop();
-            
-            saveData();
-            showCoachMessage(`Welcome to Stage ${stageIndex}! You can do this.`);
-        }
-
-        function nextStage() {
-            // Save data from current stage inputs before moving
-            saveCurrentStageInputs();
-            if (GameState.stage < STAGES.length) {
-                addXP(50);
-                loadStage(GameState.stage + 1);
-            } else {
-                exportDocument();
-            }
-        }
-
-        function prevStage() {
-            saveCurrentStageInputs();
-            if (GameState.stage > 1) {
-                loadStage(GameState.stage - 1);
-            }
-        }
-
-        function saveCurrentStageInputs() {
-            // Dynamically grab inputs based on active IDs
-            const safeVal = (id) => document.getElementById(id) ? document.getElementById(id).value : null;
-            
-            if (GameState.stage === 1) {
-                GameState.data.gist.who = safeVal('gist-who') || GameState.data.gist.who;
-                GameState.data.gist.didWhat = safeVal('gist-what') || GameState.data.gist.didWhat;
-                GameState.data.gist.whenWhere = safeVal('gist-where') || GameState.data.gist.whenWhere;
-                GameState.data.gist.why = safeVal('gist-why') || GameState.data.gist.why;
-            } else if (GameState.stage === 3) {
-                ['t', 'i1', 'd1', 'i2', 'd2', 'e', 'l'].forEach(key => {
-                    GameState.data.tidel[key] = safeVal(`tide-${key}`) || GameState.data.tidel[key];
-                });
-            }
-            saveData();
-        }
-
-        function saveData() {
-            localStorage.setItem('rw_data', JSON.stringify(GameState.data));
-            localStorage.setItem('rw_xp', GameState.xp);
-            localStorage.setItem('rw_theme', GameState.theme);
-        }
-
-        // --- Mechanics: XP & Themes ---
-        function updateXP(amount) {
-            GameState.xp += amount;
-            const disp = document.getElementById('xp-display');
-            disp.innerText = `${GameState.xp} XP`;
-            document.getElementById('shop-xp-display').innerText = `${GameState.xp} XP`;
-            
-            if (amount > 0) {
-                disp.parentElement.classList.add('animate-pulse-fast');
-                setTimeout(() => disp.parentElement.classList.remove('animate-pulse-fast'), 1000);
-            }
-            saveData();
-        }
-        function addXP(amount) { updateXP(amount); }
-
-        function buyTheme(themeName, cost) {
-            if (GameState.xp >= cost) {
-                updateXP(-cost);
-                setTheme(themeName);
-                showCoachMessage(`Awesome! ${themeName.toUpperCase()} theme unlocked!`);
-            } else {
-                alert("Not enough XP! Keep working to earn more.");
-            }
-        }
-
-        function setTheme(themeName) {
-            GameState.theme = themeName;
-            document.body.className = `h-screen w-full flex flex-col overflow-hidden transition-colors duration-500`;
-            if (themeName !== 'default') {
-                document.body.classList.add(`theme-${themeName}`);
-                document.body.classList.add('dark'); // Force dark mode for special themes
-            } else {
-                document.body.classList.add('bg-slate-50', 'text-slate-900');
-            }
-            saveData();
-        }
-
-        function toggleModal(id) {
-            const modal = document.getElementById(id);
-            modal.classList.toggle('hidden');
-        }
-
-        function showCoachMessage(msg) {
-            const bubble = document.getElementById('coach-bubble');
-            bubble.innerText = msg;
-            bubble.classList.remove('opacity-0');
-            setTimeout(() => bubble.classList.add('opacity-0'), 4000);
-        }
-
-        // --- Mechanics: Highlighting Tool ---
-        let activeSelectedText = "";
-        
-        function setupHighlighting() {
-            const reader = document.getElementById('reader-text');
-            reader.addEventListener('mouseup', handleHighlightSelection);
-            // Touch support for mobile highlighting
-            reader.addEventListener('touchend', handleHighlightSelection);
-        }
-
-        function handleHighlightSelection(e) {
-            // Small delay to let the browser register the selection
-            setTimeout(() => {
-                const selection = window.getSelection();
-                const text = selection.toString().trim();
-                const tooltip = document.getElementById('highlight-tooltip');
-
-                if (text.length > 5) {
-                    activeSelectedText = text;
-                    const range = selection.getRangeAt(0);
-                    const rect = range.getBoundingClientRect();
-                    
-                    // Position tooltip directly above the selection, relative to viewport
-                    tooltip.style.position = 'fixed';
-                    tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
-                    tooltip.style.top = `${rect.top - 10}px`; 
-                    tooltip.style.display = 'flex';
-                } else {
-                    tooltip.style.display = 'none';
-                }
-            }, 10);
-        }
-
-        function cancelHighlight() {
-            document.getElementById('highlight-tooltip').style.display = 'none';
-            window.getSelection().removeAllRanges();
-            activeSelectedText = "";
-        }
-
-        function sendHighlightToTarget(targetLetter) {
-            if (!activeSelectedText) return;
-            
-            // If they are on Stage 3 (TIDE), send it directly to the box
-            if (GameState.stage === 3) {
-                // Find first empty Information or Detail box if specific letter isn't targeted
-                let targetId = '';
-                if (targetLetter === 'T') targetId = 'tide-t';
-                else if (targetLetter === 'I') targetId = document.getElementById('tide-i1').value === '' ? 'tide-i1' : 'tide-i2';
-                else if (targetLetter === 'D') targetId = document.getElementById('tide-d1').value === '' ? 'tide-d1' : 'tide-d2';
-                else if (targetLetter === 'E') targetId = 'tide-e';
-
-                const el = document.getElementById(targetId);
-                if (el) {
-                    el.value += (el.value ? ' ' : '') + `"${activeSelectedText}"`;
-                    addXP(10);
-                    showCoachMessage("Great evidence collected!");
-                } else {
-                    showCoachMessage("Go to Stage 3 (Organize) to place this!");
-                }
-            } else {
-                showCoachMessage("Save this evidence for Stage 3: Organize!");
-            }
-            
-            cancelHighlight();
-        }
-
-        // --- Mechanics: Text Utilities ---
-        function adjustFontSize(delta) {
-            const article = document.getElementById('reader-text');
-            const currentSize = parseFloat(window.getComputedStyle(article, null).getPropertyValue('font-size'));
-            article.style.fontSize = `${currentSize + delta * 2}px`;
-        }
-
-        function readAloud() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                // Avoid reading tooltips text
-                const textClone = document.getElementById('reader-text').cloneNode(true);
-                const tooltips = textClone.querySelectorAll('.vocab-tooltip');
-                tooltips.forEach(t => t.remove());
+            <!-- LEFT PANEL: Reading Passage -->
+            <div class="w-full lg:w-1/2 flex flex-col border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 relative">
                 
-                const text = textClone.innerText;
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
-                showCoachMessage("Reading aloud...");
-            } else {
-                alert("Text-to-speech not supported in this browser.");
+                <!-- Tab Header -->
+                <div class="h-14 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center px-4 shrink-0 shadow-sm z-10 justify-between">
+                    <h2 id="reading-pane-title" class="font-bold text-slate-700 dark:text-slate-200">Reading Passage: Mission 1</h2>
+                    <div class="flex space-x-2">
+                        <button onclick="zoomText(1)" class="w-8 h-8 flex items-center justify-center rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm transition-colors" title="Zoom In">A+</button>
+                        <button onclick="zoomText(-1)" class="w-8 h-8 flex items-center justify-center rounded bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm transition-colors" title="Zoom Out">A-</button>
+                    </div>
+                </div>
+
+                <!-- Text Content Container -->
+                <div id="reading-text-container" class="flex-1 overflow-y-auto p-6 md:p-8 bg-white dark:bg-slate-900">
+                    
+                    <!-- BIONICS TEXT -->
+                    <div id="text-bionics" class="mission-text-content block">
+                        <div class="space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+<!-- ... existing code ... -->
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">18</div>
+                                <p>Whether the bionic limbs are for returning mobility to an amputee or allowing an athlete to jump higher, the future is clear: bionic body parts are here to stay.</p>
+                            </div>
+                        </div>
+                    </div> <!-- END BIONICS TEXT -->
+
+                    <!-- AUTOMATION PARADOX TEXT -->
+                    <div id="text-automation" class="mission-text-content hidden">
+                        <div class="space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+                                The Automation Paradox
+                                <a href="https://www.theatlantic.com/business/archive/2016/01/automation-paradox/424437/" target="_blank" class="text-sm font-normal text-blue-500 hover:underline ml-2">(Source link)</a>
+                            </h2>
+                            <h3 class="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">Argument by James Bessen</h3>
+                            
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">1</div>
+                                <p>Automation isn't just for blue-collar workers anymore. Computers are now taking over tasks performed by professional workers, raising fears of massive unemployment. Some people, such as the MIT professors Erik Brynjolfsson and Andrew McAfee, identify automation as a cause of the slow recovery from the Great Recession and the "hollowing out of the middle class." Others see white-collar automation as causing a level of persistent technological unemployment that demands policies that would redistribute wealth. Robot panic is in full swing.</p>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">2</div>
+                                <p>But these fears are misplaced—what's happening with automation is not so simple or obvious. It turns out that workers will have greater employment opportunities if their occupation undergoes some degree of computer automation. As long as they can learn to use the new tools, automation will be their friend.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">3</div>
+                                <p>Take the legal industry as an example. Computers are taking over some of the work of lawyers and paralegals, and they're doing a better job of it. For over a decade, computers have been used to sort through corporate documents to find those that are relevant to lawsuits. This process—called "discovery" in the profession—can run up millions of dollars in legal bills, but electronic methods can erase the vast majority of those costs. Moreover, the computers are often more accurate than humans: In one study, software correctly found 95 percent of the relevant documents, while humans identified only 51 percent.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">4</div>
+                                <p>But, perhaps surprisingly, electronic discovery software has not thrown paralegals and lawyers into unemployment lines. In fact, employment for paralegals and lawyers has grown robustly. While electronic discovery software has become a billion-dollar business since the late 1990s, jobs for paralegals and legal-support workers actually grew faster than the labor force as a whole, adding over 50,000 jobs since 2000, according to data from the U.S. Census Bureau. The number of lawyers increased by a quarter of a million.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">5</div>
+                                <p>Something similar happened when ATMs automated the tasks of bank tellers and when barcode scanners automated the work of cashiers: Rather than contributing to unemployment, the number of workers in these occupations grew. These are not special exceptions. On average, since 1980, occupations with above-average computer use have grown substantially faster (0.9 percent per year).</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">6</div>
+                                <p>How can this be? It might seem a sure thing that automating a task would reduce employment in an occupation. But that logic ignores some basic economics: Automation reduces the cost of a product or service, and lower prices tend to attract more customers. Software made it cheaper and faster to trawl through legal documents, so law firms searched more documents and judges allowed more and more expansive discovery requests. Likewise, ATMs made it cheaper to operate bank branches, so banks dramatically increased their number of offices. So when demand increases enough in response to lower prices, employment goes up with automation, not down. And this is what has been happening with computer automation overall during the last three decades. It's also what happened during the Industrial Revolution when automation in textiles, steelmaking, and a whole range of other industries led to a major increase in manufacturing jobs.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">7</div>
+                                <p>But not all of the news about computer automation is good. Some of that growth in computer-using occupations has come at the expense of other occupations. As depicted in the chart, desktop publishing systems have meant fewer jobs for typographers, as graphic designers took over their work. Computerized phone lines meant fewer jobs for telephone operators, but more jobs for receptionists. These aren't examples of computers "stealing" jobs; they are cases where computers helped some workers take work from others. Workers with computers frequently substitute for workers in non-computerized jobs.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">8</div>
+                                <p>So, while computers create jobs in some occupations, they also reduce employment in others. The total effect on unemployment depends on which tendency is stronger. Some of my research shows that the net effect, across the economy, is a wash: Computers create about as many jobs as they eliminate. In other words, automation is not causing persistent unemployment.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">9</div>
+                                <p>That could change decades into the future, as new generations of software powered by artificial intelligence becomes ever more capable of advanced tasks. But in the near term, the story is much different. A new study by McKinsey & Company took a detailed look at work tasks that are likely to be automated and found that only about 5 percent of jobs are at risk of being completely automated in the near future. The main effect of automation for the time being will not be to eliminate jobs, but to redefine them—changing the tasks and the skills needed to perform them.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">10</div>
+                                <p>Even so, this means that automation poses a major challenge. There will be jobs, but workers will only be able to get them if they have the new sets of skills that computers make important. It's not just computer skills that are in demand, because automation can change the nature of jobs. For example, bank tellers have become more like marketing specialists, telling customers about bank loans, CDs, and other financial offerings.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">11</div>
+                                <p>Learning new skills is a significant social challenge as well. My research suggests that the jobs that get transferred to other occupations tend to be predominantly low-pay, low-skill jobs, so the burdens of automation fall most heavily on those least able and least equipped to deal with it. And often the new skills need to be learned on the job, so experience matters. To meet this challenge, some community colleges are collaborating with local employers to create work-study programs that allow trainees to learn on the job as well as in the classroom. Some trade groups are promoting skill-certification programs, which allow employers to recognize skills acquired through experience. These are the kinds of policies that can help overcome the real burden of automation. They deserve more attention than any panic about a supposed robot apocalypse.</p>
+                            </div>
+                        </div>
+                    </div> <!-- END AUTOMATION PARADOX TEXT -->
+
+                    <!-- HEADS UP HUMANS TEXT -->
+                    <div id="text-headsup" class="mission-text-content hidden">
+                        <div class="space-y-6 text-lg leading-relaxed text-slate-700 dark:text-slate-300">
+                            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Heads Up, Humans</h2>
+                            <h3 class="text-xl font-semibold text-slate-800 dark:text-slate-200 mb-2">Argument by Claudia Alarcón</h3>
+                            
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">1</div>
+                                <p>If you're like most young people, you've probably embraced technology. You communicate with friends via videos and filters. You have vast numbers of songs and shows within reach. You can get items delivered to your home the same day you ordered them without leaving the house. These benefits of technology are easy to see.</p>
+                            </div>
+                            
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">2</div>
+                                <p>Perhaps you take it further, and are one of those who believe that technology does not just add fun and convenience to our lives, but is actually the answer to most of our problems—even problems that are caused by technology itself. In the very near future, one of the biggest of these problems is likely to be that many jobs now held by humans will be done by some combination of artificial intelligence and automated machine. If you're tempted to shrug off concern about this phenomenon because you assume that the wonders of technology will somehow create new and better jobs, you should be aware that research tells another story. As part of the generation that will arguably be most affected by these changes, it's in your interest to stay informed rather than simply hope for the best.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">3</div>
+                                <p>There is no argument that many jobs now held by humans will be replaced by some form of advanced technology. According to a new report by a multi-national accounting and consulting firm based in London, 38% of U.S. jobs are at high risk of being replaced by robots and artificial intelligence over the next 15 years. The report estimates the percentage of jobs lost to automation in Britain will be 30%, with 35% in Germany, and 21% in Japan.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">4</div>
+                                <p>This change is already underway. Shipping companies have made headlines with self-driving trucks carrying cargo across the country. Ride share companies have been testing self-driving taxis in Pennsylvania and Arizona. Once more of our trucks and taxis drive themselves, what will happen to the people who held jobs as drivers? In the U.S., roughly 180,000 taxi drivers, 600,000 ride share drivers, and 3.5 million truck drivers could end up displaced. This number is greater than the population of Houston, San Antonio, Dallas, Austin, and Fort Worth combined. Will all these people find some other source of employment? Or will the numbers of unemployed grow as the out-of-work drivers are joined by the millions of others who have been displaced by artificial intelligence and robots?</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">5</div>
+                                <p>Technology fans claim that the fears that robots will lead to massive unemployment are unfounded. They say that people who are displaced from jobs will find new and better occupations that will be created by the economic shift. They suggest that a factory worker whose task on the assembly line is now completed by a machine might instead become someone who services the machine, for example. Or that there could be a rise in jobs in sectors that are harder to automate, such as healthcare.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">6</div>
+                                <p>"The last 200 years, we've had an incredible amount of automation," argues MIT economist David Autor. "We have tractors that do the work that horses and people used to do on farms. We don't dig ditches by hand anymore. We don't pound tools out of wrought iron. We don't do bookkeeping with books! But this has not in net reduced the amount of employment."</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">7</div>
+                                <p>However, there is plenty of evidence to suggest that it's going to be different going forward. The introduction of the labor-saving tractor did indeed free up some farmers to plant more crops and others to take on different sorts of work. But the kind of automation combined with artificial intelligence being developed today doesn't just do the physical work of humans. It can do much of the high-level mental work too, faster and more effectively. In the past, newly freed laborers often went on to work in start-up industries that benefited from their availability. Today, the new industries are unlikely to need many human bodies or minds because technology can do the work for less cost.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">8</div>
+                                <p>Jerry Kaplan, an artificial intelligence expert who's founded multiple technology startups, has written a book called <em>Humans Need Not Apply</em>. In it, he lays out the risks of our new era. He explains what's cutting edge and poised to increase: systems that learn from experience and therefore don't need to be programmed, as we commonly understand the term. Not only will machines be able to do work that we think of as requiring human judgment and skill, such as fixing electrical problems, painting a house, or writing a news story, they will also be able to do work that people simply can't. "Unlike humans who are limited in the scope and scale of experiences they can absorb, these systems can scrutinize mountains of instructive examples at blinding speeds. They are capable of comprehending not only the visual, auditory, and written information familiar to us but also the more exotic forms of data that stream through computers and networks," he writes.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">9</div>
+                                <p>Kaplan is mainly referring to the future he predicts based on his perspective as an expert in the tech world. But already, we can see the consequences. There is no evidence that recent advances in technology have so far offered the majority of workers better pay or positions. In fact, the opposite seems to be true. A report by the National Bureau of Economic Research found that between 1990 and 2007, automation lowered both the number of jobs available and the amount those jobs paid. "We estimate large and robust negative effects of robots on employment and wages," write the authors of the study.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">10</div>
+                                <p>Renowned theoretical physicist Stephen Hawking is concerned about massive job loss and how that could affect the stability of our society. "The automation of factories has already decimated jobs in traditional manufacturing," says Hawking. "The rise of artificial intelligence is likely to extend this job destruction deep into the middle classes, with only the most caring, creative, or supervisory roles remaining." Hawking emphasizes that we live in a world where financial inequality is growing, not diminishing. He believes that many people can see their standard of living, and their ability to earn a living at all, disappearing.</p>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div class="w-8 shrink-0 text-slate-400 font-bold text-right select-none">11</div>
+                                <p>This is a frightening scenario. It's tempting to avoid thinking about it, especially because solutions aren't obvious. But the first step toward avoiding the employment problems we might face is acknowledging them. As someone with your future on the line, don't let anyone tell you that technology is automatically going to create a healthy economy for everyone. If we don't want a bleak future for most of us, we have to prioritize human well-being even as we take advantage of what technology offers.</p>
+                            </div>
+                        </div>
+                    </div> <!-- END HEADS UP HUMANS TEXT -->
+
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: Stages UI -->
+<!-- ... existing code ... -->
+                        <!-- Stage 1: The GIST -->
+                        <div id="stage-1" class="space-y-6">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                                <h3 class="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2"><span class="bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm">1</span> Determine the GIST</h3>
+                                <p id="gist-question-text" class="text-sm text-blue-600 dark:text-blue-400 mt-1">Read the text on the left. What is the GIST (main idea) of this article?</p>
+                            </div>
+                            
+                            <div class="space-y-3" id="gist-options-container">
+                                <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-all group">
+                                    <input type="radio" name="gist" class="mt-1 w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500">
+                                    <span id="gist-label-0" class="text-slate-700 dark:text-slate-300 font-medium">Bionic limbs are too expensive for most patients to use in physical therapy.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-all group">
+                                    <input type="radio" name="gist" class="mt-1 w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500">
+                                    <span id="gist-label-1" class="text-slate-700 dark:text-slate-300 font-medium">Bionics only replace missing limbs but cannot provide a sense of touch to the user.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-all group">
+                                    <input type="radio" name="gist" class="mt-1 w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500" value="correct">
+                                    <span id="gist-label-2" class="text-slate-700 dark:text-slate-300 font-medium">Bionics use mechanical and electronic devices to restore function and drastically improve physical therapy.</span>
+                                </label>
+                                <label class="flex items-start gap-3 p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 cursor-pointer transition-all group">
+                                    <input type="radio" name="gist" class="mt-1 w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500">
+                                    <span id="gist-label-3" class="text-slate-700 dark:text-slate-300 font-medium">Physical therapy is no longer needed because bionic limbs work automatically with the brain.</span>
+                                </label>
+                            </div>
+                            
+                            <button onclick="checkGist()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-200 dark:shadow-none transition-colors">Check Answer &rarr;</button>
+                        </div>
+
+                        <!-- Stage 2: Direct Quote -->
+                        <div id="stage-2" class="hidden space-y-6">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                                <h3 class="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2"><span class="bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm">2</span> Find the Evidence</h3>
+                                <p id="quote-instruction-text" class="text-sm text-blue-600 dark:text-blue-400 mt-1">Find a direct quote from the text that proves bionics are controlled by the user's mind.</p>
+                            </div>
+
+                            <div class="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600">
+                                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mb-4 uppercase tracking-wider">Source Text Selection</p>
+                                <p id="quote-source-text" class="text-lg leading-relaxed text-slate-800 dark:text-slate-200 font-serif italic mb-6 p-4 bg-white dark:bg-slate-900 rounded-lg shadow-sm">
+                                    "Bionics involves using mechanical or electronic devices to replace human body parts. Modern bionic limbs are advanced; they can be shunted directly to the nervous system, allowing patients to control them with their minds. This has revolutionized prostheses and dramatically improved physical therapy outcomes."
+                                </p>
+<!-- ... existing code ... -->
+                        <!-- Stage 3: TIDE-L Organizer -->
+                        <div id="stage-3" class="hidden space-y-6">
+                            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                                <h3 id="tide-prompt-title" class="font-bold text-blue-800 dark:text-blue-300 flex items-center gap-2"><span class="bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm">3</span> Paragraph Prompt: How do bionics improve the lives of amputees?</h3>
+                                <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">Use the TIDE-L structure to organize your paragraph. Ensure you have 3 distinct supporting ideas and details.</p>
+                            </div>
+<!-- ... existing code ... -->
+    <!-- Application Logic -->
+    <script>
+        const missionConfig = {
+            'bionics': {
+                title: "Reading Passage: Mission 1",
+                gistQuestion: "Read the text on the left. What is the GIST (main idea) of this article?",
+                gistOptions: [
+                    "Bionic limbs are too expensive for most patients to use in physical therapy.",
+                    "Bionics only replace missing limbs but cannot provide a sense of touch to the user.",
+                    "Bionics use mechanical and electronic devices to restore function and drastically improve physical therapy.",
+                    "Physical therapy is no longer needed because bionic limbs work automatically with the brain."
+                ],
+                gistCorrect: 2,
+                quoteInstruction: "Find a direct quote from the text that proves bionics are controlled by the user's mind.",
+                quoteSource: "\"Bionics involves using mechanical or electronic devices to replace human body parts. Modern bionic limbs are advanced; they can be shunted directly to the nervous system, allowing patients to control them with their minds. This has revolutionized prostheses and dramatically improved physical therapy outcomes.\"",
+                tideTitle: "<span class=\"bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm\">3</span> Paragraph Prompt: How do bionics improve the lives of amputees?"
+            },
+            'automation': {
+                title: "Reading Passage: Mission 2",
+                gistQuestion: "What is James Bessen's main argument about automation?",
+                gistOptions: [
+                    "Automation is a direct cause of the slow economic recovery.",
+                    "Computers are stealing jobs from humans and causing persistent unemployment.",
+                    "Automation will create greater employment opportunities if workers learn to use new tools.",
+                    "Only blue-collar workers need to fear automation taking their jobs."
+                ],
+                gistCorrect: 2,
+                quoteInstruction: "Find a direct quote that shows the net effect of computers on jobs according to the author's research.",
+                quoteSource: "\"So, while computers create jobs in some occupations, they also reduce employment in others. The total effect on unemployment depends on which tendency is stronger. Some of my research shows that the net effect, across the economy, is a wash: Computers create about as many jobs as they eliminate.\"",
+                tideTitle: "<span class=\"bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm\">3</span> Paragraph Prompt: According to the text, why doesn't automation lead to massive unemployment?"
+            },
+            'headsup': {
+                title: "Reading Passage: Mission 3",
+                gistQuestion: "What is Claudia Alarcón's central warning regarding automation?",
+                gistOptions: [
+                    "Technology provides too many distractions for young people.",
+                    "Self-driving cars are too dangerous for public roads.",
+                    "People need to learn to fix tractors and machinery to keep their jobs.",
+                    "Automation and AI will replace human jobs, leading to unemployment and financial inequality."
+                ],
+                gistCorrect: 3,
+                quoteInstruction: "Find a direct quote that provides evidence that robots negatively affect wages.",
+                quoteSource: "\"There is no evidence that recent advances in technology have so far offered the majority of workers better pay or positions. In fact, the opposite seems to be true. A report by the National Bureau of Economic Research found that between 1990 and 2007, automation lowered both the number of jobs available and the amount those jobs paid. 'We estimate large and robust negative effects of robots on employment and wages,' write the authors of the study.\"",
+                tideTitle: "<span class=\"bg-blue-200 dark:bg-blue-700 text-blue-900 dark:text-blue-100 w-6 h-6 rounded-full flex items-center justify-center text-sm\">3</span> Paragraph Prompt: Why does the author argue that future automation will be worse for workers than past automation?"
             }
-        }
+        };
 
+        function loadMission(missionId) {
+            const config = missionConfig[missionId];
+            if (!config) return;
 
-        // --- STAGE RENDERERS (HTML Generators) ---
+            // Hide all reading texts, show the active one
+            document.querySelectorAll('.mission-text-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            document.getElementById('text-' + missionId).classList.remove('hidden');
+            document.getElementById('text-' + missionId).classList.add('block');
 
-        // Stage 1
-        function renderGist() {
-            const d = GameState.data.gist;
-            return `
-                <div class="space-y-6">
-                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
-                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Step 1: Pre-Read for the GIST</h3>
-                        <p class="text-sm text-blue-700 dark:text-blue-400">Read the article on the left. Hover over the <span class="border-b-2 border-dotted border-blue-500">blue dotted words</span> if you need vocabulary help. Then, break down the core message into 4 simple parts.</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Who? (Subject)</label>
-                            <input type="text" id="gist-who" value="${d.who}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Scientists and engineers...">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Did What? (Action)</label>
-                            <input type="text" id="gist-what" value="${d.didWhat}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., are creating bionic technologies...">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">When / Where?</label>
-                                <input type="text" id="gist-where" value="${d.whenWhere}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., Today in labs...">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Why / What happened?</label>
-                                <input type="text" id="gist-why" value="${d.why}" class="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none" placeholder="e.g., to improve human lives.">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Stage 2
-        function renderPromptPull() {
-            return `
-                <div class="space-y-6 h-full flex flex-col">
-                    <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
-                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Step 2: Pull Apart the Prompt</h3>
-                        <p class="text-sm text-blue-700 dark:text-blue-400">Drag the highlighted words from the prompt into the correct buckets to understand exactly what you need to do.</p>
-                    </div>
-                    
-                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-300 dark:border-slate-600 shadow-sm">
-                        <p class="font-serif italic text-slate-700 dark:text-slate-300 leading-relaxed">
-                            "We're in the midst of a bionic revolution." 
-                            <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Explain</span> ways 
-                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">bionic technologies</span> can improve people’s lives. 
-                            <span class="draggable bg-blue-100 text-blue-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="verb">Use</span> 
-                            <span class="draggable bg-purple-100 text-purple-800 px-2 py-1 rounded cursor-grab font-sans font-bold shadow-sm" draggable="true" data-type="noun">text evidence</span> to support your ideas.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 flex-1">
-                        <!-- DO Bucket (Verbs) -->
-                        <div class="bg-blue-50/50 dark:bg-slate-700/50 rounded-xl p-4 border-2 border-dashed border-blue-300 dark:border-blue-600 flex flex-col">
-                            <h4 class="font-bold text-center text-blue-700 dark:text-blue-400 mb-4 border-b border-blue-200 pb-2">DO (Verbs)</h4>
-                            <div class="dropzone flex-1 flex flex-col gap-2 min-h-[100px]" data-accept="verb">
-                                <!-- Drops here -->
-                            </div>
-                        </div>
-                        
-                        <!-- WHAT Bucket (Nouns) -->
-                        <div class="bg-purple-50/50 dark:bg-slate-700/50 rounded-xl p-4 border-2 border-dashed border-purple-300 dark:border-purple-600 flex flex-col">
-                            <h4 class="font-bold text-center text-purple-700 dark:text-purple-400 mb-4 border-b border-purple-200 pb-2">WHAT (Nouns)</h4>
-                            <div class="dropzone flex-1 flex flex-col gap-2 min-h-[100px]" data-accept="noun">
-                                <!-- Drops here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Drag and Drop Logic for Stage 2
-        function setupDragAndDrop() {
-            const draggables = document.querySelectorAll('.draggable');
-            const dropzones = document.querySelectorAll('.dropzone');
+            // Update UI elements with config data
+            document.getElementById('reading-pane-title').innerText = config.title;
+            document.getElementById('gist-question-text').innerText = config.gistQuestion;
+            document.getElementById('gist-label-0').innerText = config.gistOptions[0];
+            document.getElementById('gist-label-1').innerText = config.gistOptions[1];
+            document.getElementById('gist-label-2').innerText = config.gistOptions[2];
+            document.getElementById('gist-label-3').innerText = config.gistOptions[3];
             
-            draggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', () => {
-                    draggable.classList.add('opacity-50');
-                    draggable.setAttribute('data-dragging', 'true');
-                });
-                draggable.addEventListener('dragend', () => {
-                    draggable.classList.remove('opacity-50');
-                    draggable.removeAttribute('data-dragging');
-                });
+            // Reset radio values (remove correct value, reassign)
+            const radios = document.querySelectorAll('input[name="gist"]');
+            radios.forEach((r, idx) => {
+                r.checked = false;
+                r.value = idx === config.gistCorrect ? "correct" : "";
             });
 
-            dropzones.forEach(zone => {
-                zone.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    zone.classList.add('dragover');
-                });
-                zone.addEventListener('dragleave', () => {
-                    zone.classList.remove('dragover');
-                });
-                zone.addEventListener('drop', e => {
-                    e.preventDefault();
-                    zone.classList.remove('dragover');
-                    const draggable = document.querySelector('[data-dragging="true"]');
-                    if (draggable && draggable.dataset.type === zone.dataset.accept) {
-                        zone.appendChild(draggable);
-                        addXP(20);
-                        showCoachMessage("Correct categorization!");
-                    } else if (draggable) {
-                        showCoachMessage("Oops! Does that word describe an Action (Do) or a Thing (What)?");
-                    }
-                });
-            });
-        }
-
-        // Stage 3
-        function renderTidel() {
-            const d = GameState.data.tidel;
-            return `
-                <div class="space-y-4">
-                    <div class="bg-slate-800 text-white p-4 rounded-xl shadow-lg mb-6 flex justify-between items-center">
-                        <div>
-                            <h3 class="font-bold text-lg text-tide-t">TIDE-L Organizer</h3>
-                            <p class="text-sm text-slate-300">Highlight text in the article and click T, I, or D to pull evidence here!</p>
-                        </div>
-                    </div>
-
-                    <!-- T -->
-                    <div class="border-l-4 border-tide-t pl-4 bg-green-50 dark:bg-green-900/10 p-3 rounded-r-lg">
-                        <label class="block text-sm font-bold text-tide-t mb-1">T: Topic Sentence</label>
-                        <textarea id="tide-t" rows="2" class="w-full p-2 rounded border border-green-200 dark:border-green-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-t">${d.t}</textarea>
-                    </div>
-                    
-                    <!-- I1 & D1 -->
-                    <div class="border-l-4 border-tide-i pl-4 bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-r-lg mt-4">
-                        <label class="block text-sm font-bold text-tide-i mb-1">I: Supporting Idea 1</label>
-                        <textarea id="tide-i1" rows="2" class="w-full p-2 rounded border border-yellow-200 dark:border-yellow-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-i">${d.i1}</textarea>
-                    </div>
-                    <div class="border-l-4 border-tide-d pl-4 bg-orange-50 dark:bg-orange-900/10 p-3 rounded-r-lg">
-                        <label class="block text-sm font-bold text-tide-d mb-1">D: Detail / Analysis ("This matters because...")</label>
-                        <textarea id="tide-d1" rows="2" class="w-full p-2 rounded border border-orange-200 dark:border-orange-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-d">${d.d1}</textarea>
-                    </div>
-
-                    <!-- I2 & D2 -->
-                    <div class="border-l-4 border-tide-i pl-4 bg-yellow-50 dark:bg-yellow-900/10 p-3 rounded-r-lg mt-4">
-                        <label class="block text-sm font-bold text-tide-i mb-1">I: Supporting Idea 2</label>
-                        <textarea id="tide-i2" rows="2" class="w-full p-2 rounded border border-yellow-200 dark:border-yellow-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-i">${d.i2}</textarea>
-                    </div>
-                    <div class="border-l-4 border-tide-d pl-4 bg-orange-50 dark:bg-orange-900/10 p-3 rounded-r-lg">
-                        <label class="block text-sm font-bold text-tide-d mb-1">D: Detail / Analysis ("This shows that...")</label>
-                        <textarea id="tide-d2" rows="2" class="w-full p-2 rounded border border-orange-200 dark:border-orange-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-d">${d.d2}</textarea>
-                    </div>
-
-                    <!-- E -->
-                    <div class="border-l-4 border-tide-e pl-4 bg-pink-50 dark:bg-pink-900/10 p-3 rounded-r-lg mt-4">
-                        <label class="block text-sm font-bold text-tide-e mb-1">E: Ending Sentence</label>
-                        <textarea id="tide-e" rows="2" class="w-full p-2 rounded border border-pink-200 dark:border-pink-800 bg-white dark:bg-slate-800 dark:text-white outline-none focus:border-tide-e">${d.e}</textarea>
-                    </div>
-
-                    <!-- L Box -->
-                    <div class="border-2 border-dashed border-slate-400 p-4 rounded-xl mt-6 bg-slate-100 dark:bg-slate-800">
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">L: Language Box (Vocab to include)</label>
-                        <div class="flex flex-wrap gap-2 mb-2">
-                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">myoelectric</span>
-                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">exoskeleton</span>
-                            <span class="px-2 py-1 bg-white dark:bg-slate-700 rounded shadow-sm text-sm border border-slate-200">algorithms</span>
-                        </div>
-                        <input type="text" id="tide-l" value="${d.l}" class="w-full p-2 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 dark:text-white outline-none" placeholder="Type the vocab words you plan to use...">
-                    </div>
-                </div>
-            `;
-        }
-
-        // Stage 4
-        function renderQuoteSandwich() {
-            return `
-                <div class="space-y-6 text-slate-800 dark:text-slate-200">
-                    <div class="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-xl border border-amber-200 dark:border-amber-800">
-                        <h3 class="font-bold text-amber-800 dark:text-amber-400 mb-2">Mini-Game: Trim the Fat (MLA Sandwich)</h3>
-                        <p class="text-sm">Quotes are the meat, but they need bread! Use ellipses (...) to cut out the boring parts of this quote, and add a proper signal phrase and citation.</p>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm text-center relative overflow-hidden">
-                        
-                        <!-- Top Bun (Signal Phrase) -->
-                        <div class="mb-4">
-                            <select id="signal-phrase" class="p-2 rounded bg-orange-100 dark:bg-orange-900/50 border border-orange-300 font-bold text-orange-800 dark:text-orange-300 w-2/3">
-                                <option value="">[Select Top Bun / Signal Phrase]</option>
-                                <option value="According to the author, ">According to the author,</option>
-                                <option value="The text states, ">The text states,</option>
-                                <option value="Researchers note that ">Researchers note that</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Meat (The Quote) -->
-                        <div class="bg-red-100 dark:bg-red-900/30 p-4 rounded border-2 border-dashed border-red-300 my-2">
-                            <p class="text-sm text-red-600 mb-2 font-bold uppercase">Original Quote: "These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before..."</p>
-                            <textarea id="trimmed-quote" class="w-full p-2 rounded font-serif italic bg-white dark:bg-slate-900 border border-red-200" rows="2">"These new prostheses aren't just going to restore missing human abilities. They're going to enhance our abilities, giving us powers we never had before..."</textarea>
-                            <p class="text-xs text-slate-500 mt-1">Goal: Trim it to focus just on enhancing our abilities. Use ...</p>
-                        </div>
-                        
-                        <!-- Bottom Bun (Citation) -->
-                        <div class="mt-4">
-                            <select id="citation" class="p-2 rounded bg-orange-100 dark:bg-orange-900/50 border border-orange-300 font-bold text-orange-800 dark:text-orange-300 w-1/3">
-                                <option value="">[Select Bottom Bun / Citation]</option>
-                                <option value="(Naam 21).">(Naam 21).</option>
-                                <option value="(Author, 21).">(Author, 21).</option>
-                                <option value="(Bionics 21).">("Bionics" 21).</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Stage 5
-        function renderEditing() {
-            return `
-                <div class="space-y-6">
-                    <div class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
-                        <h3 class="font-bold text-purple-800 dark:text-purple-400 mb-2">CUPS: Transition Sorter</h3>
-                        <p class="text-sm text-purple-700 dark:text-purple-400 mb-4">Transitions make sentences flow smoothly. Drag these words into Internal (inside a paragraph) or External (between paragraphs).</p>
-                    </div>
-
-                    <div class="flex gap-2 flex-wrap justify-center mb-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl">
-                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="ext">Furthermore,</span>
-                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="int">specifically</span>
-                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="ext">In conclusion,</span>
-                        <span class="draggable bg-white dark:bg-slate-700 px-3 py-1 rounded shadow cursor-grab border border-slate-300" draggable="true" data-type="int">such as</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 h-48">
-                        <div class="dropzone rounded-xl border-2 border-dashed border-slate-400 dark:border-slate-600 p-4 flex flex-col gap-2" data-accept="int">
-                            <h4 class="font-bold text-center text-slate-500">Internal Transitions</h4>
-                        </div>
-                        <div class="dropzone rounded-xl border-2 border-dashed border-slate-400 dark:border-slate-600 p-4 flex flex-col gap-2" data-accept="ext">
-                            <h4 class="font-bold text-center text-slate-500">External Transitions</h4>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Stage 6
-        function renderFinalDraft() {
-            const d = GameState.data.tidel;
+            document.getElementById('quote-instruction-text').innerText = config.quoteInstruction;
+            document.getElementById('quote-source-text').innerText = config.quoteSource;
+            document.getElementById('tide-prompt-title').innerHTML = config.tideTitle;
             
-            // Construct draft with color-coded spans based on TIDE
-            const draftHTML = `
-                <span class="bg-tide-t/20 dark:bg-tide-t/40 px-1 rounded" title="Topic">${d.t || "[Missing Topic Sentence]"}</span> 
-                <span class="bg-tide-i/20 dark:bg-tide-i/40 px-1 rounded" title="Idea 1">${d.i1 || "[Missing Idea 1]"}</span> 
-                <span class="bg-tide-d/20 dark:bg-tide-d/40 px-1 rounded" title="Detail 1">${d.d1 || "[Missing Detail 1]"}</span> 
-                <span class="bg-tide-i/20 dark:bg-tide-i/40 px-1 rounded" title="Idea 2">${d.i2 || "[Missing Idea 2]"}</span> 
-                <span class="bg-tide-d/20 dark:bg-tide-d/40 px-1 rounded" title="Detail 2">${d.d2 || "[Missing Detail 2]"}</span> 
-                <span class="bg-tide-e/20 dark:bg-tide-e/40 px-1 rounded" title="Ending">${d.e || "[Missing Ending Sentence]"}</span>
-            `;
-
-            return `
-                <div class="space-y-6 h-full flex flex-col">
-                    <div class="bg-green-50 dark:bg-green-900/20 p-4 rounded-xl border border-green-200 dark:border-green-800 shrink-0">
-                        <h3 class="font-bold text-green-800 dark:text-green-400 mb-2">ARMS: Final Polish</h3>
-                        <p class="text-sm">Add, Remove, Move, Substitute. Review your color-coded paragraph below. Notice any missing colors? Fix it in the final editor!</p>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-inner mb-4 leading-relaxed font-serif text-slate-800 dark:text-slate-200">
-                        ${draftHTML}
-                    </div>
-
-                    <div class="flex-1 flex flex-col">
-                        <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Final Masterpiece Editor (Removes colors for final export)</label>
-                        <textarea id="final-text-output" class="w-full flex-1 p-4 rounded-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-white outline-none focus:ring-2 focus:ring-blue-500 font-serif leading-loose resize-none" placeholder="Make your final edits here...">${d.t} ${d.i1} ${d.d1} ${d.i2} ${d.d2} ${d.e}</textarea>
-                    </div>
-                </div>
-            `;
-        }
-
-        function exportDocument() {
-            const finalDoc = document.getElementById('final-text-output').value;
+            // Reset TIDE inputs
+            document.querySelectorAll('#stage-3 textarea').forEach(ta => ta.value = '');
+            document.getElementById('draft-editor').innerHTML = '<span class="text-slate-400 italic">Complete Stage 3 and click "Refresh Draft Text" to populate your paragraph here...</span>';
             
-            // Create a printable window simulation
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(`
-                <html>
-                <head>
-                    <title>Student Essay Export</title>
-                    <style>
-                        body { font-family: 'Times New Roman', serif; max-width: 800px; margin: 40px auto; line-height: 2; font-size: 12pt; padding: 20px; }
-                        .heading { text-align: left; margin-bottom: 24px; line-height: 1.5; }
-                        h1 { text-align: center; font-size: 12pt; font-weight: normal; margin-bottom: 24px; }
-                        p { text-indent: 0.5in; margin: 0; }
-                    </style>
-                </head>
-                <body>
-                    <div class="heading">
-                        Student Name<br>
-                        Teacher Name<br>
-                        English Language Arts<br>
-                        ${new Date().toLocaleDateString()}
-                    </div>
-                    <h1>Are Bionic Superhumans on the Horizon? - Analysis</h1>
-                    <p>${finalDoc.replace(/\n/g, '<br>')}</p>
-                    <script>
-                        window.onload = () => window.print();
-                    <\/script>
-                </body>
-                </html>
-            `);
-            printWindow.document.close();
+            // Go to stage 1 manually
+            document.getElementById('stage-1').classList.remove('hidden');
+            document.getElementById('stage-2').classList.add('hidden');
+            document.getElementById('stage-3').classList.add('hidden');
+            document.getElementById('stage-4').classList.add('hidden');
+            
+            // Reset quote interaction
+            document.getElementById('extracted-quote').value = '';
+            document.getElementById('extracted-quote').classList.add('hidden');
+
+            // Switch to mission tab
+            switchTab('mission');
         }
 
-    </script>
-</body>
-</html>
+        // State Tracking
+<!-- ... existing code ... -->
