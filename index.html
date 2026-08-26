@@ -228,6 +228,7 @@ h2.sec{font-size:21px;font-weight:850;letter-spacing:-.015em;margin-bottom:6px}
 .badge.strong{background:var(--good-soft);color:var(--good);border:1px solid var(--good)}
 .badge.weak{background:var(--warn-soft);color:var(--warn);border:1px solid var(--warn)}
 .badge.off{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad)}
+.badge.none,.badge.ctx{background:var(--panel-2);color:var(--ink-2);border:1px solid var(--line-2)}
 
 /* ===================== TIDE ORGANIZER ===================== */
 .tide{border:2px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--panel)}
@@ -270,6 +271,7 @@ h2.sec{font-size:21px;font-weight:850;letter-spacing:-.015em;margin-bottom:6px}
 .tool.on{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
 .tool.doTool.on{background:var(--d);border-color:var(--d);color:var(--d-on)}
 .tool.whatTool.on{background:var(--l);border-color:var(--l);color:var(--l-on)}
+.tool.noneTool.on{background:var(--ink-3);border-color:var(--ink-3);color:var(--panel)}
 .tok.tagDO{background:var(--d-soft);border-bottom-color:var(--d)}
 .tok.tagWHAT{background:var(--l-soft);border-bottom-color:var(--l)}
 
@@ -387,6 +389,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--brand);outline:none;b
   <span class="chip xp" title="Experience points">⭐ <span id="xpv">0</span></span>
   <button class="iconbtn" id="btnLib" title="Choose a text (L)" aria-label="Text library">🗂️</button>
   <button class="iconbtn" id="btnText" title="Open the text (T)" aria-label="Open the text">📖</button>
+  <button class="iconbtn" id="btnQuote" title="Quote Lab — how to quote and cite (Q)" aria-label="Quote Lab">📎</button>
   <button class="iconbtn" id="btnTools" title="Writer's Toolbox (reference sheets)" aria-label="Toolbox">🧰</button>
   <button class="iconbtn" id="btnReport" title="Progress report" aria-label="Progress report">📋</button>
   <button class="iconbtn" id="btnSettings" title="Settings" aria-label="Settings">⚙️</button>
@@ -497,6 +500,24 @@ input:focus,textarea:focus,select:focus{border-color:var(--brand);outline:none;b
   <div class="card" id="libNote"></div>
 </section>
 
+<!-- ============ QUOTE LAB (standalone — not part of the step rail) ============ -->
+<section class="screen" id="sc-mla">
+  <div class="card">
+    <div class="eyebrow">Quote Lab · MLA</div>
+    <h1 class="title">How to use somebody else's words 📎</h1>
+    <p class="lede">Borrowing a sentence from a text is the single most technical thing you do as a writer. There are rules
+    for how you introduce it, rules for the punctuation, and rules for the credit you give. Get them right and your
+    paragraph sounds like it was written by someone older. Get them wrong and it looks like you copied.</p>
+    <p class="lede" style="margin-top:10px"><b>This page stays open to you the whole year.</b> Press <b>Q</b> from anywhere,
+    or tap the 📎 button in the header.</p>
+    <div class="btnrow"><button class="btn ghost" id="mlaBack">← Back to what I was doing</button></div>
+  </div>
+  <div id="qlBody"></div>
+  <div class="card">
+    <div class="btnrow"><button class="btn" id="mlaBack2">← Back to what I was doing</button></div>
+  </div>
+</section>
+
 <!-- ============ 3 · READ ============ -->
 <section class="screen" id="sc-3">
   <div class="card">
@@ -604,6 +625,8 @@ input:focus,textarea:focus,select:focus{border-color:var(--brand);outline:none;b
     sentences here you'll be too attached to change them later.</p>
     <div id="orgLesson"></div>
   </div>
+  <div id="gate7"></div>
+  <div id="notesPanel"></div>
 
   <div class="card"><h2 class="sec">T · Topic sentence</h2><div id="stepT"></div></div>
   <div class="card" id="cardI" style="display:none"><h2 class="sec">I · Important Evidence</h2><div id="stepI"></div></div>
@@ -629,6 +652,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--brand);outline:none;b
     This is a <b>rough draft</b> — it is supposed to be rough.</p>
   </div>
 
+  <div id="gate8"></div>
   <div id="transLessonWrap"></div>
   <div id="mlaLessonWrap"></div>
 
@@ -710,6 +734,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--brand);outline:none;b
     <p class="lede">Same highlighters your teacher uses. Go sentence by sentence and name the job each one does.
     If a color is missing from your paragraph, you just found your goal for next time.</p>
   </div>
+  <div id="gate11"></div>
   <div class="card">
     <h2 class="sec">Color-code your paragraph</h2>
     <div id="scoreGame"></div>
@@ -897,7 +922,8 @@ const BADGES = {
  cups:{i:"🔎",n:"CUPS Patrol",d:"Found every error in the cadet's draft."},
  arms:{i:"💪",n:"Reviser",d:"Diagnosed six writing problems with ARMS."},
  syntax:{i:"🧬",n:"Sentence Surgeon",d:"Combined choppy sentences like a pro."},
- score:{i:"🎯",n:"Self-Scorer",d:"Scored your own writing and set a goal."}
+ score:{i:"🎯",n:"Self-Scorer",d:"Scored your own writing and set a goal."},
+ quote:{i:"📎",n:"Quote Technician",d:"Finished every drill in the Quote Lab."}
 };
 const POWER = [
  {l:"P",n:"Plan",c:"var(--t)",o:"var(--t-on)",d:"Pre-read and write the <b>gist</b>, <b>pull apart the prompt</b>, then <b>pick your ideas</b>. Three moves before you write a word.",day:"Think first"},
@@ -923,6 +949,30 @@ const ARMS_CASES = [
  {p:"Your paragraph has a topic sentence, three quotes with explanations… and then it just stops.",
   a:"A",f:"<b>Add.</b> You're missing the <b>E</b>. Without an ending, a paragraph feels like someone walked out mid-conversation."}
 ];
+/* Not every sentence is evidence — but no sentence is useless. Each context
+   sentence is tagged with the job it actually does, and the game tells the
+   student where in TIDE-L that job belongs. */
+const USE_KINDS={
+ claim:{i:"🎯",n:"The author's claim",
+  what:"This is what the author wants you to <i>think</i> — the point the rest of the text exists to prove. Claims and evidence sound alike, because both sound confident. The difference: a claim tells you <b>what</b>, evidence tells you <b>why</b>.",
+  where:"<b>This belongs in your T.</b> Put it in your own words and you have most of a topic sentence. Quote it in an <b>I</b> and a grader will write “that's the author's opinion, not support” in the margin — because you'd be proving a claim with the same claim."},
+ signpost:{i:"🪧",n:"A signpost",
+  what:"This sentence is the author organizing the text for you. It names a category, announces a section, or turns a corner — “the most obvious bionics are those that replace limbs,” “nor is memory the end of it.”",
+  where:"<b>Use it to organize, not to prove.</b> A signpost tells you a whole <i>group</i> of evidence is coming, which is genuinely valuable: it can seed a topic sentence (“One way bionics improve lives is by replacing limbs…”), or become the internal transition you put in front of your next <b>I</b>. Follow the signpost and the real evidence is usually within a sentence or two."},
+ setup:{i:"🧱",n:"Set-up and background",
+  what:"This carries the information a reader needs <i>before</i> your evidence can mean anything — a definition, a “before” picture, or how the thing works.",
+  where:"<b>This belongs in your D.</b> The weakest explanations just repeat the quote; the strongest ones supply the context that makes it land. “Cathy Hutchinson controls a robotic arm by thinking about it” is impressive. It is <i>devastating</i> once you add that a stroke had left her without the use of her arms. That second half is this kind of sentence."},
+ source:{i:"🎓",n:"Who the source is",
+  what:"This introduces the person about to be quoted and tells you why they're worth listening to — their job, their research, their book.",
+  where:"<b>Use it inside your signal phrase.</b> Compare “Kaplan says…” with “Jerry Kaplan, an artificial intelligence expert who has founded multiple technology startups, warns that…”. The second one borrows the source's authority for your paragraph. Credentials are free credibility — collect them and use them."},
+ question:{i:"❓",n:"A question the author asks",
+  what:"A question contains no claim, so it can never prove anything. Authors ask them to make you think, and to set up the answer they are about to give.",
+  where:"<b>Answer it in your D, or echo it in your E.</b> Taking the author's question and answering it in your own words is one of the most sophisticated moves available to a middle-school writer — it shows you followed the argument instead of just harvesting it."},
+ hook:{i:"🪝",n:"The hook",
+  what:"The opening move, built to get you nodding before the real argument starts. Notice how it feels to read — that's craft.",
+  where:"<b>Steal the technique for your own E.</b> And stay suspicious: an opening that agrees with you is often setting up a turn. In an argument, the first paragraph is frequently the side the author is about to disagree with."}
+};
+
 const CONNECTORS=["because","so ","which means","as a result","this matters","allows","gives","without","instead of","in order to","therefore","meaning"];
 
 /* ==========================================================================
@@ -964,11 +1014,11 @@ const PASS_BIO = [
   {id:"3b",t:"Deep brain stimulators are used to control Parkinson’s disease, though lately they’ve also been tested—with encouraging results—in use against severe depression and obsessive compulsive disorder.",q:"strong",
    w:"Strong. Three named conditions this technology helps. Evidence that a device treats <b>disease</b> is evidence it <b>improves lives</b>.",lab:"Deep brain stimulators treat Parkinson’s, depression, and OCD"}]},
 {n:4,pg:20,s:[
-  {id:"4a",t:"The most obvious bionics are those that replace limbs.",q:"none"},
+  {id:"4a",t:"The most obvious bionics are those that replace limbs.",q:"none",k:"signpost"},
   {id:"4b",t:"Olympian “Blade Runner” Oscar Pistorius made a splash with his Cheetah carbon fiber {prostheses}.",q:"weak",
    w:"Careful — Pistorius shows up later in the article as part of the <b>fairness debate</b>. Using him here can pull your paragraph off-topic."},
-  {id:"4c",t:"Yet those are a relatively simple technology—a curved piece of slightly springy, super-strong material.",q:"none"},
-  {id:"4d",t:"In the digital age, we’re seeing more {sophisticated} limbs.",q:"none"}]},
+  {id:"4c",t:"Yet those are a relatively simple technology—a curved piece of slightly springy, super-strong material.",q:"none",k:"setup"},
+  {id:"4d",t:"In the digital age, we’re seeing more {sophisticated} limbs.",q:"none",k:"signpost"}]},
 {n:5,pg:20,s:[
   {id:"5a",t:"Consider the thought-controlled bionic leg that Zac Vawter used to climb all 103 floors of Chicago’s Willis Tower.",q:"strong",
    w:"Outstanding. A <b>named person</b> doing something <b>concrete and measurable</b> (103 floors) that he could not have done otherwise. This is what graders mean by “well-chosen evidence.”",lab:"Zac Vawter climbed 103 floors on a bionic leg"},
@@ -978,7 +1028,7 @@ const PASS_BIO = [
   {id:"6a",t:"Or the even more {sophisticated} i-limb Ultra, an artificial hand with five independently {articulating} artificial fingers.",q:"weak",
    w:"A great <i>detail</i> but a thin <i>argument</i> — five moving fingers is a spec, not yet a benefit. Pair it with ¶7 if you want to use it."}]},
 {n:7,pg:20,s:[
-  {id:"7a",t:"Those limbs don’t just react mechanically to pressure.",q:"none"},
+  {id:"7a",t:"Those limbs don’t just react mechanically to pressure.",q:"none",k:"setup"},
   {id:"7b",t:"They actually respond to the thoughts and intentions of their owners, flexing, extending, gripping, and releasing on mental command.",q:"strong",
    w:"Strong. The limb obeys the person's <b>thoughts</b> — that's the leap from “tool” to “body part.” Great evidence, and a great vocabulary sentence too.",lab:"Bionic limbs respond to their owners’ thoughts"},
   {id:"7c",t:"The age when {prostheses} were largely {inert} pieces of wood, metal, and plastic is passing.",q:"weak",
@@ -986,17 +1036,17 @@ const PASS_BIO = [
   {id:"7d",t:"Advances in microprocessors, in techniques to {interface} digital technology with the human nervous system, and in battery technology to allow {prostheses} to pack more power with less weight are turning replacement limbs into active parts of the human body.",q:"weak",
    w:"This explains <i>how</i> the technology works. Keep it in your back pocket for the D — “detailed explanation” loves a how."}]},
 {n:8,pg:20,s:[
-  {id:"8a",t:"In some cases, they’re not even part of the body at all.",q:"none"},
-  {id:"8b",t:"Consider the case of Cathy Hutchinson.",q:"none"},
-  {id:"8c",t:"In 1997, Cathy had a stroke, leaving her without control of her arms.",q:"none"},
+  {id:"8a",t:"In some cases, they’re not even part of the body at all.",q:"none",k:"signpost"},
+  {id:"8b",t:"Consider the case of Cathy Hutchinson.",q:"none",k:"signpost"},
+  {id:"8c",t:"In 1997, Cathy had a stroke, leaving her without control of her arms.",q:"none",k:"setup"},
   {id:"8d",t:"Hutchinson volunteered for an experimental procedure that could one day help millions of people with partial or complete {paralysis}.",q:"strong",
    w:"Strong — and notice the scale: “millions of people.” Evidence that names <b>how many</b> people could be helped is powerful.",lab:"A procedure that could help millions with paralysis"},
-  {id:"8e",t:"She let researchers {implanted:implant} a small device in the part of her brain responsible for motor control.",q:"none"},
+  {id:"8e",t:"She let researchers {implanted:implant} a small device in the part of her brain responsible for motor control.",q:"none",k:"setup"},
   {id:"8f",t:"With that device, she is able to control an external robotic arm by thinking about it.",q:"strong",
    w:"Excellent. A woman who lost the use of her arms now moves a robotic one with her mind. Concrete, human, and directly on-prompt.",lab:"Cathy Hutchinson controls a robotic arm with her thoughts"}]},
 {n:9,pg:20,s:[
-  {id:"9a",t:"That, in turn, brings up an interesting question: If the arm isn’t physically attached to her body, how far away could she be and still control it?",q:"none"},
-  {id:"9b",t:"The answer is at least thousands of miles.",q:"none"},
+  {id:"9a",t:"That, in turn, brings up an interesting question: If the arm isn’t physically attached to her body, how far away could she be and still control it?",q:"none",k:"question"},
+  {id:"9b",t:"The answer is at least thousands of miles.",q:"none",k:"setup"},
   {id:"9c",t:"In animal studies, scientists have shown that a monkey with a brain {implanted:implant} can control a robot arm 7,000 miles away.",q:"weak",
    w:"Amazing fact — but it's about <b>distance</b>, not about improving a human life. Cool ≠ relevant. Save it for a different prompt."},
   {id:"9d",t:"The monkey’s mental signals were sent over the internet, from Duke University in North Carolina, to the robot arm in Japan.",q:"off",
@@ -1005,7 +1055,7 @@ const PASS_BIO = [
    w:"Off-target. Great vocabulary word (<i>irrelevant</i>) for your Language Box, though!"}]},
 {h:"The Superhuman Frontier"},
 {n:10,pg:21,s:[
-  {id:"10a",t:"The 7,000-mile-away prosthetic arm makes an important point: These new {prostheses} aren’t just going to restore missing human abilities.",q:"none"},
+  {id:"10a",t:"The 7,000-mile-away prosthetic arm makes an important point: These new {prostheses} aren’t just going to restore missing human abilities.",q:"none",k:"claim"},
   {id:"10b",t:"They’re going to enhance our abilities, giving us powers we never had before, and {augmenting} other capabilities we have.",q:"strong",
    w:"Strong — this is the article's <b>turn</b>, from repairing to upgrading. If your paragraph only talks about repair, this sentence adds a whole second dimension.",lab:"Bionics will enhance abilities, not just restore them"},
   {id:"10c",t:"While the current generation of {prostheses} is still {primitive}, we can already see this taking shape when a monkey moves a robotic arm on the other side of the planet just by thinking about it.",q:"weak",
@@ -1014,18 +1064,18 @@ const PASS_BIO = [
   {id:"11a",t:"Other research is pointing to {enhancement:enhancements} to memory and decision making.",q:"weak",
    w:"This is a <b>signpost sentence</b> — it announces the next section. Useful for a transition; thin as proof."}]},
 {n:12,pg:21,s:[
-  {id:"12a",t:"The {hippocampus} is a small, seahorse-shaped part of the brain that’s essential in forming new memories.",q:"none"},
-  {id:"12b",t:"If it’s damaged—by an injury to the head, for example—people start having difficulty forming new long-term memories.",q:"none"},
-  {id:"12c",t:"In the most extreme cases, this can lead to the complete inability to form new long-term memories, as in the film Memento.",q:"none"},
+  {id:"12a",t:"The {hippocampus} is a small, seahorse-shaped part of the brain that’s essential in forming new memories.",q:"none",k:"setup"},
+  {id:"12b",t:"If it’s damaged—by an injury to the head, for example—people start having difficulty forming new long-term memories.",q:"none",k:"setup"},
+  {id:"12c",t:"In the most extreme cases, this can lead to the complete inability to form new long-term memories, as in the film Memento.",q:"none",k:"setup"},
   {id:"12d",t:"Working to find a way to repair this sort of brain damage, researchers in 2011 created a “hippocampus chip” that can replace damaged brain tissue.",q:"strong",
    w:"Strong. A dated, specific invention (2011) that repairs brain damage. Dates and numbers make evidence feel researched instead of guessed.",lab:"A 2011 “hippocampus chip” can replace damaged brain tissue"},
   {id:"12e",t:"When they {implanted} it in rats with a damaged {hippocampus}, they found that not only could their chip repair damaged memory—it could improve the rats’ ability to learn new things.",q:"strong",
    w:"Strong, with a bonus: it does <i>both</i> jobs at once — repairs <b>and</b> improves. Perfect for a paragraph about improving lives.",lab:"The chip repaired memory and improved learning"}]},
 {n:13,pg:21,s:[
-  {id:"13a",t:"Nor is memory the end of it.",q:"none"},
+  {id:"13a",t:"Nor is memory the end of it.",q:"none",k:"signpost"},
   {id:"13b",t:"Another study, in 2012, demonstrated that we can boost intelligence—at least one sort—in monkeys.",q:"weak",
    w:"Solid fact, but it's about monkeys in a lab. You can still use it — just be honest in your D that this is <i>early</i> research."},
-  {id:"13c",t:"Scientists at Wake Forest University {implanted} specialized brain chips in a set of monkeys and trained those monkeys to perform a picture-matching game.",q:"none"},
+  {id:"13c",t:"Scientists at Wake Forest University {implanted} specialized brain chips in a set of monkeys and trained those monkeys to perform a picture-matching game.",q:"none",k:"setup"},
   {id:"13d",t:"When the implant was activated, it raised their scores by an average of 10 points on a 100-point scale.",q:"strong",
    w:"Strong — a hard number (10 points out of 100) from a named university. Precise evidence is persuasive evidence.",lab:"A brain chip raised test scores by 10 points"},
   {id:"13e",t:"The {implanted:implant} makes monkeys smarter.",q:"weak",
@@ -1043,7 +1093,7 @@ const PASS_BIO = [
   {id:"15d",t:"He was able—with the help of doctors and biomedical engineers—to make a compelling case that his Cheetah blades didn’t give him any advantage on the field.",q:"off",w:"Off-target for this prompt."},
   {id:"15e",t:"But how long will that be true? How long until we have {prostheses} (not to mention drugs and {genetic therapies}) that make athletes better in their sports?",q:"off",w:"Questions about the future. Not proof."}]},
 {n:16,pg:22,s:[
-  {id:"16a",t:"But the issue is much, much wider than professional sports.",q:"none"},
+  {id:"16a",t:"But the issue is much, much wider than professional sports.",q:"none",k:"signpost"},
   {id:"16b",t:"We may care passionately about the {integrity} of the Olympics or professional cycling or so on, but they only directly affect a very small number of us.",q:"off",
    w:"Off-target — but bank <b>integrity</b> in your Language Box. It's one of your three vocabulary words."},
   {id:"16c",t:"In other areas of life—in the workforce in particular—{enhancement} technology might affect all of us.",q:"weak",
@@ -1055,7 +1105,7 @@ const PASS_BIO = [
   {id:"17d",t:"Who will be able to afford these technologies? Will anyone be able to have their body, and more importantly, their brain upgraded? Or will only the rich have access to these {enhancements}?",q:"off",
    w:"This is about <b>fairness and cost</b>. Powerful — for a different prompt. Watch how easily an interesting sentence pulls you off task."}]},
 {n:18,pg:23,s:[
-  {id:"18a",t:"We have a little while to consider these questions, but we ought to start.",q:"none"},
+  {id:"18a",t:"We have a little while to consider these questions, but we ought to start.",q:"none",k:"claim"},
   {id:"18b",t:"The technology will sneak its way into our lives, starting with people with disabilities, the injured, and the ill.",q:"weak",
    w:"Useful for framing, thin as proof — but it sets up the very next sentence, which is gold."},
   {id:"18c",t:"It’ll improve their lives in ways that are unquestionably good.",q:"strong",
@@ -1192,11 +1242,11 @@ const GLOSS_FACE = {
 };
 const PASS_FACE = [
 {n:1,pg:1,s:[
- {id:"f1a",t:"You probably unlocked a phone with your face this morning, and you probably did not think about it once.",q:"none"},
+ {id:"f1a",t:"You probably unlocked a phone with your face this morning, and you probably did not think about it once.",q:"none",k:"hook"},
  {id:"f1b",t:"That moment is the friendliest version of a technology that is quietly spreading into places you never agreed to be measured.",q:"weak",
   w:"A strong opening claim — but it's the author's <b>thesis</b>, not proof of it. Save the claim for your topic sentence; find a fact for your evidence."}]},
 {n:2,pg:1,s:[
- {id:"f2a",t:"Facial recognition software does not “see” a face the way a person does.",q:"none"},
+ {id:"f2a",t:"Facial recognition software does not “see” a face the way a person does.",q:"none",k:"setup"},
  {id:"f2b",t:"An {algorithm} measures dozens of distances — the width of the nose, the depth of the eye sockets, the shape of the jaw — and turns them into a string of numbers called a {faceprint}.",q:"weak",
   w:"This explains <i>how</i> the technology works. Excellent material for a <b>D</b>, thin as standalone evidence for a problem."},
  {id:"f2c",t:"Your faceprint is {biometric} data: it comes from your body, not from anything you chose.",q:"weak",
@@ -1206,7 +1256,7 @@ const PASS_FACE = [
   w:"Useful context — it shows <i>scale</i>. But “it is everywhere” is not the same as “it causes a problem.” Pair it with a real harm."}]},
 {h:"When the Match Is Wrong"},
 {n:4,pg:1,s:[
- {id:"f4a",t:"A facial recognition system never announces, “That is him.”",q:"none"},
+ {id:"f4a",t:"A facial recognition system never announces, “That is him.”",q:"none",k:"setup"},
  {id:"f4b",t:"It returns a {probability} — a ranked list of candidates with a confidence score attached, and a human being decides what to do next.",q:"weak",
   w:"Important mechanism, and a great line to explain in your D: the computer only guesses, and a person turns the guess into an action."}]},
 {n:5,pg:1,s:[
@@ -1220,7 +1270,7 @@ const PASS_FACE = [
  {id:"f6b",t:"He had never set foot in the store.",q:"strong",
   w:"Devastating and short. Notice how a five-word sentence can be your most powerful evidence — length is not strength.",lab:"He had never been in the store"}]},
 {n:7,pg:1,s:[
- {id:"f7a",t:"The problem was not one broken camera.",q:"none"},
+ {id:"f7a",t:"The problem was not one broken camera.",q:"none",k:"signpost"},
  {id:"f7b",t:"In 2019 the National Institute of Standards and Technology tested nearly two hundred facial recognition {algorithm}s and found that many of them produced false matches {disproportionately} more often for Asian and African American faces than for white faces.",q:"strong",
   w:"Strong. A government study, a sample size, and a measured pattern. When you can cite a <b>study</b>, do — it turns your paragraph from opinion into argument.",lab:"A 2019 federal study found uneven false-match rates"},
  {id:"f7c",t:"A tool that is wrong more often about some people is not a neutral tool.",q:"weak",
@@ -1232,7 +1282,7 @@ const PASS_FACE = [
  {id:"f8b",t:"If you have ever been tagged in a photograph, you may already be in one.",q:"weak",
   w:"Effective writing — it makes it personal. As evidence it depends on paragraph 8, so quote them together or use 8 alone."}]},
 {n:9,pg:1,s:[
- {id:"f9a",t:"There is one difference between a faceprint and a password that changes everything.",q:"none"},
+ {id:"f9a",t:"There is one difference between a faceprint and a password that changes everything.",q:"none",k:"signpost"},
  {id:"f9b",t:"If a password leaks, you change it in ten seconds; if your faceprint leaks, you cannot change your face.",q:"strong",
   w:"Strong — and it's the sentence a reader will remember. It names a harm that is <b>permanent</b>, which is the strongest kind of harm to argue.",lab:"A leaked faceprint cannot be changed the way a password can"}]},
 {n:10,pg:1,s:[
@@ -1246,7 +1296,7 @@ const PASS_FACE = [
  {id:"f11b",t:"It has helped reunite trafficking victims with their families, identified soldiers' remains, and cut hours from airport lines.",q:"off",
   w:"Off-target for this prompt. These are <b>benefits</b>. Notice how easily a sympathetic sentence pulls a paragraph off task."}]},
 {n:12,pg:1,s:[
- {id:"f12a",t:"The technology is not going away.",q:"none"},
+ {id:"f12a",t:"The technology is not going away.",q:"none",k:"claim"},
  {id:"f12b",t:"The only real question is whether the rules arrive before or after the next person is arrested on his own front lawn.",q:"off",
   w:"A call to action, and a beautiful last line. Beautiful ≠ usable. Endings are for wrapping up, not for proving."}]}
 ];
@@ -1366,8 +1416,8 @@ const GLOSS_WOLF = {
 };
 const PASS_WOLF = [
 {n:1,pg:1,s:[
- {id:"w1a",t:"In 1926, park rangers shot the last two known wolf pups in Yellowstone National Park.",q:"none"},
- {id:"w1b",t:"At the time, killing {predator}s was considered good management.",q:"none"}]},
+ {id:"w1a",t:"In 1926, park rangers shot the last two known wolf pups in Yellowstone National Park.",q:"none",k:"setup"},
+ {id:"w1b",t:"At the time, killing {predator}s was considered good management.",q:"none",k:"setup"}]},
 {n:2,pg:1,s:[
  {id:"w2a",t:"With no wolves hunting them, the park's elk herd grew and grew.",q:"weak",
   w:"This is the <b>before</b> picture. It's essential background for your explanation, but the prompt asks what changed <i>after</i> the wolves returned."},
@@ -1389,7 +1439,7 @@ const PASS_WOLF = [
  {id:"w6a",t:"Within a decade, {willow} and {aspen} along some streams had grown from ankle height to well over a person's head.",q:"strong",
   w:"Strong — it measures the change (<i>ankle height to over a person's head</i>). When you can find evidence with a measurement in it, take it.",lab:"Willows and aspen grew from ankle height to over head height"}]},
 {n:7,pg:1,s:[
- {id:"w7a",t:"Beavers need willow the way a builder needs lumber.",q:"none"},
+ {id:"w7a",t:"Beavers need willow the way a builder needs lumber.",q:"none",k:"setup"},
  {id:"w7b",t:"Researchers counted a single beaver {colony} in the northern range in the late 1990s; a decade and a half later they counted nine.",q:"strong",
   w:"Strong. One to nine is a number a reader cannot argue with. Numbers make an argument feel researched instead of guessed.",lab:"Beaver colonies grew from one to nine"}]},
 {n:8,pg:1,s:[
@@ -1403,22 +1453,22 @@ const PASS_WOLF = [
  {id:"w9b",t:"Where surveys had found bare banks, researchers began recording warblers, sparrows, and flycatchers nesting again.",q:"strong",
   w:"Strong. Naming the actual birds is what separates real evidence from a vague claim like “nature got better.”",lab:"Warblers, sparrows, and flycatchers nested again"}]},
 {n:10,pg:1,s:[
- {id:"w10a",t:"Wolves also left something behind them: {carcass}es.",q:"none"},
+ {id:"w10a",t:"Wolves also left something behind them: {carcass}es.",q:"none",k:"signpost"},
  {id:"w10b",t:"Ravens, magpies, eagles, and grizzly bears fed on kills they had not made, which spread a winter food supply across the park that had not existed for seventy years.",q:"strong",
   w:"Strong — it shows a change that reaches animals with no direct connection to wolves at all. That's the definition of a cascade.",lab:"Scavengers gained a winter food supply"}]},
 {h:"How Much Did the Wolves Really Do?"},
 {n:11,pg:1,s:[
- {id:"w11a",t:"Here is where careful scientists start clearing their throats.",q:"none"},
+ {id:"w11a",t:"Here is where careful scientists start clearing their throats.",q:"none",k:"signpost"},
  {id:"w11b",t:"Wolves returned during the same years as a long drought, a rise in grizzly numbers, and heavy elk hunting outside the park's northern boundary.",q:"off",
   w:"This argues <b>against</b> a simple story. Do not quote it as proof — but a strong writer can name it: “Although other changes happened at the same time…” That move makes you sound <i>more</i> credible, not less."},
  {id:"w11c",t:"A {correlation} is not the same as a cause, and several researchers argue the recovery has been uneven and slower than the popular story suggests.",q:"off",
   w:"Off-target for this prompt — and a genuinely important sentence. It's the author being honest. Use it in an ending or a counter-sentence, never as evidence."}]},
 {n:12,pg:1,s:[
- {id:"w12a",t:"What almost no one disputes is the shape of the lesson.",q:"none"},
+ {id:"w12a",t:"What almost no one disputes is the shape of the lesson.",q:"none",k:"signpost"},
  {id:"w12b",t:"Ecologists call it a {trophic cascade}: remove or return one animal at the top, and the effects travel down through every level of the {ecosystem}.",q:"weak",
   w:"This names the concept. Naming a concept is useful vocabulary for your <b>Language Box</b>, but it isn't an example of a change."}]},
 {n:13,pg:1,s:[
- {id:"w13a",t:"An {ecosystem} is not a list of animals.",q:"none"},
+ {id:"w13a",t:"An {ecosystem} is not a list of animals.",q:"none",k:"claim"},
  {id:"w13b",t:"It is a set of relationships, and pulling one thread moves all of them.",q:"off",
   w:"The author's closing thought. It's the sort of line you write yourself in an <b>E</b> — not something you quote as evidence."}]}
 ];
@@ -1538,7 +1588,7 @@ const GLOSS_SLEEP = {
 };
 const PASS_SLEEP = [
 {n:1,pg:1,s:[
- {id:"s1a",t:"Almost every teenager has been told to go to bed earlier, and almost every teenager has lain in the dark afterward, completely awake.",q:"none"},
+ {id:"s1a",t:"Almost every teenager has been told to go to bed earlier, and almost every teenager has lain in the dark afterward, completely awake.",q:"none",k:"hook"},
  {id:"s1b",t:"That is not defiance. It is biology.",q:"weak",
   w:"A great hook and a real claim — but it's the author's thesis, not proof. Claims belong in your topic sentence; facts belong in your I rows."}]},
 {n:2,pg:1,s:[
@@ -1547,28 +1597,28 @@ const PASS_SLEEP = [
  {id:"s2b",t:"At puberty that clock shifts: the brain begins releasing {melatonin} roughly two hours later than it did in childhood.",q:"weak",
   w:"Fascinating, and still a cause. Notice how easy it is to grab the most interesting sentence instead of the most <i>relevant</i> one."}]},
 {n:3,pg:1,s:[
- {id:"s3a",t:"A thirteen-year-old whose body will not produce {melatonin} until 11 p.m. is not choosing to stay up.",q:"none"},
+ {id:"s3a",t:"A thirteen-year-old whose body will not produce {melatonin} until 11 p.m. is not choosing to stay up.",q:"none",k:"setup"},
  {id:"s3b",t:"Sleep researchers call this a delayed sleep {phase}, and it is close to universal in adolescence.",q:"weak",
   w:"Good vocabulary for your Language Box. As evidence it still describes the cause rather than the cost."}]},
 {n:4,pg:1,s:[
- {id:"s4a",t:"Teenagers need between eight and ten hours of sleep a night.",q:"none"},
+ {id:"s4a",t:"Teenagers need between eight and ten hours of sleep a night.",q:"none",k:"setup"},
  {id:"s4b",t:"National surveys find that about seven in ten American high school students get less than eight, and the average is closer to six and a half.",q:"strong",
   w:"Strong. It measures the <b>size of the problem</b> with real numbers. Any paragraph about sleep loss should establish that the loss is real before describing what it costs.",lab:"About seven in ten teens sleep less than eight hours"}]},
 {h:"What the Missing Hours Cost"},
 {n:5,pg:1,s:[
- {id:"s5a",t:"Sleep is not the brain switching off; it is the brain filing.",q:"none"},
+ {id:"s5a",t:"Sleep is not the brain switching off; it is the brain filing.",q:"none",k:"setup"},
  {id:"s5b",t:"During deep sleep the {hippocampus} replays what you learned that day and {consolidate}s it into the {cortex}, where it can last for years.",q:"strong",
   w:"Strong — it names a specific mechanism and a specific outcome. Evidence that explains <i>how</i> the harm happens is the hardest kind to argue with.",lab:"Deep sleep moves the day's learning into long-term memory"},
  {id:"s5c",t:"Students who study hard and then sleep four hours have done the studying and skipped the filing.",q:"strong",
   w:"Strong, and it lands because it is about <i>them</i>. Notice the sentence shape: two halves in balance, with the punch at the end.",lab:"Studying without sleeping skips the filing step"}]},
 {n:6,pg:1,s:[
- {id:"s6a",t:"The body pays too.",q:"none"},
+ {id:"s6a",t:"The body pays too.",q:"none",k:"signpost"},
  {id:"s6b",t:"After roughly eighteen hours awake, a driver's {reaction time} and judgement show {impairment} comparable to a blood alcohol level of 0.05 percent.",q:"strong",
   w:"Strong — and startling, which is why it works. A comparison to something the reader already understands as dangerous makes an abstract harm concrete.",lab:"18 hours awake impairs a driver like a 0.05 blood alcohol level"},
  {id:"s6c",t:"Drowsy driving is estimated to contribute to tens of thousands of crashes involving young drivers each year.",q:"strong",
   w:"Strong. A number attached to a consequence. Be careful to keep the author's hedge — “estimated” — when you quote it.",lab:"Drowsy driving contributes to tens of thousands of crashes"}]},
 {n:7,pg:1,s:[
- {id:"s7a",t:"Mood is one of the first things to go.",q:"none"},
+ {id:"s7a",t:"Mood is one of the first things to go.",q:"none",k:"signpost"},
  {id:"s7b",t:"Short sleep makes the emotional centers of the brain more reactive while weakening the frontal regions that keep them in check, which is why an ordinary annoyance can feel unbearable on four hours.",q:"strong",
   w:"Strong. It explains the mechanism <i>and</i> names the felt experience. That combination is what makes evidence persuasive to a reader your own age.",lab:"Short sleep makes emotional reactions harder to control"},
  {id:"s7c",t:"Researchers have repeatedly found that {chronic} short sleep in adolescence is associated with higher rates of anxiety and depression.",q:"strong",
@@ -1579,7 +1629,7 @@ const PASS_SLEEP = [
  {id:"s8b",t:"Athletes sleeping under eight hours a night have been found to injure themselves at markedly higher rates than teammates who sleep more.",q:"strong",
   w:"Strong, and it reaches a reader who does not care about grades. Choosing evidence that speaks to different readers is a craft move.",lab:"Athletes sleeping under eight hours get injured more often"}]},
 {n:9,pg:1,s:[
- {id:"s9a",t:"None of this is {cumulative} in a way you can feel.",q:"none"},
+ {id:"s9a",t:"None of this is {cumulative} in a way you can feel.",q:"none",k:"claim"},
  {id:"s9b",t:"Sleep loss builds a debt quietly: people who are badly sleep-deprived consistently rate their own performance as fine while measurably failing the tests in front of them.",q:"strong",
   w:"Strong — the harm you cannot notice is the most dangerous kind, and this sentence proves it with a measurement.",lab:"Sleep-deprived people rate themselves fine while failing tests"}]},
 {h:"What Actually Helps"},
@@ -1594,7 +1644,7 @@ const PASS_SLEEP = [
  {id:"s11b",t:"A video that ends by starting the next one removes the moment where a tired person would have decided to stop.",q:"off",
   w:"Sharp writing, wrong prompt. Save it."}]},
 {n:12,pg:1,s:[
- {id:"s12a",t:"You cannot move your {circadian rhythm} back by wanting to.",q:"none"},
+ {id:"s12a",t:"You cannot move your {circadian rhythm} back by wanting to.",q:"none",k:"setup"},
  {id:"s12b",t:"But a steady wake-up time, bright light in the morning, and a phone that charges in another room are three things a teenager actually controls.",q:"off",
   w:"Advice, not evidence. A paragraph that answers “what are the effects?” with “here's what to do” has answered a different question."}]}
 ];
@@ -1718,13 +1768,13 @@ const GLOSS_HUH = {
 };
 const PASS_HUH = [
 {n:1,pg:1,s:[
- {id:"u1a",t:"If you’re like most young people, you’ve probably embraced technology.",q:"none"},
+ {id:"u1a",t:"If you’re like most young people, you’ve probably embraced technology.",q:"none",k:"hook"},
  {id:"u1b",t:"You communicate with friends via videos and filters. You have vast numbers of songs and shows within reach. You can get items delivered to your home the same day you ordered them without leaving the house.",q:"off",
   w:"Off-target. These are <b>benefits</b>. The author opens with them on purpose — to get you nodding before he turns. Don't let the opening of an argument fool you about its claim."},
  {id:"u1c",t:"These benefits of technology are easy to see.",q:"off",
   w:"Still the setup. Notice the word <i>easy</i> — he is about to show you the part that is <i>not</i> easy to see."}]},
 {n:2,pg:1,s:[
- {id:"u2a",t:"Perhaps you take it further, and are one of those who believe that technology does not just add fun and convenience to our lives, but is actually the answer to most of our problems—even problems that are caused by technology itself.",q:"none"},
+ {id:"u2a",t:"Perhaps you take it further, and are one of those who believe that technology does not just add fun and convenience to our lives, but is actually the answer to most of our problems—even problems that are caused by technology itself.",q:"none",k:"setup"},
  {id:"u2b",t:"In the very near future, one of the biggest of these problems is likely to be that many jobs now held by humans will be done by some combination of {artificial intelligence} and automated machine.",q:"weak",
   w:"This is the author's <b>claim</b>, not proof of it. It's a great sentence to echo in your topic sentence — but as evidence it names no number, no job, and no person."},
  {id:"u2c",t:"If you’re tempted to shrug off concern about this {phenomenon} because you assume that the wonders of technology will somehow create new and better jobs, you should be aware that research tells another story.",q:"weak",
@@ -1739,7 +1789,7 @@ const PASS_HUH = [
  {id:"u3c",t:"The report estimates the percentage of jobs lost to {automation} in Britain will be 30%, with 35% in Germany, and 21% in Japan.",q:"strong",
   w:"Strong — and notice what it adds: this is not one country's problem. Evidence that shows <b>scale</b> makes a threat harder to dismiss.",lab:"Britain 30%, Germany 35%, Japan 21%"}]},
 {n:4,pg:1,s:[
- {id:"u4a",t:"This change is already underway.",q:"none"},
+ {id:"u4a",t:"This change is already underway.",q:"none",k:"signpost"},
  {id:"u4b",t:"Shipping companies have made headlines with self-driving trucks carrying cargo across the country. Ride share companies have been testing self-driving taxis in Pennsylvania and Arizona.",q:"weak",
   w:"Vivid, and useful for a <b>D</b> — but by itself it describes a technology, not a threat to a worker. The threat is in the sentence after next."},
  {id:"u4c",t:"Once more of our trucks and taxis drive themselves, what will happen to the people who held jobs as drivers?",q:"off",
@@ -1772,7 +1822,7 @@ const PASS_HUH = [
  {id:"u7d",t:"In the past, newly freed laborers often went on to work in start-up industries that benefited from their availability. Today, the new industries are unlikely to need many human bodies or minds because technology can do the work for less cost.",q:"strong",
   w:"Strong. It explains <b>why</b> history may not repeat — which is exactly what a reader who heard the Autor quote needs.",lab:"New industries may not need human bodies or minds"}]},
 {n:8,pg:1,s:[
- {id:"u8a",t:"Jerry Kaplan, an {artificial intelligence} expert who’s founded multiple technology startups, has written a book called Humans Need Not Apply.",q:"none"},
+ {id:"u8a",t:"Jerry Kaplan, an {artificial intelligence} expert who’s founded multiple technology startups, has written a book called Humans Need Not Apply.",q:"none",k:"source"},
  {id:"u8b",t:"In it, he lays out the risks of our new era. He explains what’s cutting edge and poised to increase: systems that learn from experience and therefore don’t need to be programmed, as we commonly understand the term.",q:"weak",
   w:"Background on a source. Useful for a signal phrase — “Kaplan, an AI expert who founded multiple startups, warns that…” — but the evidence is the next sentence."},
  {id:"u8c",t:"Not only will machines be able to do work that we think of as requiring human judgment and skill, such as fixing electrical problems, painting a house, or writing a news story, they will also be able to do work that people simply can’t.",q:"strong",
@@ -1780,7 +1830,7 @@ const PASS_HUH = [
  {id:"u8d",t:"“Unlike humans who are limited in the scope and scale of experiences they can absorb, these systems can {scrutinize} mountains of instructive examples at blinding speeds. They are capable of comprehending not only the visual, {auditory}, and written information familiar to us but also the more exotic forms of data that stream through computers and networks,” he writes.",q:"strong",
   w:"Strong, but <b>long</b>. This is exactly the quotation you should trim with an ellipsis: keep “these systems can scrutinize mountains of instructive examples at blinding speeds” and cut the rest.",lab:"Systems scrutinize mountains of examples at blinding speeds"}]},
 {n:9,pg:1,s:[
- {id:"u9a",t:"Kaplan is mainly referring to the future he predicts based on his perspective as an expert in the tech world. But already, we can see the consequences.",q:"none"},
+ {id:"u9a",t:"Kaplan is mainly referring to the future he predicts based on his perspective as an expert in the tech world. But already, we can see the consequences.",q:"none",k:"setup"},
  {id:"u9b",t:"There is no evidence that recent advances in technology have so far offered the majority of workers better pay or positions. In fact, the opposite seems to be true.",q:"weak",
   w:"A claim about evidence rather than the evidence itself. The study is in the very next sentence — always reach for the study."},
  {id:"u9c",t:"A report by the National Bureau of Economic Research found that between 1990 and 2007, {automation} lowered both the number of jobs available and the amount those jobs paid.",q:"strong",
@@ -1788,7 +1838,7 @@ const PASS_HUH = [
  {id:"u9d",t:"“We estimate large and robust negative effects of robots on employment and wages,” write the authors of the study.",q:"strong",
   w:"Strong — and short enough to quote whole. Notice the researchers' careful word <b>estimate</b>. Keep it when you quote; changing it to “prove” would misrepresent them.",lab:"“Large and robust negative effects… on employment and wages”"}]},
 {n:10,pg:1,s:[
- {id:"u10a",t:"Renowned theoretical physicist Stephen Hawking is concerned about massive job loss and how that could affect the stability of our society.",q:"none"},
+ {id:"u10a",t:"Renowned theoretical physicist Stephen Hawking is concerned about massive job loss and how that could affect the stability of our society.",q:"none",k:"source"},
  {id:"u10b",t:"“The {automation} of factories has already {decimated} jobs in traditional manufacturing,” says Hawking.",q:"strong",
   w:"Strong — and note the tense: <i>has already</i>. Evidence about what has happened is harder to dismiss than evidence about what might.",lab:"Automation has already decimated manufacturing jobs"},
  {id:"u10c",t:"“The rise of {artificial intelligence} is likely to extend this job destruction deep into the middle classes, with only the most caring, creative, or supervisory roles remaining.”",q:"strong",
@@ -1965,7 +2015,7 @@ const PASS_TAP = [
  {id:"p5b",t:"These are not special exceptions. On average, since 1980, occupations with above-average computer use have grown substantially faster (0.9 percent per year), as shown in this chart:",q:"strong",
   w:"Strong — this is the economy-wide number. It moves your paragraph from “here are two stories” to “here is the pattern.”",lab:"Occupations with high computer use grew 0.9% faster per year"}]},
 {n:6,pg:1,s:[
- {id:"p6a",t:"How can this be? It might seem a sure thing that automating a task would reduce employment in an occupation. But that logic ignores some basic economics:",q:"none"},
+ {id:"p6a",t:"How can this be? It might seem a sure thing that automating a task would reduce employment in an occupation. But that logic ignores some basic economics:",q:"none",k:"question"},
  {id:"p6b",t:"{automation:Automation} reduces the cost of a product or service, and lower prices tend to attract more customers.",q:"strong",
   w:"Strong — the engine of the entire argument in one sentence. If you can only use one piece of evidence to <i>explain</i> the paradox, use this one.",lab:"Automation cuts costs, and lower prices attract more customers"},
  {id:"p6c",t:"Software made it cheaper and faster to trawl through legal documents, so law firms searched more documents and judges allowed more and more {expansive} {discovery} requests. Likewise, ATMs made it cheaper to operate bank branches, so banks dramatically increased their number of offices.",q:"strong",
@@ -1982,7 +2032,7 @@ const PASS_TAP = [
  {id:"p7c",t:"These aren’t examples of computers “stealing” jobs; they are cases where computers helped some workers take work from others. Workers with computers frequently {substitute} for workers in non-computerized jobs.",q:"off",
   w:"Off-target, and worth reading twice: “helped some workers take work from others” is a much smaller claim than “helped workers.”"}]},
 {n:8,pg:1,s:[
- {id:"p8a",t:"So, while computers create jobs in some occupations, they also reduce employment in others. The total effect on unemployment depends on which tendency is stronger.",q:"none"},
+ {id:"p8a",t:"So, while computers create jobs in some occupations, they also reduce employment in others. The total effect on unemployment depends on which tendency is stronger.",q:"none",k:"setup"},
  {id:"p8b",t:"Some of my research shows that the {net effect}, across the economy, is a wash: Computers create about as many jobs as they eliminate. In other words, {automation} is not causing {persistent} unemployment.",q:"weak",
   w:"Careful. “A wash” means <b>break-even</b> — that automation didn't <i>hurt</i>, not that it <i>helped</i>. Precision matters: this sentence is weaker for your prompt than it first looks."}]},
 {n:9,pg:1,s:[
@@ -2140,7 +2190,8 @@ const TEXTS=[
  prompt:"New technologies are being invented at a rate never experienced previously. Explain ways bionic technologies can improve people's lives. Explain ways these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show a way bionic technology improves someone's life.</b>",
  ptok:PTOK_BIO, passage:PASS_BIO, gloss:GLOSS_BIO, gist:GIST_BIO,
- tOpts:TOPT_BIO, eOpts:EOPT_BIO, lang:LANG_BIO, cups:CUPS_BIO, comb:COMB_BIO, dex:DEX_BIO
+ tOpts:TOPT_BIO, eOpts:EOPT_BIO, lang:LANG_BIO, cups:CUPS_BIO, comb:COMB_BIO, dex:DEX_BIO,
+ model:{picks:["2a", "5a", "12e"],d:["A cochlear implant gives back a sense a person had lost, so more than two hundred thousand people can now hear a teacher, a warning, or a family member, which changes how they learn and connect every day.", "Climbing one hundred and three floors is something a person who had lost a leg simply could not do before, which means this technology returns independence and not only movement.", "Repairing damaged memory would change everything for someone with a head injury, because remembering is how a person learns, works, and stays themselves over time."]}
 },
 {
  id:"huh", kind:"anchor",
@@ -2156,7 +2207,8 @@ const TEXTS=[
  prompt:"Automation is changing the world of work faster than any technology before it. Explain ways automation could threaten human workers. Explain how these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show a way automation threatens human workers.</b>",
  ptok:PTOK_HUH, passage:PASS_HUH, gloss:GLOSS_HUH, gist:GIST_HUH,
- tOpts:TOPT_HUH, eOpts:EOPT_HUH, lang:LANG_HUH, cups:CUPS_HUH, comb:COMB_HUH
+ tOpts:TOPT_HUH, eOpts:EOPT_HUH, lang:LANG_HUH, cups:CUPS_HUH, comb:COMB_HUH,
+ model:{picks:["u3b", "u4d", "u9c"],d:["A number that large is not really a prediction about machines, because every one of those percentage points stands for a household that suddenly has to find another way to pay rent.", "Naming three separate groups of drivers matters, because it shows the threat is not trapped in one industry that could quietly retrain while everyone else carried on.", "Research covering seventeen years of real wages carries far more weight than a guess about the future, so this evidence answers anyone who calls the fear of automation imaginary."]}
 },
 {
  id:"tap", kind:"anchor",
@@ -2172,7 +2224,8 @@ const TEXTS=[
  prompt:"Many people fear that computers will take their jobs. Explain ways automation has helped workers instead of replacing them. Explain how these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show a way automation helped workers instead of replacing them.</b>",
  ptok:PTOK_TAP, passage:PASS_TAP, gloss:GLOSS_TAP, gist:GIST_TAP,
- tOpts:TOPT_TAP, eOpts:EOPT_TAP, lang:LANG_TAP, cups:CUPS_TAP, comb:COMB_TAP
+ tOpts:TOPT_TAP, eOpts:EOPT_TAP, lang:LANG_TAP, cups:CUPS_TAP, comb:COMB_TAP,
+ model:{picks:["p4c", "p5a", "p9c"],d:["Adding fifty thousand jobs while the software was booming matters, because it shows the machines did not simply take the desks of the people who used to do that work.", "Bank tellers and cashiers were the jobs everyone expected to vanish first, so the fact that their numbers rose instead makes this pattern much harder to dismiss as one lucky industry.", "Redefining a job is not the same as deleting it, which means the useful question for a worker is what new skill the tool demands rather than whether the job survives at all."]}
 },
 {
  id:"face", kind:"practice",
@@ -2186,7 +2239,8 @@ const TEXTS=[
  prompt:"Cameras that can recognize a face are now almost everywhere. Explain ways facial recognition technology can cause problems for ordinary people. Explain how these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show a problem facial recognition causes for an ordinary person.</b>",
  ptok:PTOK_FACE, passage:PASS_FACE, gloss:GLOSS_FACE, gist:GIST_FACE,
- tOpts:TOPT_FACE, eOpts:EOPT_FACE, lang:LANG_FACE, cups:CUPS_FACE, comb:COMB_FACE
+ tOpts:TOPT_FACE, eOpts:EOPT_FACE, lang:LANG_FACE, cups:CUPS_FACE, comb:COMB_FACE,
+ model:{picks:["f5a", "f7b", "f9b"],d:["An arrest on a front lawn in front of two children is not a technical glitch, because the entire cost of a wrong match is paid by the person who did nothing at all.", "A tool that fails more often for some faces than for others is not treating everyone equally, so the risk of being wrongly identified is not shared evenly among the people it scans.", "A password can be replaced in about ten seconds, which means a stolen faceprint is a permanent problem rather than a temporary one, and no amount of caution afterward can undo it."]}
 },
 {
  id:"wolf", kind:"practice",
@@ -2200,7 +2254,8 @@ const TEXTS=[
  prompt:"An ecosystem is a web of relationships, not a list of animals. Explain ways the return of wolves changed Yellowstone National Park. Explain how these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show something that changed in Yellowstone after the wolves returned.</b>",
  ptok:PTOK_WOLF, passage:PASS_WOLF, gloss:GLOSS_WOLF, gist:GIST_WOLF,
- tOpts:TOPT_WOLF, eOpts:EOPT_WOLF, lang:LANG_WOLF, cups:CUPS_WOLF, comb:COMB_WOLF
+ tOpts:TOPT_WOLF, eOpts:EOPT_WOLF, lang:LANG_WOLF, cups:CUPS_WOLF, comb:COMB_WOLF,
+ model:{picks:["w6a", "w7b", "w8b"],d:["Plants growing from ankle height to over a person's head is a measurable change in the land itself, because it shows the wolves altered far more than the animals they actually hunted.", "Beavers could not build until the willows came back, so counting nine colonies where there had been one proves the change travelled from predators to plants and then to a different species.", "Ponds hold water into the dry months, which means the return of one predator eventually reshaped the shade, the temperature, and the water supply that dozens of other animals depend on."]}
 },
 {
  id:"sleep", kind:"practice",
@@ -2214,7 +2269,8 @@ const TEXTS=[
  prompt:"Teenagers are the most sleep-deprived group in the country. Explain ways sleep loss affects a teenager's body and mind. Explain how these examples support your topic. Use text evidence to support your ideas.",
  job:"<b>show an effect of sleep loss on a teenager's body or mind.</b>",
  ptok:PTOK_SLEEP, passage:PASS_SLEEP, gloss:GLOSS_SLEEP, gist:GIST_SLEEP,
- tOpts:TOPT_SLEEP, eOpts:EOPT_SLEEP, lang:LANG_SLEEP, cups:CUPS_SLEEP, comb:COMB_SLEEP
+ tOpts:TOPT_SLEEP, eOpts:EOPT_SLEEP, lang:LANG_SLEEP, cups:CUPS_SLEEP, comb:COMB_SLEEP,
+ model:{picks:["s4b", "s5b", "s6b"],d:["When most students in a building are short on sleep, the shortfall stops being a personal habit, because the whole school is then operating under the same condition every morning.", "Studying without sleeping means doing the work and skipping the filing, so the hours a student spends reviewing can disappear overnight without them ever knowing it happened.", "Comparing tiredness to alcohol makes an invisible danger concrete, because nobody would hand car keys to a drunk driver even though a sleep-deprived one is measurably just as impaired."]}
 }
 ];
 
@@ -2233,7 +2289,7 @@ const KEY="writinglab.v2";
 
 function blankWork(){
   return {stage:FIRST_TEXT_STAGE,max:FIRST_TEXT_STAGE,done:{},read:0,vocab:[],
-    gist:{},joiner:[],promptTags:{},picks:[],
+    gist:{},joiner:[],promptTags:{},picks:[],notes:[],
     tide:{t:null,i:[],d:["","",""],e:null,lang:[]},
     trans:[null,null,null],edits:{},score:{},goal:null,complete:false};
 }
@@ -2300,9 +2356,13 @@ function confetti(){
 }
 
 /* navigation ------------------------------------------------------------ */
+/* Before the teaching text is finished, steps unlock in order. After it, every
+   step on every text is open — students jump straight to the skill they want. */
+function freeNav(){ return teachingDone(); }
 function stageOpen(i){
-  if(i<=2) return i<=S.gmax;
-  return !!S.cur && i<=W().max;
+  if(i<=2) return i<=S.gmax || freeNav();
+  if(!S.cur) return false;
+  return freeNav() || i<=W().max;
 }
 function stageDone(i){ return i<=2 ? !!S.done[i] : !!W().done[i]; }
 function paintRail(){
@@ -2351,7 +2411,7 @@ document.addEventListener("click",e=>{
 
 /* resetting the per-text screens when a new text is opened --------------- */
 const TEXT_SCREEN_HOSTS=["#gistLesson","#gistGame","#joinerGame","#promptLesson","#promptGame","#dowhatTable",
- "#pickLesson","#orgLesson","#stepT","#stepI","#stepD","#stepE","#stepL","#transLessonWrap","#mlaLessonWrap",
+ "#pickLesson","#orgLesson","#notesPanel","#gate7","#gate8","#gate11","#stepT","#stepI","#stepD","#stepE","#stepL","#transLessonWrap","#mlaLessonWrap",
  "#transPick","#cupsGame","#armsGame","#combineGame","#scoreGame","#goalMenu","#ownCups","#sentenceEditors","#locker"];
 const TEXT_SCREEN_CARDS=["#joinerCard","#dowhatCard","#cardI","#cardD","#cardE","#cardL","#organizerCard",
  "#editorCard","#ownEditCard","#combineCard","#rocketCard","#goalCard","#finishCard"];
@@ -2459,6 +2519,7 @@ document.addEventListener("keydown",e=>{
   if(e.target.matches("input,textarea")) return;
   if(e.key==="t"||e.key==="T") $("#btnText").click();
   if(e.key==="l"||e.key==="L") $("#btnLib").click();
+  if(e.key==="q"||e.key==="Q") openQuoteLab();
   if(e.key==="Escape"){ closeModal(); closeDrawer(); }
 });
 
@@ -2593,10 +2654,11 @@ function renderMantra(){
 RENDER[2]=function(){
   const done=teachingDone();
   $("#libLede").innerHTML = done
-    ? "You've learned the process on <b>"+teachingText().title+"</b>. Every text is open now. Pick whichever one you want — "+
-      "the steps are the same, the mini-lessons step back, and you drive."
-    : "Start with <b>"+teachingText().title+"</b>. It teaches the process one move at a time. Finish it once and every other "+
-      "text in the library unlocks for practice.";
+    ? "You've learned the process on <b>"+teachingText().title+"</b>, so the whole lab is open. Pick any text — and once you're "+
+      "in it, <b>tap any step in the bar above to jump straight there</b>. If you only want to practise transitions, or CUPS, or "+
+      "picking evidence, go do exactly that. The lab will fill in whatever an earlier step owed you."
+    : "Start with <b>"+teachingText().title+"</b>. It teaches the process one move at a time, in order. Finish it once and every "+
+      "text in the library unlocks — along with the freedom to jump to any step you want to practise.";
   const grid=$("#libGrid"); grid.innerHTML="";
   ["anchor","practice"].forEach(kind=>{
     const list=TEXTS.filter(t=>t.kind===kind);
@@ -2769,8 +2831,10 @@ RENDER[5]=function(){
   if(!les.dataset.done){ les.dataset.done="1";
     lesson(les,"Prompts usually have more than one job",
      "<p>Read a prompt like a checklist, not a paragraph. Every verb is a task you must actually perform. Miss one verb and "+
-     "you can write beautifully and still earn half credit. Also watch for the <b>setup sentence</b> — the sentence that "+
-     "gives you context but doesn't ask you to do anything.</p>");
+     "you can write beautifully and still earn half credit.</p>"+
+     "<p style='margin-bottom:0'>Every piece of a prompt is one of three things: a <b>DO</b> (an action verb), a <b>WHAT</b> "+
+     "(the job that verb points to), or <b>neither</b> — a set-up sentence that hands you context and asks for nothing. "+
+     "Naming that third kind is part of the skill: it stops you from inventing a task nobody asked for.</p>");
   }
   const host=$("#promptGame"), P=T().ptok, w=W();
   if(host.dataset.done){ if(promptComplete()) renderDoWhat(); return; }
@@ -2779,6 +2843,7 @@ RENDER[5]=function(){
   const bar=el("div","toolbar");
   bar.innerHTML='<button class="tool doTool on" data-tool="DO">🟠 DO — action verbs</button>'+
                 '<button class="tool whatTool" data-tool="WHAT">🔵 WHAT — the job</button>'+
+                '<button class="tool noneTool" data-tool="none">⬜ NEITHER — just set-up</button>'+
                 '<span class="pill" style="pointer-events:none">Pick a tool, then tap a part of the prompt</span>';
   bar.onclick=e=>{ const t=e.target.closest(".tool"); if(!t) return; tool=t.dataset.tool;
     $$(".tool",bar).forEach(x=>x.classList.remove("on")); t.classList.add("on"); };
@@ -2792,14 +2857,19 @@ RENDER[5]=function(){
       const right=tk.tag===tool;
       fb.className="fb show "+(right?"ok":"no");
       if(right){
-        sp.classList.add("tag"+tool); w.promptTags[i]=tool; save();
+        w.promptTags[i]=tool; save();
+        if(tool==="none"){ sp.style.opacity=".45"; sp.style.textDecoration="line-through"; }
+        else sp.classList.add("tag"+tool);
         fb.innerHTML="✓ "+tk.f; xp(25);
         if(promptComplete()){ badge("prompt"); xp(70,"Prompt fully dissected"); setTimeout(renderDoWhat,500); }
       }else if(tk.tag==="none"){
-        fb.innerHTML="✗ "+tk.f;
-        sp.style.opacity=".45"; sp.style.textDecoration="line-through";
-        w.promptTags[i]="none"; save();
-        if(promptComplete()){ badge("prompt"); setTimeout(renderDoWhat,500); }
+        fb.innerHTML="✗ Not a task. Read it again — it states a fact about the world, but it never tells you to do anything. "+
+          "Mark it with the <b>⬜ NEITHER</b> tool.";
+        setTimeout(()=>fb.classList.remove("show"),4000);
+      }else if(tool==="none"){
+        fb.innerHTML="✗ This one <i>is</i> a task — the prompt is asking you for something here. Use <b>🟠 DO</b> for the action "+
+          "verb itself, or <b>🔵 WHAT</b> for the phrase naming the job.";
+        setTimeout(()=>fb.classList.remove("show"),4000);
       }else{
         fb.innerHTML="✗ Wrong tool. <b>DO</b> is a single action verb (a word you could put “I will…” in front of). <b>WHAT</b> is the phrase naming the job that verb points to.";
         setTimeout(()=>fb.classList.remove("show"),3200);
@@ -2838,7 +2908,10 @@ RENDER[6]=function(){
     lesson(les,"The evidence filter",
      "<p>Before you highlight a sentence, ask: <i>“Does this prove my point, or is it just interesting?”</i> Every text is full "+
      "of fascinating sentences that would earn zero points on the prompt in front of you. Highlight with your DO/WHAT chart open.</p>"+
-     "<p style='margin-bottom:0'><b>And record the citation as you go.</b> Hunting for it later costs you five minutes you don't have.</p>");
+     "<p><b>And record the citation as you go.</b> Hunting for it later costs you five minutes you don't have.</p>"+
+     "<p style='margin-bottom:0'><b>The sentences you don't highlight still have jobs.</b> Tap any of them and the lab will tell you "+
+     "what that job is — a claim you can turn into your topic sentence, a definition your explanation needs, an author's credentials "+
+     "you can borrow for a signal phrase. You can pin those to your notes and they'll follow you into the organizer.</p>");
   }
   renderLocker(); updatePickCount();
 };
@@ -2848,7 +2921,7 @@ function togglePick(id){
   const s=found.s, w=W(), i=w.picks.indexOf(id);
   if(i>=0){ w.picks.splice(i,1); save(); renderPassage(); renderLocker(); updatePickCount(); return; }
   if(w.picks.length>=TEACHER.requireEvidence){ toast("Locker full — tap a highlighted sentence to remove it first."); return; }
-  if(s.q==="none"){ toast("That's a context sentence — it sets up an idea but doesn't prove anything on its own."); return; }
+  if(s.q==="none"){ contextLesson(id,found); return; }
   w.picks.push(id); save(); renderPassage(); updatePickCount();
   const cls=s.q==="strong"?"ok":"no";
   const head=s.q==="strong"?"✓ Strong evidence.":(s.q==="weak"?"⚠️ Careful — weak for this prompt.":"✗ Off-target.");
@@ -2862,6 +2935,52 @@ function togglePick(id){
 }
 function unpick(id){ const w=W(), i=w.picks.indexOf(id); if(i>=0){ w.picks.splice(i,1); save(); }
   closeModal(); renderPassage(); renderLocker(); updatePickCount(); }
+
+/* A context sentence is not a dead end — it has a job, and the job has a home
+   in TIDE-L. Show the student which one, and let them keep it either way. */
+function contextLesson(id,found){
+  const s=found.s, k=USE_KINDS[s.k]||USE_KINDS.setup, w=W();
+  const pinned=w.notes.indexOf(id)>=0;
+  modal('<div class="eyebrow">Not evidence — but not useless</div>'+
+    '<h2 class="sec">'+k.i+' '+k.n+'</h2>'+
+    '<div class="ev" style="margin-top:12px"><div class="q">“'+plain(s.t)+'”</div></div>'+
+    '<div class="meta" style="margin:8px 0 14px">¶'+found.n+' · '+citeLabel(found)+'</div>'+
+    '<div class="teach" style="margin-top:0"><h4>What this sentence is doing</h4><p style="margin:0">'+k.what+'</p></div>'+
+    '<div class="teach" style="border-left-color:var(--brand);background:var(--brand-soft)">'+
+      '<h4 style="color:var(--brand)">Where it goes in TIDE-L</h4><p style="margin:0">'+k.where+'</p></div>'+
+    '<div class="btnrow">'+
+      (pinned?'<button class="btn ghost" onclick="unpinNote(\''+id+'\')">📌 Unpin from my notes</button>'
+             :'<button class="btn" onclick="pinNote(\''+id+'\')">📌 Pin to my notes</button>')+
+      '<button class="btn ghost" onclick="forceEvidence(\''+id+'\')">Use it as evidence anyway</button>'+
+      '<button class="btn ghost" onclick="closeModal()">Close</button></div>'+
+    '<p class="muted" style="margin-top:12px">Pinned notes ride along with you into the Organize step, where the T and D rows are.</p>');
+}
+function pinNote(id){ const w=W(); if(w.notes.indexOf(id)<0){ w.notes.push(id); save(); xp(15,"Pinned to your notes"); }
+  closeModal(); renderNotes(); }
+function unpinNote(id){ const w=W(), i=w.notes.indexOf(id); if(i>=0){ w.notes.splice(i,1); save(); }
+  closeModal(); renderNotes(); }
+function forceEvidence(id){
+  const w=W();
+  if(w.picks.length>=TEACHER.requireEvidence){ toast("Locker full — remove a piece of evidence first."); return; }
+  w.picks.push(id); save(); closeModal(); renderPassage(); renderLocker(); updatePickCount();
+  toast("Added. You'll have to work harder in the D to make it count.");
+}
+function renderNotes(){
+  const host=$("#notesPanel"); if(!host) return;
+  const w=W();
+  if(!w.notes.length){ host.innerHTML=""; return; }
+  host.innerHTML='<div class="card" style="background:var(--panel-2)"><div class="eyebrow">📌 My notes</div>'+
+    '<h2 class="sec">Sentences you set aside</h2>'+
+    '<p class="muted" style="margin-bottom:12px">These aren\'t evidence — they\'re the raw material for your <b>T</b> and your <b>D</b>.</p>'+
+    w.notes.map(id=>{
+      const f=findSent(id); if(!f) return "";
+      const k=USE_KINDS[f.s.k]||USE_KINDS.setup;
+      return '<div class="ev"><div style="flex:1"><div class="q">“'+plain(f.s.t)+'”</div>'+
+        '<div style="margin-top:6px"><span class="badge ctx">'+k.i+' '+k.n+'</span> '+
+        '<span class="meta">¶'+f.n+'</span></div></div>'+
+        '<button class="btn ghost sm" onclick="unpinNote(\''+id+'\');">✕</button></div>';
+    }).join("")+'</div>';
+}
 function updatePickCount(){ const e=$("#pickcount"); if(e) e.textContent="("+W().picks.length+" / "+TEACHER.requireEvidence+")"; }
 function renderLocker(){
   const host=$("#locker"); if(!host) return;
@@ -2874,7 +2993,7 @@ function renderLocker(){
       const row=el("div","ev");
       row.innerHTML='<div style="flex:1"><div class="q">“'+plain(f.s.t)+'”</div>'+
         '<div style="margin-top:7px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
-        '<span class="badge '+f.s.q+'">'+({strong:"well-chosen",weak:"weak fit",off:"off-prompt"})[f.s.q]+'</span>'+
+        '<span class="badge '+f.s.q+'">'+({strong:"well-chosen",weak:"weak fit",off:"off-prompt",none:"context only"})[f.s.q]+'</span>'+
         '<span class="meta">¶'+f.n+' · '+citeLabel(f)+' · '+citeFull(f,false)+'</span></div></div>'+
         '<button class="btn ghost sm" onclick="unpick(\''+id+'\')">✕</button>';
       host.appendChild(row);
@@ -2900,6 +3019,54 @@ function renderLocker(){
   } else btn.disabled=true;
 }
 
+/* ---------- jumping into a step whose earlier steps aren't done ----------
+   Fills the missing upstream work with the text's own worked model so a student
+   can practise one skill in isolation. Flagged in the progress report. */
+function hasPicks(){ return W().picks.length>=TEACHER.requireEvidence; }
+function hasTide(){ const w=W();
+  return !!w.tide.t && w.tide.i.filter(x=>x&&x.text).length>=3 &&
+         w.tide.d.filter(Boolean).length>=3 && !!w.tide.e; }
+function hasDraft(){ return hasTide() && W().trans.every(Boolean); }
+function applyModel(level){
+  const w=W(), m=T().model; if(!m) return false;
+  if(w.picks.length<TEACHER.requireEvidence) w.picks=m.picks.slice();
+  if(level!=="picks"){
+    const tOk=T().tOpts.find(o=>o.ok), eOk=T().eOpts.find(o=>o.ok), sg=T().signals[0];
+    if(!w.tide.t) w.tide.t=tOk.t;
+    w.picks.forEach((id,i)=>{
+      if(!w.tide.i[i]){
+        const f=findSent(id); if(!f) return;
+        const q=plain(f.s.t).replace(/\s*$/,"").replace(/\.$/,"");
+        w.tide.i[i]={id:id,mode:"quote",text:sg.t+" “"+q+"” "+citeFull(f,sg.named)+"."};
+      }
+      if(!w.tide.d[i]) w.tide.d[i]=m.d[i]||"";
+    });
+    if(!w.tide.e) w.tide.e=eOk.t;
+    if(!w.tide.lang.length) w.tide.lang=[T().lang[0]];
+  }
+  if(level==="draft" && !w.trans.every(Boolean))
+    w.trans=[TRANSITIONS.first[0],TRANSITIONS.middle[1],TRANSITIONS.middle[2]];
+  w.usedModel=true; save(); return true;
+}
+function jumpIn(level,stage){ applyModel(level); resetTextScreens(); go(stage); }
+function showGate(stage,level,title,body){
+  const host=$("#gate"+stage); if(!host) return true;
+  host.innerHTML='<div class="card" style="border:2px dashed var(--brand);background:var(--brand-soft)">'+
+    '<div class="eyebrow">Jump in here</div><h2 class="sec">'+title+'</h2>'+
+    '<p class="lede">'+body+'</p>'+
+    '<div class="teach" style="background:var(--panel);border-left-color:var(--gold)">'+
+      '<h4>What “set me up” does</h4><p style="margin:0">It fills the earlier steps with a <b>worked model</b> — the evidence a '+
+      'strong reader would have chosen and the explanations a strong writer would have written for this text. You can rewrite any '+
+      'of it. Your teacher\'s progress report will note that you started from the model, which is exactly how a practice rep is '+
+      'supposed to look.</p></div>'+
+    '<div class="btnrow">'+
+      '<button class="btn" onclick="jumpIn(\''+level+'\','+stage+')">⚡ Set me up and start here</button>'+
+      '<button class="btn ghost" onclick="go('+(stage===11?8:stage-1)+')">← I\'ll do the earlier steps</button>'+
+    '</div></div>';
+  return false;
+}
+function clearGate(stage){ const h=$("#gate"+stage); if(h) h.innerHTML=""; }
+
 /* ========== 7 · ORGANIZE (TIDE-L) ========== */
 function words(s){ return (s||"").toLowerCase().replace(/[^a-z0-9\s]/g," ").split(/\s+/).filter(Boolean); }
 function copiedRun(student,source,n){
@@ -2921,6 +3088,12 @@ function dPass(text,src){
 }
 RENDER[7]=function(){
   const w=W();
+  if(!hasPicks() && showGate(7,"picks","You haven't picked your evidence yet",
+      "The <b>Organize</b> step arranges evidence you've already chosen — so it needs three pieces in your locker before it has "+
+      "anything to arrange. If you came here to practise building a TIDE-L, let the lab hand you three well-chosen pieces and "+
+      "start from there.")===false) return;
+  clearGate(7);
+  renderNotes();
   const les=$("#orgLesson");
   if(!les.dataset.done){ les.dataset.done="1";
     lesson(les,"The shape you're building",
@@ -2996,6 +3169,9 @@ function showI(){
         "Long quotes make it look like the author is doing your thinking.</p>"+
         "<p style='margin-bottom:0'><b>Fragments.</b> Authors sometimes write sentences that are fragments on purpose. Quote one "+
         "whole and a fragment lands in the middle of your paragraph — trim it, or weave the words into a sentence of your own.</p>"));
+      const deep=el("div","btnrow"); deep.style.marginTop="4px";
+      const dbtn=el("button","btn ghost sm"); dbtn.innerHTML="📎 Full quoting lesson (Quote Lab)";
+      dbtn.onclick=openQuoteLab; deep.appendChild(dbtn); work.appendChild(deep);
       work.appendChild(el("div","teach","<h4>Watch the punctuation</h4>"+
         "<p>Comma after the signal phrase · quotation marks around the exact words · location in parentheses · "+
         "<b>period after the parenthesis</b>.</p>"+
@@ -3151,6 +3327,11 @@ function sentences(){
 function draftText(){ return sentences().map(s=>(s.trans?s.trans+" ":"")+lowerAfterTrans(s.trans,s.text)).join(" "); }
 RENDER[8]=function(){
   const w=W();
+  if(!hasTide() && showGate(8,"tide","Your organizer isn't filled in yet",
+      "The <b>Write</b> step turns a TIDE-L into a paragraph, so it needs a TIDE-L to turn. If you came here to practise "+
+      "transitions, citations, and assembling a draft, let the lab fill the organizer with a worked model and go straight to "+
+      "the writing.")===false) return;
+  clearGate(8);
   const tw=$("#transLessonWrap");
   if(!tw.dataset.done){
     tw.dataset.done="1";
@@ -3180,6 +3361,11 @@ RENDER[8]=function(){
       const q=el("div"); mcard.appendChild(q);
       mcq(q,MLA_QUIZ,()=>xp(50,"MLA punctuation nailed"));
     }
+    const row=el("div","btnrow");
+    const qb=el("button","btn ghost"); qb.innerHTML="📎 Open the full Quote Lab";
+    qb.onclick=openQuoteLab; row.appendChild(qb);
+    mcard.appendChild(el("p","muted","Signal phrases, ellipses, brackets, block quotes, and the Works Cited entry — all in one place, any time."));
+    mcard.appendChild(row);
     mw.appendChild(mcard);
   }
   const tp=$("#transPick");
@@ -3292,6 +3478,16 @@ function showOwnCups(){
   reveal("#ownEditCard");
   const host=$("#ownCups"); if(host.dataset.done) return; host.dataset.done="1";
   const w=W();
+  if(!hasDraft()){
+    host.innerHTML='<div class="teach" style="border-left-color:var(--brand);background:var(--brand-soft)">'+
+      '<h4>You haven\'t written a paragraph for this text yet</h4>'+
+      '<p>The error hunt above works on its own — that\'s the skill. The checklist below is for running CUPS on <i>your own</i> '+
+      'writing, which needs a draft first.</p>'+
+      '<p style="margin-bottom:0">Either write one, or have the lab build a worked model to practise on.</p></div>'+
+      '<div class="btnrow"><button class="btn" onclick="jumpIn(\'draft\',9)">⚡ Give me a paragraph to edit</button>'+
+      '<button class="btn ghost" onclick="go(10)">Skip to Revise →</button></div>';
+    unlock(10,9); return;
+  }
   host.appendChild(el("div","teach","<h4>Now run CUPS on your own paragraph</h4><p style='margin:0'>Check each box only after "+
     "you have actually looked. This is the habit — not the checkbox.</p>"));
   host.appendChild(el("div","tokenpara",'<span class="indent"></span>'+draftText()));
@@ -3372,6 +3568,10 @@ function showCombine(){
 
 /* ========== 11 · SCORE & GOALS ========== */
 RENDER[11]=function(){
+  if(!hasDraft() && showGate(11,"draft","There's no paragraph to score yet",
+      "The <b>Score</b> step colour-codes a paragraph you wrote. If you came here to practise reading a paragraph for its TIDE-L "+
+      "structure, the lab can build one from a worked model and you can score that instead.")===false) return;
+  clearGate(11);
   const host=$("#scoreGame");
   if(host.dataset.done) return; host.dataset.done="1";
   const w=W();
@@ -3469,7 +3669,21 @@ function showRecord(){
     '<div class="muted" style="margin-top:14px">'+t.worksCited+'</div>';
   if(!w.complete){
     w.complete=true; w.done[11]=true; save(); confetti();
-    if(t.teaching) toast("🗂️ The whole library just unlocked.");
+    if(t.teaching){
+      toast("🗂️ The whole library just unlocked.");
+      setTimeout(()=>modal('<div class="eyebrow">You finished the tutorial text</div>'+
+        '<h2 class="sec">🔓 The lab is now yours to steer</h2>'+
+        '<p class="lede">Two things just changed:</p>'+
+        '<div class="teach"><h4>Every text is open</h4><p style="margin:0">All '+(TEXTS.length-1)+' remaining texts in the library '+
+        'are unlocked, and their mini-lessons collapse into “Need a refresher?” panels you can open when you want them.</p></div>'+
+        '<div class="teach" style="border-left-color:var(--brand);background:var(--brand-soft)">'+
+        '<h4 style="color:var(--brand)">Every step is open</h4><p style="margin:0">You no longer have to walk a text from start to '+
+        'finish. <b>Tap any step in the bar at the top</b> and go straight there. Want three reps at picking evidence? Do the Pick '+
+        'step on three different texts. Struggling with transitions? Jump to Write. If a step needs work you skipped, the lab hands '+
+        'you a worked model so you can practise the one skill you came for.</p></div>'+
+        '<div class="btnrow"><button class="btn" onclick="closeModal();go(2)">🗂️ Take me to the library</button>'+
+        '<button class="btn ghost" onclick="closeModal()">Stay here</button></div>'),1400);
+    }
   }
   paintRail();
 }
@@ -3481,6 +3695,261 @@ $("#copyBtn").onclick=()=>{
   else modal('<h2 class="sec">Copy your paragraph</h2><textarea rows="8">'+t+'</textarea>'+
     '<div class="btnrow"><button class="btn" onclick="closeModal()">Done</button></div>');
 };
+
+/* ==========================================================================
+   QUOTE LAB — the full MLA quoting lesson, reachable from anywhere
+   ========================================================================== */
+const SIGNAL_VERBS=[
+ {v:"states",m:"Neutral. The author simply said it."},
+ {v:"explains",m:"The author is clarifying how or why something works."},
+ {v:"argues",m:"The author is taking a side. Use it for a claim, not a fact."},
+ {v:"warns",m:"The author sees a danger. Strong — only use it if they really do."},
+ {v:"reports",m:"The author is passing along research or data."},
+ {v:"points out",m:"The author is drawing attention to something easy to miss."},
+ {v:"admits",m:"The author is conceding a point against their own side."},
+ {v:"claims",m:"You are signalling doubt. Careful — this tells your reader you don't buy it."}
+];
+const QL_BUILD={
+ chips:["According to Alarcón,","“38% of U.S. jobs are at high risk of being replaced by robots”","(par. 3)","."],
+ labels:["1 · Set it up","2 · Serve the exact words","3 · Give the credit","4 · Close the sentence"],
+ done:"According to Alarcón, “38% of U.S. jobs are at high risk of being replaced by robots” (par. 3)."
+};
+const QL_DRILLS=[
+ {q:"Which sentence attaches the quotation correctly?",
+  opts:[
+   {t:"Bessen explains that “employment for paralegals and lawyers has grown robustly” (par. 4).",ok:true,
+    f:"Correct. When you attach a quote with the word <b>that</b>, there is <b>no comma</b> — the quotation becomes part of your own sentence's grammar. Citation, then period."},
+   {t:"Bessen explains that, “employment for paralegals and lawyers has grown robustly” (par. 4).",ok:false,
+    f:"The comma is wrong. <b>That</b> and a comma never go together. Either <i>Bessen explains that “…”</i> or <i>Bessen explains, “…”</i> — pick one."},
+   {t:"Bessen explains that “employment for paralegals and lawyers has grown robustly.” (par. 4)",ok:false,
+    f:"The period is in the wrong place twice. Drop the period inside the quotation marks, and put the sentence's period <b>after</b> the closing parenthesis."}]},
+ {q:"Your sentence already says “According to Naam.” Which citation is right?",
+  opts:[
+   {t:"According to Naam, “Superhuman technology is on the horizon” (23).",ok:true,
+    f:"Correct. Your signal phrase already told the reader who said it, so the parentheses only carry the <b>location</b>. Never say the name twice."},
+   {t:"According to Naam, “Superhuman technology is on the horizon” (Naam 23).",ok:false,
+    f:"Redundant. The reader just read the name. MLA's rule: whatever the sentence already supplies, the parentheses leave out."},
+   {t:"According to Naam, “Superhuman technology is on the horizon.”",ok:false,
+    f:"No citation at all. A reader who wants to check you has nowhere to look — and an uncited quote reads as borrowed without credit."}]},
+ {q:"You want to shorten a long quotation. Which version is legal?",
+  opts:[
+   {t:"Naam notes that cochlear implants turn “sound waves into electrical impulses … directly into the auditory nerve” (19).",ok:true,
+    f:"Correct. Three spaced dots (an <b>ellipsis</b>) mark words you removed from the middle. The meaning is unchanged — that's the test."},
+   {t:"Naam notes that cochlear implants turn “sound waves into electrical impulses directly into the auditory nerve” (19).",ok:false,
+    f:"You cut words and hid the cut. Even if the meaning survives, presenting an edited quotation as the original is a form of misquoting."},
+   {t:"Naam notes that cochlear implants “turn sound waves into hearing for people” (19).",ok:false,
+    f:"Those are not the author's words. Once you rewrite inside quotation marks, it stops being a quotation — that's a paraphrase, and it needs no quotation marks at all."}]},
+ {q:"The quote starts with “They,” and your reader won't know who. What do you do?",
+  opts:[
+   {t:"Naam writes that “[bionic limbs] respond to the thoughts and intentions of their owners” (20).",ok:true,
+    f:"Correct. <b>Square brackets</b> mark a word you supplied to make the quotation readable. Brackets are the only honest way to change what's inside quotation marks."},
+   {t:"Naam writes that “they (bionic limbs) respond to the thoughts and intentions of their owners” (20).",ok:false,
+    f:"Round parentheses inside a quotation look like the <i>author's</i> parentheses. Use square brackets so your reader knows the addition is yours."},
+   {t:"Naam writes that “bionic limbs respond to the thoughts and intentions of their owners” (20).",ok:false,
+    f:"You silently swapped a word. It's a small change and an honest intention — but inside quotation marks, unmarked changes are misquoting."}]},
+ {q:"Which of these is a real paraphrase of “It'll improve their lives in ways that are unquestionably good” (23)?",
+  opts:[
+   {t:"Naam is certain that people with disabilities and injuries will be better off because of these devices (23).",ok:true,
+    f:"Correct. New sentence structure, new words, same idea — and still cited, because the <b>idea</b> is borrowed even when the wording isn't."},
+   {t:"It will improve their lives in ways that are undeniably good (23).",ok:false,
+    f:"Two words changed. That's not a paraphrase — it's a quotation with the quotation marks removed, which is the most common form of accidental plagiarism there is."},
+   {t:"Naam is certain that people with disabilities and injuries will be better off because of these devices.",ok:false,
+    f:"The wording is genuinely yours, but there's no citation. Paraphrases get cited too — you borrowed the idea."}]}
+];
+let mlaReturn=null;
+function openQuoteLab(){
+  if(mlaReturn===null) mlaReturn=S.stage;
+  closeModal(); closeDrawer();
+  $$(".screen").forEach(x=>x.classList.remove("on"));
+  $("#sc-mla").classList.add("on");
+  $$("#rail .step").forEach(b=>b.classList.remove("active"));
+  $("#main").scrollTop=0;
+  renderQuoteLab();
+}
+function closeQuoteLab(){ const r=mlaReturn===null?0:mlaReturn; mlaReturn=null; go(r); }
+$("#btnQuote").onclick=openQuoteLab;
+$("#mlaBack").onclick=closeQuoteLab;
+$("#mlaBack2").onclick=closeQuoteLab;
+
+function renderQuoteLab(){
+  const host=$("#qlBody"); if(host.dataset.done) return; host.dataset.done="1";
+  const card=(eyebrow,title,inner)=>{ const c=el("div","card");
+    c.innerHTML='<div class="eyebrow">'+eyebrow+'</div><h2 class="sec">'+title+'</h2>'+inner; host.appendChild(c); return c; };
+
+  card("Step zero","Three ways to use a source — pick the right one",
+   '<div class="tide" style="margin-top:12px">'+
+   '<div class="tiderow"><div class="tideletter I" style="font-size:15px">❝<small>quote</small></div><div class="tidebody Ib">'+
+     '<b>Quote</b> — the author\'s exact words in quotation marks.<br><span class="muted">Use it when the <i>wording itself</i> '+
+     'is powerful, precise, or hard to say better. Never quote a plain fact you could say yourself.</span></div></div>'+
+   '<div class="tiderow"><div class="tideletter D" style="font-size:15px">🗣<small>paraphrase</small></div><div class="tidebody Db">'+
+     '<b>Paraphrase</b> — one idea, completely rewritten in your words.<br><span class="muted">Use it when the <i>fact</i> matters '+
+     'more than the phrasing. Same length as the original, different sentence structure. <b>Still cited.</b></span></div></div>'+
+   '<div class="tiderow"><div class="tideletter T" style="font-size:15px">📄<small>summary</small></div><div class="tidebody Tb">'+
+     '<b>Summary</b> — a long stretch of text boiled down.<br><span class="muted">Use it for background. Your <b>gist</b> is a '+
+     'summary. <b>Still cited.</b></span></div></div></div>'+
+   '<div class="teach"><h4>The rule underneath all three</h4><p style="margin:0">If the <b>words</b> came from the text, you need '+
+   'quotation marks <i>and</i> a citation. If only the <b>idea</b> came from the text, you need a citation. There is no version '+
+   'where you need neither.</p></div>');
+
+  card("Anatomy","The quote sandwich — three parts, always in this order",
+   '<div style="display:grid;gap:10px;margin-top:12px">'+
+   '<div style="border-left:6px solid var(--t);background:var(--t-soft);border-radius:0 12px 12px 0;padding:13px 16px">'+
+     '<b style="color:var(--t)">1 · SET IT UP</b> — a signal phrase. Name the author (or the source) and choose a verb.'+
+     '<div class="ex" style="font-family:var(--read)">According to Naam,</div></div>'+
+   '<div style="border-left:6px solid var(--i);background:var(--i-soft);border-radius:0 12px 12px 0;padding:13px 16px">'+
+     '<b style="color:var(--warn)">2 · SERVE IT</b> — the exact words, inside quotation marks. Copy them <i>exactly</i>.'+
+     '<div class="ex" style="font-family:var(--read)">“Superhuman technology is on the horizon”</div></div>'+
+   '<div style="border-left:6px solid var(--d);background:var(--d-soft);border-radius:0 12px 12px 0;padding:13px 16px">'+
+     '<b style="color:var(--d)">3 · CITE IT</b> — the location in parentheses, then the sentence\'s period.'+
+     '<div class="ex" style="font-family:var(--read)">(23).</div></div></div>'+
+   '<div class="hr"></div><div class="slotlabel">Assembled</div>'+
+   '<div class="draft" style="font-size:17px">According to Naam, “Superhuman technology is on the horizon” (23).</div>'+
+   '<div class="teach"><h4>Never drop a quote</h4><p style="margin:0">A quotation that appears with no introduction is called a '+
+   '<b>dropped quote</b>, and it is the fastest way to lose credit. Your reader should never meet someone else\'s sentence without '+
+   'being told whose it is. And remember the fourth, invisible part: <b>the D that follows</b>. A sandwich with no explanation '+
+   'after it is still just bread.</p></div>');
+
+  card("Set-up","Signal phrases — the verb does real work",
+   '<p class="lede" style="margin-bottom:12px">“Says” is the weakest verb in English. The verb you choose tells your reader what '+
+   'the author is <i>doing</i> — and shows a grader that you understood the text, not just harvested it.</p>'+
+   '<div class="grid g2">'+SIGNAL_VERBS.map(v=>'<div style="padding:9px 0;border-bottom:1px solid var(--line)">'+
+     '<b style="color:var(--brand)">'+v.v+'</b><div class="muted" style="color:var(--ink-2)">'+v.m+'</div></div>').join("")+'</div>'+
+   '<div class="teach"><h4>Borrow the credentials</h4><p style="margin:0">If the text tells you who the source is, put it in your '+
+   'signal phrase. Compare:</p>'+
+   '<div class="ex" style="font-family:var(--read)"><span class="no">✗</span> Kaplan says that machines will do skilled work.</div>'+
+   '<div class="ex" style="font-family:var(--read)"><span class="yes">✓</span> Jerry Kaplan, an artificial intelligence expert who '+
+   'has founded multiple technology startups, warns that machines will do work “that we think of as requiring human judgment and '+
+   'skill” (par. 8).</div>'+
+   '<p style="margin:8px 0 0">Same evidence. The second one borrows the source\'s authority for your paragraph — for free.</p></div>');
+
+  card("Punctuation","Three legal ways to attach a quotation",
+   '<div class="tide" style="margin-top:12px">'+
+   '<div class="tiderow"><div class="tideletter T" style="width:104px;font-size:13px">COMMA</div><div class="tidebody Tb">'+
+     '<span class="jot">Naam argues<b style="color:var(--bad)">,</b> “Superhuman technology is on the horizon” (23).</span>'+
+     '<div class="muted">After a signal phrase that could not stand alone.</div></div></div>'+
+   '<div class="tiderow"><div class="tideletter I" style="width:104px;font-size:13px">NO COMMA</div><div class="tidebody Ib">'+
+     '<span class="jot">Naam argues <b>that</b> “superhuman technology is on the horizon” (23).</span>'+
+     '<div class="muted">With <b>that</b>, the quotation joins your sentence — no comma, and the first letter is lowercase.</div></div></div>'+
+   '<div class="tiderow"><div class="tideletter D" style="width:104px;font-size:13px">COLON</div><div class="tidebody Db">'+
+     '<span class="jot">Naam is blunt about the timeline<b style="color:var(--bad)">:</b> “Superhuman technology is on the horizon” (23).</span>'+
+     '<div class="muted">Only when your own words form a complete sentence first.</div></div></div></div>'+
+   '<div class="teach"><h4>Where the period goes — the one everybody gets wrong</h4>'+
+   '<p>In American English, periods and commas normally go <b>inside</b> the closing quotation mark:</p>'+
+   '<div class="ex" style="font-family:var(--read)">She called it “a bionic revolution.”</div>'+
+   '<p style="margin:10px 0 0"><b>But the moment a citation follows, that flips.</b> The period moves to the very end, after the '+
+   'parenthesis — because the citation is part of your sentence:</p>'+
+   '<div class="ex" style="font-family:var(--read)"><span class="yes">✓</span> She called it “a bionic revolution” (19)<b>.</b></div>'+
+   '<div class="ex" style="font-family:var(--read)"><span class="no">✗</span> She called it “a bionic revolution.” (19)</div>'+
+   '<p style="margin:10px 0 0"><b>Question marks and exclamation points</b> stay inside if they belong to the quotation: '+
+   '<i>Naam asks, “how far away could she be and still control it?” (20).</i></p></div>');
+
+  card("Editing a quotation","Changing the words — legally",
+   '<div class="teach" style="margin-top:0"><h4>… the ellipsis · for cutting</h4>'+
+   '<p>Three spaced dots mark words you removed from the middle of a quotation. Cut only what you don\'t need, and never cut in a '+
+   'way that changes the meaning.</p>'+
+   '<div class="ex" style="font-family:var(--read)">Cochlear implants “turn sound waves into electrical impulses … directly into '+
+   'the auditory nerve” (Naam 19).</div></div>'+
+   '<div class="teach"><h4>[ ] square brackets · for adding or changing</h4>'+
+   '<p>Brackets mark a word <i>you</i> supplied — usually to replace a pronoun the reader can\'t follow, or to fix the grammar so '+
+   'the quotation fits your sentence.</p>'+
+   '<div class="ex" style="font-family:var(--read)">Naam writes that “[bionic limbs] respond to the thoughts and intentions of '+
+   'their owners” (20).</div>'+
+   '<p style="margin:8px 0 0">Round parentheses would look like the author\'s. Square brackets say “this part is mine.”</p></div>'+
+   '<div class="teach" style="border-left-color:var(--bad);background:var(--bad-soft)"><h4 style="color:var(--bad)">What is never legal</h4>'+
+   '<p style="margin:0">Changing words inside quotation marks without marking it. Cutting a “not.” Stitching two separate '+
+   'sentences together as though the author wrote them side by side. Quoting a sentence that argued the opposite and presenting it '+
+   'as support. All four are misquoting, and all four are catchable.</p></div>');
+
+  card("Credit","In-text citations — what goes in the parentheses",
+   '<p class="lede" style="margin-bottom:12px">One rule covers every case: <b>whatever your sentence already tells the reader, the '+
+   'parentheses leave out.</b></p>'+
+   '<div style="overflow-x:auto"><table class="rep"><thead><tr><th>Your sentence…</th><th>Source has pages</th>'+
+   '<th>Source has no pages</th></tr></thead><tbody>'+
+   '<tr><td>names the author<div class="muted">“According to Naam, …”</div></td>'+
+     '<td><b>(23)</b><div class="muted">page only</div></td><td><b>(par. 3)</b><div class="muted">paragraph only</div></td></tr>'+
+   '<tr><td>does <i>not</i> name the author<div class="muted">“As stated in the text, …”</div></td>'+
+     '<td><b>(Naam 23)</b></td><td><b>(Alarcón par. 3)</b></td></tr>'+
+   '<tr><td>no author exists at all</td><td><b>(“Short Title” 23)</b></td><td><b>(“Short Title” par. 3)</b></td></tr>'+
+   '</tbody></table></div>'+
+   '<div class="teach"><h4>Why paragraph numbers?</h4><p style="margin:0">Two of your anchor texts are read online, where there '+
+   'are no fixed page numbers — a page on a phone is not a page on a laptop. MLA\'s answer is to count <b>paragraphs</b> instead, '+
+   'which are the same for everyone. That\'s why this lab numbers every paragraph of every text down the left margin.</p></div>');
+
+  card("Long quotations","Block quotes — and the rule that reverses",
+   '<p class="lede" style="margin-bottom:12px">A quotation longer than <b>four typed lines</b> becomes a <b>block quote</b>. '+
+   'You will rarely need one in a single paragraph, but here is the format:</p>'+
+   '<div class="draft" style="font-size:16px">Naam describes how far the technology has already travelled:'+
+   '<div style="margin:12px 0 0 2.6em;border-left:3px solid var(--line-2);padding-left:14px">In animal studies, scientists have '+
+   'shown that a monkey with a brain implant can control a robot arm 7,000 miles away. The monkey\'s mental signals were sent over '+
+   'the internet, from Duke University in North Carolina, to the robot arm in Japan. (20)</div></div>'+
+   '<div class="teach"><h4>Three things change</h4><p style="margin:0"><b>1.</b> Indent the whole block half an inch. '+
+   '<b>2.</b> Drop the quotation marks — the indent already signals a quotation. <b>3.</b> The period goes <b>before</b> the '+
+   'citation, not after. That last one is the exact opposite of the rule for short quotes, and it is the only place in MLA where '+
+   'it flips.</p></div>'+
+   '<div class="teach" style="border-left-color:var(--gold)"><h4>Honest advice</h4><p style="margin:0">If you find yourself '+
+   'reaching for a block quote in a one-paragraph response, you are almost certainly quoting too much. Trim it with an ellipsis '+
+   'and keep the sentence that actually proves your point.</p></div>');
+
+  card("The list","Works Cited — the parts, labelled",
+   '<p class="lede" style="margin-bottom:12px">Every in-text citation points to a full entry at the end. Here is the entry for '+
+   'your current text, taken apart:</p>'+
+   '<div class="draft" style="font-size:16px;padding-left:2.6em;text-indent:-2.6em">'+T().worksCited+'</div>'+
+   '<div class="grid g2" style="margin-top:14px">'+
+   ['<b>Author.</b> Last name first, then first name, then a period.',
+    '<b>“Title of the piece.”</b> In quotation marks, because it is part of something bigger.',
+    '<b><i>Title of the container.</i></b> Italicised — the book, magazine, or website that holds it.',
+    '<b>Publisher, year, pages.</b> Separated by commas, ending in a period.'].map(x=>
+     '<div style="padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px">'+x+'</div>').join("")+'</div>'+
+   '<div class="teach"><h4>The hanging indent</h4><p style="margin:0">The first line sits at the margin and every line after it is '+
+   'indented — the reverse of a paragraph. It exists so a reader scanning the left edge sees only author last names. Entries go '+
+   'in <b>alphabetical order</b> by that first word.</p></div>');
+
+  /* ---------- drills ---------- */
+  const drill=card("Practice","🥪 Build the sandwich",
+   '<p class="muted" style="margin-bottom:12px">Tap the pieces in the order they belong in a sentence.</p>');
+  const built=el("div","tray"); built.style.minHeight="72px";
+  built.innerHTML='<span class="tideempty">Your sentence appears here…</span>';
+  const pool=el("div","tray"); pool.style.marginTop="14px";
+  const dfb=el("div","fb"); dfb.style.marginTop="12px";
+  let order=[];
+  shuffle(QL_BUILD.chips.map((t,i)=>({t,i}))).forEach(c=>{
+    const b=el("button","tcard"); b.textContent=c.t;
+    b.onclick=()=>{
+      if(c.i===order.length){
+        order.push(c.i); b.classList.add("used");
+        built.innerHTML='<div style="font-family:var(--read);font-size:17px;line-height:1.7">'+
+          order.map(i=>QL_BUILD.chips[i]).join(" ")+'</div>';
+        if(order.length===QL_BUILD.chips.length){
+          dfb.className="fb show ok";
+          dfb.innerHTML="✓ <b>That's the pattern.</b> Set-up, exact words, credit, period — in that order, every single time. "+
+            "Notice the period is its own step: it comes <i>after</i> the parenthesis, never inside the quotation marks.";
+          if(!S.done.qlBuild){ S.done.qlBuild=true; save(); xp(60,"Quote sandwich built"); }
+        }
+      }else{
+        dfb.className="fb show no";
+        dfb.innerHTML="✗ Not next. Ask yourself what a reader needs first — do they know <i>who is speaking</i> yet?";
+        setTimeout(()=>dfb.classList.remove("show"),2800);
+      }
+    };
+    pool.appendChild(b);
+  });
+  drill.appendChild(el("span","slotlabel","Your sentence"));
+  drill.appendChild(built);
+  drill.appendChild(el("span","slotlabel","Tap in order"));
+  drill.appendChild(pool); drill.appendChild(dfb);
+
+  const q=card("Practice","🔎 Spot the correct one",
+   '<p class="muted" style="margin-bottom:4px">Five drills. Wrong answers explain themselves and let you try again.</p>');
+  let solved=0;
+  QL_DRILLS.forEach(d=>{
+    const box=el("div"); box.style.cssText="padding:16px 0;border-bottom:1px solid var(--line)";
+    box.innerHTML='<b style="font-size:15.5px;display:block;margin-bottom:10px">'+d.q+'</b>';
+    const holder=el("div"); box.appendChild(holder); q.appendChild(box);
+    mcq(holder,d.opts,()=>{ solved++; xp(30);
+      if(solved===QL_DRILLS.length && !S.done.qlDrills){ S.done.qlDrills=true; save();
+        badge("quote"); xp(80,"Quote Lab complete"); } });
+  });
+}
 
 /* ==========================================================================
    TOOLBOX · PROGRESS REPORT · SETTINGS
@@ -3522,7 +3991,8 @@ $("#btnTools").onclick=()=>{
   '<h3 style="margin:20px 0 8px;font-size:16px">My Language Box · '+t.title+'</h3>'+
   '<div style="display:flex;flex-wrap:wrap;gap:7px">'+(W().vocab.length?W().vocab.map(x=>'<span class="pill vocab on" title="'+
     (t.gloss[x]||"")+'">'+x+'</span>').join(""):'<span class="muted">Tap dotted words in the text to collect them.</span>')+'</div>'+
-  '<div class="btnrow"><button class="btn" onclick="closeModal()">Close</button></div>');
+  '<div class="btnrow"><button class="btn ghost" onclick="openQuoteLab()">📎 Open the Quote Lab</button>'+
+  '<button class="btn" onclick="closeModal()">Close</button></div>');
 };
 
 $("#btnReport").onclick=()=>{
@@ -3539,7 +4009,8 @@ $("#btnReport").onclick=()=>{
     for(let i=FIRST_TEXT_STAGE;i<=LAST_STAGE;i++) dots+='<td class="mini"><span class="dotm'+(w.done[i]?" on":"")+'">'+(w.done[i]?"✓":"")+'</span></td>';
     rows+='<tr><td><b>'+t.icon+' '+t.title+'</b><div class="muted">'+
       (w.complete?"complete":stepsDone(w)+" of "+TEXT_STEPS+" steps")+
-      (w.goal?' · goal: <b>'+w.goal.k+'</b>':"")+'</div></td>'+dots+
+      (w.goal?' · goal: <b>'+w.goal.k+'</b>':"")+
+      (w.usedModel?' · <b style="color:var(--warn)">started from a worked model</b>':"")+'</div></td>'+dots+
       '<td style="white-space:nowrap">'+strong+'/'+TEACHER.requireEvidence+' strong</td></tr>';
   });
   let heads="";
@@ -3564,6 +4035,10 @@ $("#btnReport").onclick=()=>{
     '<tbody>'+rows+'</tbody></table></div>'+
     '<div class="muted" style="margin-top:8px">'+
       STAGES.slice(FIRST_TEXT_STAGE).map(s=>s.i+" "+s.n).join(" · ")+'</div>'+
+    (TEXTS.some(t=>S.work[t.id]&&S.work[t.id].usedModel)
+      ? '<p class="muted" style="margin-top:10px">“Started from a worked model” means the student jumped into a middle step to '+
+        'practise one skill, and the lab supplied the earlier work. That is a deliberate practice mode, not a shortcut — but the '+
+        'evidence and explanations in that text are partly the model\'s, not theirs.</p>' : "")+
     (paras?'<h3 style="margin:20px 0 10px;font-size:16px">Finished paragraphs</h3>'+paras:"")+
     '<div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:14px">'+
       (S.badges.length?S.badges.map(k=>BADGES[k]?'<span class="pill" title="'+BADGES[k].d+'">'+BADGES[k].i+' '+BADGES[k].n+'</span>':"").join("")
@@ -3605,7 +4080,7 @@ function hardReset(){
   const fs=localStorage.getItem(KEY+".font"); if(fs) document.documentElement.style.setProperty("--readsize",fs+"px");
   TEXTS.forEach(t=>{ if(S.work[t.id]){ const w=S.work[t.id];
     if(!w.tide) w.tide={t:null,i:[],d:["","",""],e:null,lang:[]};
-    if(!w.tide.i) w.tide.i=[]; if(!w.vocab) w.vocab=[]; } });
+    if(!w.tide.i) w.tide.i=[]; if(!w.vocab) w.vocab=[]; if(!w.notes) w.notes=[]; } });
   paintHud();
   if(S.cur) renderPassage();
   paintRail();
